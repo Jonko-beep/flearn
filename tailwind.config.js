@@ -52,6 +52,12 @@ export default {
           "0%, 100%": { transform: "translateY(0px)" },
           "50%": { transform: "translateY(-30px)" },
         },
+        xpToast: {
+          "0%": { opacity: "0", transform: "translateY(16px) scale(0.95)" },
+          "12%": { opacity: "1", transform: "translateY(0) scale(1)" },
+          "85%": { opacity: "1", transform: "translateY(0)" },
+          "100%": { opacity: "0", transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "fade-in-down": "fadeInDown 0.6s ease-out both",
