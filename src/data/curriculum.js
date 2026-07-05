@@ -86,6 +86,34 @@ export const categories = [
             explanation:
               "Risk and reward move together — investments with higher potential returns generally carry higher risk of losses.",
           },
+          {
+            id: 6,
+            question:
+              "You leave $5,000 in a checking account for 10 years instead of investing it. According to the lesson, what do you end up with?",
+            options: [
+              "About $10,795",
+              "Still $5,000, but with less purchasing power thanks to inflation",
+              "More than $5,000, because banks pay high interest",
+              "Nothing — checking accounts lose money outright",
+            ],
+            correct: 1,
+            explanation:
+              "The nominal $5,000 doesn't grow, and inflation quietly eats away at what it can buy. Invested at an 8% average return, the same money would have roughly doubled.",
+          },
+          {
+            id: 7,
+            question:
+              "Why does starting to invest at 20 instead of 30 make such a big difference by retirement?",
+            options: [
+              "Younger investors get better interest rates",
+              "Brokers charge lower fees to younger customers",
+              "The extra decade gives compounding far more time to snowball",
+              "Stocks are less risky for young people",
+            ],
+            correct: 2,
+            explanation:
+              "Compounding grows fastest at the end — each year your returns earn returns of their own. An extra ten years early on can translate into hundreds of thousands of dollars more by retirement.",
+          },
         ],
       },
       {
@@ -160,6 +188,34 @@ export const categories = [
             explanation:
               "Silver is used in electronics, solar panels, and other industry, which adds real-world demand on top of its role as an investment.",
           },
+          {
+            id: 6,
+            question:
+              "A friend puts 60% of their portfolio into gold and silver. Based on the lesson, what's the problem?",
+            options: [
+              "Tangible assets always lose value",
+              "Experts suggest only 5-15% — that much sacrifices the income and growth stocks provide",
+              "Gold can't be sold quickly",
+              "Precious metals aren't allowed in investment portfolios",
+            ],
+            correct: 1,
+            explanation:
+              "Tangible assets don't produce dividends or interest, so overweighting them means giving up growth and income. A 5-15% slice captures the diversification benefit without that cost.",
+          },
+          {
+            id: 7,
+            question:
+              "Gold rising from about $35 an ounce in 1970 to over $2,000 today mostly reflects:",
+            options: [
+              "Gold becoming rarer",
+              "Government price supports",
+              "The dollar losing purchasing power over those decades",
+              "Industrial demand for gold",
+            ],
+            correct: 2,
+            explanation:
+              "The lesson notes that gold's long climb isn't just price appreciation — it mirrors how much purchasing power the dollar has lost, which is exactly why gold works as an inflation hedge.",
+          },
         ],
       },
       {
@@ -233,6 +289,34 @@ export const categories = [
             correct: 1,
             explanation:
               "Day trading and market timing are essentially gambling. Consistent, long-term investing in diversified holdings is how real wealth is built.",
+          },
+          {
+            id: 6,
+            question:
+              "You buy a share at $50 and later sell it at $80. The company paid no dividends. What was your profit per share, and what is it called?",
+            options: [
+              "$30, capital appreciation",
+              "$30, a dividend",
+              "$80, capital appreciation",
+              "$130, total return",
+            ],
+            correct: 0,
+            explanation:
+              "You pocket the $80 − $50 = $30 difference. Profit from selling at a higher price than you paid is capital appreciation — the other way stocks pay you is dividends.",
+          },
+          {
+            id: 7,
+            question:
+              "Why can 'the market returns about 10% per year on average' be misleading for any single year?",
+            options: [
+              "The real average is much lower",
+              "Individual years swing wildly — from roughly +30% to -40%",
+              "Returns only count if you day trade",
+              "The 10% figure ignores dividends",
+            ],
+            correct: 1,
+            explanation:
+              "The 10% average only shows up over long periods. Any single year can be dramatically higher or lower, which is why stock investing is a long game.",
           },
         ],
       },
@@ -341,6 +425,24 @@ export const categories = [
             correct: 1,
             explanation:
               "If needs are covered by scholarships or family, the 50% needs slice shrinks — letting you push your savings rate far above 20%, a huge head start.",
+          },
+          {
+            id: 6,
+            question:
+              "Your after-tax income is $2,000 a month. Following the 50/30/20 rule, how much should go to savings and investing?",
+            options: ["$200", "$400", "$600", "$1,000"],
+            correct: 1,
+            explanation:
+              "20% of $2,000 is $400. The other slices are $1,000 for needs (50%) and $600 for wants (30%).",
+          },
+          {
+            id: 7,
+            question:
+              "Under the 50/30/20 rule, dining out and streaming subscriptions belong to which bucket?",
+            options: ["Needs", "Wants", "Savings & Investing", "They don't fit the rule"],
+            correct: 1,
+            explanation:
+              "Dining out, entertainment, subscriptions, and hobbies are Wants — the 30% slice. Needs are essentials like rent, groceries, transportation, and insurance.",
           },
         ],
       },
@@ -540,6 +642,29 @@ export const categories = [
             explanation:
               "Your emergency fund is NOT investment capital. Never invest money you can't afford to lose — the fund exists to be there when things go wrong.",
           },
+          {
+            id: 6,
+            question:
+              "Your car suddenly needs a $900 repair. Which phase of emergency fund building would fully cover it?",
+            options: [
+              "Phase 1: $500",
+              "Phase 2: $1,000",
+              "Only Phase 4 could",
+              "None — car repairs aren't emergencies",
+            ],
+            correct: 1,
+            explanation:
+              "Phase 2's $1,000 handles a car repair or a medical copay. Phase 1's $500 covers most minor emergencies but would fall short of a $900 bill.",
+          },
+          {
+            id: 7,
+            question:
+              "For a typical college student, how large does the lesson suggest a full emergency fund might be?",
+            options: ["$100-500", "$2,000-5,000", "$6,000-15,000", "One year of tuition"],
+            correct: 1,
+            explanation:
+              "A college student's essential expenses are lower, so 3-6 months might be $2,000-5,000. Someone paying rent and bills would need more like $6,000-15,000.",
+          },
         ],
       },
       {
@@ -644,6 +769,32 @@ export const categories = [
             explanation:
               "Closing costs — the fees for processing the loan — typically run 2-5% of the purchase price.",
           },
+          {
+            id: 6,
+            question: "What is escrow?",
+            options: [
+              "The loan's interest rate lock",
+              "An account where money is held for property taxes and insurance",
+              "The bank's profit on the loan",
+              "A penalty for late payments",
+            ],
+            correct: 1,
+            explanation:
+              "Escrow is a holding account: part of your monthly payment sits there so property taxes and homeowner's insurance get paid when they come due.",
+          },
+          {
+            id: 7,
+            question: "Why does even a small difference in mortgage interest rate matter so much?",
+            options: [
+              "Rates change your down payment",
+              "Interest accrues over 15-30 years, so a small rate change compounds into tens of thousands of dollars",
+              "Lenders penalize borrowers who get low rates",
+              "It doesn't — only the principal matters",
+            ],
+            correct: 1,
+            explanation:
+              "On a $240,000 loan at 7% for 30 years, interest alone totals roughly $335,000 — more than the amount borrowed. Stretch any rate difference across three decades and the gap becomes enormous.",
+          },
         ],
       },
       {
@@ -706,6 +857,34 @@ export const categories = [
             correct: 3,
             explanation:
               "You can qualify around 620+, but 740+ is where lenders offer their best conventional rates.",
+          },
+          {
+            id: 6,
+            question:
+              "You take a $240,000 conventional loan with 10% down. Roughly what extra monthly cost should you expect?",
+            options: [
+              "Nothing extra",
+              "$100-200 in PMI",
+              "$500 in MIP",
+              "A one-time funding fee instead",
+            ],
+            correct: 1,
+            explanation:
+              "Under 20% down triggers PMI at roughly 0.5-1% of the loan per year — about $100-200 a month on a $240,000 loan, on top of the mortgage payment itself.",
+          },
+          {
+            id: 7,
+            question:
+              "Beyond borrowing less money, why does a 20% down payment lower your monthly cost?",
+            options: [
+              "It lowers your property taxes",
+              "It eliminates PMI entirely",
+              "It automatically shortens the loan term",
+              "It removes closing costs",
+            ],
+            correct: 1,
+            explanation:
+              "PMI only exists to protect the lender when you put down less than 20%. Reach that threshold up front and the extra monthly fee never appears at all.",
           },
         ],
       },
@@ -776,6 +955,28 @@ export const categories = [
             explanation:
               "FHA shines when your credit is below 700 or your down payment is small. With good credit and 5%+ down, conventional often wins long-term because PMI eventually drops off.",
           },
+          {
+            id: 6,
+            question:
+              "Your credit score is 540. What's the minimum down payment for an FHA loan?",
+            options: ["0%", "3.5%", "10%", "You can't qualify at all"],
+            correct: 2,
+            explanation:
+              "The 3.5% minimum requires a 580+ score. Scores between 500 and 579 are still accepted, but the down payment requirement rises to 10%.",
+          },
+          {
+            id: 7,
+            question: "Why can FHA lenders offer relaxed credit and down payment requirements?",
+            options: [
+              "They charge much higher interest rates",
+              "The government covers the lender's losses if the borrower defaults",
+              "FHA borrowers rarely default",
+              "The loans are smaller than conventional loans",
+            ],
+            correct: 1,
+            explanation:
+              "The FHA insures the loan, so the bank's risk drops dramatically — if a borrower defaults, the government absorbs the loss. That safety net is what lets lenders say yes to riskier borrowers.",
+          },
         ],
       },
       {
@@ -845,6 +1046,29 @@ export const categories = [
             explanation:
               "With no PMI or MIP, the VA borrower skips the monthly insurance premium that conventional and FHA borrowers pay — often more than offsetting the larger loan.",
           },
+          {
+            id: 6,
+            question:
+              "How many continuous days of service qualify an active-duty member for a VA loan?",
+            options: ["30+", "90+", "365+", "6 years"],
+            correct: 1,
+            explanation:
+              "Active-duty members qualify after 90+ continuous days. Veterans' requirements vary by era, and National Guard/Reserves generally need 6 years or 90 days of active duty.",
+          },
+          {
+            id: 7,
+            question:
+              "Over 30 years, roughly how much can a VA borrower save versus comparable loans, per the lesson's $300,000 comparison?",
+            options: [
+              "$500",
+              "$5,000",
+              "More than $50,000",
+              "Nothing — the funding fee cancels it out",
+            ],
+            correct: 2,
+            explanation:
+              "Skipping a ~$130-140 monthly insurance premium for decades adds up — the lesson's comparison puts the savings above $50,000, even accounting for the one-time funding fee.",
+          },
         ],
       },
       {
@@ -907,6 +1131,28 @@ export const categories = [
             correct: 1,
             explanation:
               "Most people hear 'rural' and assume they're ineligible — but about 97% of U.S. land area qualifies, including many suburban areas.",
+          },
+          {
+            id: 6,
+            question:
+              "You want to buy a rental investment property in a USDA-eligible small town. Will a USDA loan work?",
+            options: [
+              "Yes, any property in an eligible area qualifies",
+              "No — USDA loans are for primary residences only",
+              "Yes, but only with 20% down",
+              "No — rental properties require VA loans",
+            ],
+            correct: 1,
+            explanation:
+              "USDA loans exist to promote homeownership, so the property must be your primary residence — no investment properties or vacation homes.",
+          },
+          {
+            id: 7,
+            question: "What credit score does the lesson cite for automatic USDA approval?",
+            options: ["580+", "620+", "640+", "740+"],
+            correct: 2,
+            explanation:
+              "A 640+ score typically gets automatic approval, though USDA credit requirements are flexible overall.",
           },
         ],
       },
@@ -981,6 +1227,28 @@ export const categories = [
             correct: 1,
             explanation:
               "Borrowers with short-adjustment ARMs saw payments double when rates rose, triggering defaults that fed the housing crisis.",
+          },
+          {
+            id: 6,
+            question:
+              "On the lesson's $250,000 comparison at 6.5%, how much higher is the 15-year monthly payment than the 30-year?",
+            options: ["$99", "$299", "$599", "$1,099"],
+            correct: 2,
+            explanation:
+              "$2,179 versus $1,580 — a $599 higher monthly payment. In exchange, you pay about $177,000 less in total interest and build equity much faster.",
+          },
+          {
+            id: 7,
+            question: "What limits how much an ARM's interest rate can rise?",
+            options: [
+              "Nothing — it can rise without limit",
+              "Caps on each adjustment and over the loan's lifetime",
+              "The original teaser rate",
+              "Federal law freezes rates after 10 years",
+            ],
+            correct: 1,
+            explanation:
+              "ARMs carry caps restricting how much the rate can increase per adjustment period and in total over the life of the loan — your protection against runaway payments.",
           },
         ],
       },
