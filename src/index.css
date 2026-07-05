@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply antialiased;
+  }
+  body {
+    @apply min-h-screen font-sans text-ink;
+    background: linear-gradient(165deg, #0a0f1e 0%, #111827 40%, #1a1a2e 100%);
+    background-attachment: fixed;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif tracking-heading;
+  }
+}
