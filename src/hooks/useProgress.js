@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { categories, MASTERY_THRESHOLD } from "../data/curriculum.js";
+import { awardXp, recordAction } from "../lib/gamification.js";
 
 const STORAGE_KEY = "flearn_progress";
 
@@ -29,12 +30,14 @@ function writeProgress(progress) {
 export function useProgress() {
   const [progress, setProgress] = useState(readProgress);
 
-  const recordAttempt = useCallback((lessonId, score) => {
-    setProgress((prev) => {
-      const existing = prev[lessonId];
-      const bestScore = Math.max(existing?.bestScore ?? 0, score);
+  const recordAttempt = useCallback(
+    (lessonId, score) => {
+      const existing = progress[lessonId];
+      const wasCompleted = existing?.completed ?? false;
+      const prevBest = existing?.bestScore ?? 0;
+      const bestScore = Math.max(prevBest, score);
       const next = {
-        ...prev,
+        ...progress,
         [lessonId]: {
           completed: bestScore >= MASTERY_THRESHOLD,
           bestScore,
@@ -43,9 +46,17 @@ export function useProgress() {
         },
       };
       writeProgress(next);
-      return next;
-    });
-  }, []);
+      setProgress(next);
+
+      recordAction(); // any quiz attempt counts toward the daily streak
+      if (!wasCompleted && bestScore >= MASTERY_THRESHOLD) {
+        awardXp(100, "Lesson Mastered!", `mastered:${lessonId}`);
+      } else if (wasCompleted && score > prevBest) {
+        awardXp(20, "New Best Score!");
+      }
+    },
+    [progress]
+  );
 
   const getLessonProgress = useCallback(
     (lessonId) => progress[lessonId] ?? null,

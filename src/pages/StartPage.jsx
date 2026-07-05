@@ -58,6 +58,14 @@ export default function StartPage() {
         Start Learning →
       </Link>
 
+      <Link
+        to="/portfolio"
+        className="mt-4 font-sans text-sm text-ink-muted transition-colors hover:text-ink-secondary"
+        style={{ animation: "fadeInUp 0.8s ease-out 0.6s both" }}
+      >
+        💼 Or practice trading in your virtual portfolio →
+      </Link>
+
       <div
         className="mt-12 flex flex-wrap justify-center gap-8 font-sans text-[0.8rem] text-slate-600"
         style={{ animation: "fadeInUp 0.8s ease-out 0.7s both" }}
@@ -65,6 +73,7 @@ export default function StartPage() {
         <span>🎥 Video Lessons</span>
         <span>📝 Mastery Quizzes</span>
         <span>🎯 Progress Tracking</span>
+        <span>💼 Portfolio Simulator</span>
       </div>
     </div>
   );
