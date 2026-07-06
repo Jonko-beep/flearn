@@ -326,11 +326,101 @@ export const categories = [
         subtitle: "Finding undervalued opportunities",
         duration: "15 min",
         difficulty: "Intermediate",
-        locked: true,
+        locked: false,
         videoUrl: null,
-        content: null,
+        content: `Value investing is the art of buying a dollar for fifty cents. The strategy was pioneered by Benjamin Graham — yes, the namesake of our own Benjamin the Bear — and perfected by his most famous student, Warren Buffett (sound familiar, Warren the Walrus fans?). The core insight: a stock's PRICE and its VALUE are two different things, and your job is to buy when price sits well below value.\n\nGraham asked investors to imagine the market as a moody business partner he called "Mr. Market." Some days he's euphoric and offers to buy your shares at silly-high prices. Other days he panics and offers to sell you his shares dirt cheap. You never have to trade with him — you simply wait for the days his mood works in your favor.\n\nKey concepts:\n• Intrinsic value — what a business is actually worth, based on its earnings, assets, and future prospects\n• Margin of safety — only buying when the price is meaningfully below intrinsic value. Graham suggested paying $70 or less for something worth $100, so even if your estimate is off, you're protected\n• Mr. Market — the market's mood swings are an opportunity to exploit, not a guide to follow\n\nA concrete example: you analyze a company and estimate it's worth $50 per share. It trades at $48. That's NOT a value buy — one bad quarter and you're underwater. But if a market panic knocks it to $35, you now have a $15 margin of safety. If your analysis is right, you profit handsomely. If you're somewhat wrong, you still probably don't lose much. That asymmetry is the whole game.\n\nHow do investors estimate value? Common starting points: the P/E ratio (price divided by annual earnings — paying $15 for every $1 of yearly profit is very different from paying $80), the company's debt load, and whether earnings are stable or erratic.\n\nWhat this means for you as a young adult: you don't need to dissect balance sheets at 20. The value investing MINDSET matters more than the math — never pay silly prices just because everyone's excited, and treat market crashes as sales, not sirens. When the market drops 30% and your friends panic-sell, the value investor in you recognizes the best buying opportunity in years.\n\nAs Warren the Walrus puts it: "Price is what you pay. Value is what you get."`,
         transcript: null,
-        quiz: null,
+        quiz: [
+          {
+            id: 1,
+            question: "Who is considered the father of value investing?",
+            options: [
+              "Warren Buffett",
+              "Benjamin Graham",
+              "Charlie Munger",
+              "John Bogle",
+            ],
+            correct: 1,
+            explanation:
+              "Benjamin Graham pioneered value investing and taught it to Warren Buffett, his most famous student. Our mascots Benjamin the Bear and Warren the Walrus are named in their honor.",
+          },
+          {
+            id: 2,
+            question: "What is a 'margin of safety'?",
+            options: [
+              "A stop-loss order that sells automatically",
+              "Buying only when the price is meaningfully below your estimate of intrinsic value",
+              "Keeping 6 months of expenses in savings",
+              "Only buying stocks that pay dividends",
+            ],
+            correct: 1,
+            explanation:
+              "The margin of safety is the gap between price and value — Graham suggested paying $70 or less for something worth $100 — so even an imperfect estimate still leaves you protected.",
+          },
+          {
+            id: 3,
+            question: "In Graham's metaphor, who or what is 'Mr. Market'?",
+            options: [
+              "The Federal Reserve chairman",
+              "A moody partner whose price swings you can exploit but never have to obey",
+              "A stockbroker who charges commissions",
+              "The S&P 500 index",
+            ],
+            correct: 1,
+            explanation:
+              "Mr. Market shows up daily with a new mood and a new price. You're free to ignore him — his panics are your buying opportunities, not instructions to follow.",
+          },
+          {
+            id: 4,
+            question:
+              "You estimate a stock's intrinsic value at $50 per share. Which price gives you a meaningful margin of safety?",
+            options: ["$48", "$52", "$35", "$50"],
+            correct: 2,
+            explanation:
+              "At $35 you have a $15 cushion below your $50 estimate, so even if your analysis is somewhat off, you're unlikely to lose much. At $48 or $50 one bad quarter puts you underwater.",
+          },
+          {
+            id: 5,
+            question: "What does the P/E ratio measure?",
+            options: [
+              "Price divided by annual earnings",
+              "Profit divided by equity",
+              "Price divided by employee count",
+              "Potential versus expectations",
+            ],
+            correct: 0,
+            explanation:
+              "P/E is the price you pay for each dollar of a company's yearly earnings — paying $15 per $1 of profit is a very different bet than paying $80.",
+          },
+          {
+            id: 6,
+            question:
+              "The market crashes 30% and your friends are panic-selling. What does the value investing mindset say this moment is?",
+            options: [
+              "A signal to sell before things get worse",
+              "One of the best buying opportunities in years",
+              "A reason to switch entirely to bonds",
+              "Proof that stocks don't work",
+            ],
+            correct: 1,
+            explanation:
+              "A crash is Mr. Market in a panic, offering shares dirt cheap. For a value investor with a long horizon, that's a sale, not a siren.",
+          },
+          {
+            id: 7,
+            question:
+              "Why does a margin of safety protect you even if your estimate of a company's value is wrong?",
+            options: [
+              "It guarantees the stock can't fall further",
+              "The gap between price and value absorbs your estimation error before you lose money",
+              "Brokers refund purchases made below intrinsic value",
+              "Companies must buy back shares sold below value",
+            ],
+            correct: 1,
+            explanation:
+              "Buying well below your estimate creates asymmetry: if you're right you profit a lot, and if you're moderately wrong the discount cushions the mistake. Nothing eliminates risk — the margin just absorbs error.",
+          },
+        ],
       },
       {
         id: "portfolio-building",
@@ -338,11 +428,101 @@ export const categories = [
         subtitle: "Diversification and asset allocation",
         duration: "12 min",
         difficulty: "Intermediate",
-        locked: true,
+        locked: false,
         videoUrl: null,
-        content: null,
+        content: `A portfolio is simply the collection of everything you're invested in — stocks, bonds, funds, cash, maybe a little gold. Building a good one isn't about picking winners. It's about combining pieces so that no single mistake can wreck you.\n\nDiversification is your armor. Put $1,000 into one company and a 50% drop costs you $500. Spread that same $1,000 across 500 companies and one of them can go to zero while you barely notice. The remarkable part: diversification lowers your risk WITHOUT proportionally lowering your expected return. It's the closest thing to a free lunch in investing.\n\nAsset allocation — how you split money between stocks, bonds, and cash — matters more than which specific stocks you pick. The right split depends on your time horizon:\n• Money you need within 3 years (tuition, a car) — savings account or CDs, not the market\n• 3-10 years out (a house down payment) — a balanced mix, something like 60% stocks / 40% bonds\n• 10+ years out (retirement) — mostly stocks, because you have decades to ride out crashes\n\nA classic rule of thumb: hold roughly your age as a percentage in bonds. At 20, that means about 80-90% stocks — aggressive, but appropriate, because at 20 a market crash is a buying opportunity, not a catastrophe. You won't touch the money for decades.\n\nFor beginners, index funds are the default answer. An index fund (like one tracking the S&P 500) buys tiny slices of hundreds of companies in a single purchase, charges near-zero fees (often 0.03% versus 1%+ for actively managed funds), and outperforms the majority of professional stock pickers over long periods. That fee gap is bigger than it looks: on a $100,000 portfolio, 0.03% is $30 a year while 1% is $1,000 — and the difference compounds for decades.\n\nA simple starter portfolio: 80% total US stock market index fund, 10% international index fund, 10% bonds. Boring? Absolutely. Effective? Devastatingly.\n\nOne maintenance habit: rebalance once a year. If stocks surge and your 80/10/10 drifts to 88/7/5, sell a little of what grew and top up what lagged. It quietly forces you to buy low and sell high.\n\nWhat this means for you as a young adult: your first portfolio can be ONE index fund and an automatic $50 monthly contribution. That single boring decision, sustained for decades, will likely beat almost any clever stock-picking scheme you could devise.`,
         transcript: null,
-        quiz: null,
+        quiz: [
+          {
+            id: 1,
+            question:
+              "According to the lesson, what matters more than picking specific stocks?",
+            options: [
+              "Timing the market",
+              "Asset allocation — how you split money between stocks, bonds, and cash",
+              "Following analyst ratings",
+              "Trading frequently",
+            ],
+            correct: 1,
+            explanation:
+              "Your split between stocks, bonds, and cash drives most of your long-term results — it determines how much risk you carry and how much growth you can capture.",
+          },
+          {
+            id: 2,
+            question: "Why is diversification called 'the closest thing to a free lunch in investing'?",
+            options: [
+              "It guarantees positive returns",
+              "It lowers risk without proportionally lowering expected return",
+              "Index funds are free to buy",
+              "It eliminates the need to save",
+            ],
+            correct: 1,
+            explanation:
+              "Spreading money across many assets slashes the damage any single failure can do, yet your expected return stays roughly the same — you give up almost nothing for the protection.",
+          },
+          {
+            id: 3,
+            question:
+              "You're saving for tuition due in 2 years. Where does the lesson say that money belongs?",
+            options: [
+              "An S&P 500 index fund",
+              "Individual growth stocks",
+              "A savings account or CDs",
+              "80% stocks, 20% bonds",
+            ],
+            correct: 2,
+            explanation:
+              "Money needed within 3 years can't afford to ride out a crash. Short-horizon money stays out of the market so it's guaranteed to be there when the bill arrives.",
+          },
+          {
+            id: 4,
+            question: "Using the 'age in bonds' rule of thumb, a 20-year-old would hold roughly:",
+            options: [
+              "20% stocks, 80% bonds",
+              "50% stocks, 50% bonds",
+              "80-90% stocks",
+              "100% bonds",
+            ],
+            correct: 2,
+            explanation:
+              "Age in bonds means about 20% bonds at age 20, leaving 80-90% in stocks. That's aggressive, but decades of time horizon turn crashes into buying opportunities.",
+          },
+          {
+            id: 5,
+            question: "What does an S&P 500 index fund actually do?",
+            options: [
+              "Buys tiny slices of hundreds of companies in one purchase",
+              "Picks the 10 best-performing stocks each year",
+              "Guarantees a fixed 8% return",
+              "Invests only in government bonds",
+            ],
+            correct: 0,
+            explanation:
+              "An index fund passively holds the whole index — instant diversification in a single purchase, with near-zero fees and no stock-picking required.",
+          },
+          {
+            id: 6,
+            question:
+              "On a $100,000 portfolio, what's the yearly fee difference between a 0.03% index fund and a 1% actively managed fund?",
+            options: ["$9.70", "$97", "$970", "$9,700"],
+            correct: 2,
+            explanation:
+              "0.03% of $100,000 is $30; 1% is $1,000 — a $970 gap every single year, and the money lost to fees also loses all its future compounding.",
+          },
+          {
+            id: 7,
+            question: "Why does annual rebalancing quietly force you to 'buy low and sell high'?",
+            options: [
+              "It times the market using economic forecasts",
+              "You trim the assets that grew (selling high) and top up the ones that lagged (buying low)",
+              "It moves everything to cash before crashes",
+              "Brokers offer discounts for annual trades",
+            ],
+            correct: 1,
+            explanation:
+              "Restoring your target percentages mechanically sells a bit of whatever got expensive and buys whatever got cheap — disciplined contrarian behavior without any forecasting.",
+          },
+        ],
       },
     ],
   },
@@ -673,11 +853,92 @@ export const categories = [
         subtitle: "Good debt vs. bad debt",
         duration: "11 min",
         difficulty: "Intermediate",
-        locked: true,
+        locked: false,
         videoUrl: null,
-        content: null,
+        content: `Debt isn't automatically evil — it's a tool. And like any power tool, it can build something valuable or take a finger off. Whether debt is "good" or "bad" comes down to two questions: what does it cost (the APR), and what does it buy?\n\nGood debt is low-cost borrowing that builds an asset or increases your earning power:\n• Federal student loans — typically 5-8% APR, and the degree they fund can raise your lifetime income by hundreds of thousands of dollars\n• Mortgages — roughly 6-7% APR, and you end up owning a home that historically appreciates\n\nBad debt is high-cost borrowing for things that lose value or simply vanish:\n• Credit card balances — commonly 20-28% APR. Carry a $3,000 balance at 24% and you're burning about $720 a year in interest alone\n• Payday loans — effective APRs of 300-400%+. Avoid these at all costs\n• Financing a rapidly depreciating car beyond your means\n\nWhy APR is nearly the whole story: borrow $10,000 at 5% and it costs you about $500 a year. Borrow the same $10,000 at 24% and it costs $2,400 a year. Identical debt, nearly five times the price. That's why the same tool can be a ladder or a trapdoor.\n\nIf you're already carrying multiple debts, there are two proven payoff strategies:\n• Avalanche — pay minimums on everything, then throw every extra dollar at the HIGHEST-APR debt first. Mathematically optimal; saves the most interest\n• Snowball — attack the SMALLEST balance first for quick wins. Slightly more expensive on paper, but the early victories keep people motivated\n\nEither works. The best method is the one you'll actually stick with.\n\nThe golden rule of credit cards: never carry a balance. Cards themselves are fantastic tools — rewards, fraud protection, credit building — as long as you pay the statement in full every month. Do that, and the scary 24% APR never touches you, because interest only accrues on balances you carry.\n\nWhat this means for you as a young adult: the debt habits you set in your 20s compound just like investments do. Treat student loans as a calculated investment in yourself, treat credit cards as a convenience you settle monthly, and reserve real suspicion for any borrowing where the APR is high and the purchase won't be worth anything in five years.`,
         transcript: null,
-        quiz: null,
+        quiz: [
+          {
+            id: 1,
+            question:
+              "According to the lesson, which two questions determine whether debt is good or bad?",
+            options: [
+              "Who the lender is, and how long the term is",
+              "What it costs (APR), and what it buys",
+              "Whether it's secured, and whether it's federal",
+              "Your income, and your age",
+            ],
+            correct: 1,
+            explanation:
+              "Good debt is cheap borrowing that builds an asset or earning power; bad debt is expensive borrowing for things that lose value. Cost and purpose are the whole test.",
+          },
+          {
+            id: 2,
+            question: "Which of these does the lesson classify as good debt?",
+            options: [
+              "A payday loan to cover rent",
+              "A carried credit card balance",
+              "Federal student loans at 5-8% APR",
+              "Financing a luxury car",
+            ],
+            correct: 2,
+            explanation:
+              "Federal student loans carry a relatively low APR and fund a degree that can raise your lifetime income by hundreds of thousands — low cost, wealth-building purpose.",
+          },
+          {
+            id: 3,
+            question:
+              "You carry a $3,000 credit card balance at 24% APR. Roughly how much interest does that cost per year?",
+            options: ["$72", "$240", "$720", "$3,000"],
+            correct: 2,
+            explanation:
+              "24% of $3,000 is about $720 a year — money that buys you nothing. That's why carried card balances are the classic example of bad debt.",
+          },
+          {
+            id: 4,
+            question: "How does the avalanche payoff method work?",
+            options: [
+              "Pay off the smallest balance first for quick wins",
+              "Pay minimums on everything, then put every extra dollar toward the highest-APR debt",
+              "Consolidate all debts into one loan",
+              "Pay each debt proportionally to its size",
+            ],
+            correct: 1,
+            explanation:
+              "Avalanche targets the most expensive debt first, which minimizes total interest paid — it's the mathematically optimal order.",
+          },
+          {
+            id: 5,
+            question: "What APR range does the lesson cite for payday loans?",
+            options: ["10-15%", "20-28%", "50-100%", "300-400%+"],
+            correct: 3,
+            explanation:
+              "Payday loans carry effective APRs of 300-400% or more — costly enough that the lesson's advice is simply: avoid them at all costs.",
+          },
+          {
+            id: 6,
+            question:
+              "Two friends each borrow $10,000 — one at 5% APR, one at 24% APR. What's the approximate difference in their yearly interest cost?",
+            options: ["$500", "$1,000", "$1,900", "$2,400"],
+            correct: 2,
+            explanation:
+              "The 5% loan costs about $500 a year while the 24% loan costs about $2,400 — a $1,900 gap on the exact same debt. APR is nearly the whole story.",
+          },
+          {
+            id: 7,
+            question:
+              "Why does paying your credit card statement in full every month make its 24% APR irrelevant?",
+            options: [
+              "Card companies waive APR for loyal customers",
+              "Interest only accrues on balances you carry, so a fully paid statement is never charged interest",
+              "Full payments earn enough rewards to offset the interest",
+              "The APR only applies after two years",
+            ],
+            correct: 1,
+            explanation:
+              "Credit card interest applies to carried balances. Pay the full statement each month and there's no balance to charge — you keep the rewards, fraud protection, and credit building for free.",
+          },
+        ],
       },
       {
         id: "credit-scores",
@@ -685,11 +946,96 @@ export const categories = [
         subtitle: "The number that follows you everywhere",
         duration: "10 min",
         difficulty: "Intermediate",
-        locked: true,
+        locked: false,
         videoUrl: null,
-        content: null,
+        content: `Your credit score is a three-digit number between 300 and 850 that tells lenders how risky it is to lend you money. It follows you everywhere: it sets your mortgage and car loan rates, landlords check it before renting to you, and some employers even peek at your credit history. A strong score is quietly one of the most valuable financial assets you can build in your 20s.\n\nThe FICO score — the one most lenders use — is built from five factors, each with a specific weight:\n• Payment history (35%) — do you pay your bills on time? One 30-day late payment can drop a good score by 50-100 points and stays on your report for 7 years\n• Amounts owed (30%) — mostly your credit utilization: the percentage of your available credit you're actually using. Under 30% is good; under 10% is excellent\n• Length of credit history (15%) — the average age of your accounts. This is why closing your oldest card can hurt\n• Credit mix (10%) — having different types of credit (a card plus a student loan, for example)\n• New credit (10%) — recent applications. Each hard inquiry dings you a few points, so don't open five cards in a month\n\nWhy it's worth real money: on a $240,000 mortgage, the rate difference between a 640 score and a 760 score can be close to a full percentage point — roughly $150 a month, or over $50,000 across a 30-year loan. Same house, same income, wildly different price.\n\nBuilding a score from thin credit (the young adult starter kit):\n1. Open a student or secured credit card (a secured card is backed by a small refundable deposit, so approval is easy), put one small recurring bill on it, and autopay the statement in full every month\n2. Ask a parent with good credit to add you as an authorized user on an old card — you inherit some of that account's history\n3. Keep utilization low: on a $1,000-limit card, that means keeping your reported balance under $300, ideally under $100\n\nWhat this means for you as a young adult: your score is built from boring, repeated behavior — on-time payments and low balances, sustained for years. Start now with one card and one autopaid bill, and by the time you need a mortgage, the number that follows you everywhere will be opening doors instead of closing them.`,
         transcript: null,
-        quiz: null,
+        quiz: [
+          {
+            id: 1,
+            question: "What is the largest factor in your FICO score, and what is its weight?",
+            options: [
+              "Credit utilization, 35%",
+              "Payment history, 35%",
+              "Length of credit history, 30%",
+              "New credit, 20%",
+            ],
+            correct: 1,
+            explanation:
+              "Payment history is 35% of your score — the single biggest slice. Lenders care most about one thing: do you pay on time, every time?",
+          },
+          {
+            id: 2,
+            question: "What does 'credit utilization' measure?",
+            options: [
+              "How many credit cards you own",
+              "The percentage of your available credit you're actually using",
+              "How often you use your card each month",
+              "The total dollar amount of your credit limits",
+            ],
+            correct: 1,
+            explanation:
+              "Utilization is your balance divided by your credit limit. It drives most of the 'amounts owed' factor (30% of your score) — under 30% is good, under 10% is excellent.",
+          },
+          {
+            id: 3,
+            question:
+              "Your credit card has a $1,000 limit and a $250 reported balance. What's your utilization, and how does it rate?",
+            options: [
+              "25% — good, under the 30% guideline",
+              "25% — bad, anything over 10% is harmful",
+              "40% — too high",
+              "2.5% — excellent",
+            ],
+            correct: 0,
+            explanation:
+              "$250 ÷ $1,000 = 25%, which sits under the 30% 'good' threshold. Getting it under $100 (10%) would rate excellent.",
+          },
+          {
+            id: 4,
+            question: "What is the range of a FICO credit score?",
+            options: ["0-100", "100-1000", "300-850", "500-900"],
+            correct: 2,
+            explanation:
+              "FICO scores run from 300 to 850. Higher means less risky to lenders — and cheaper borrowing for you.",
+          },
+          {
+            id: 5,
+            question:
+              "Which move does the lesson recommend for someone with thin or no credit history?",
+            options: [
+              "Take out a personal loan and repay it early",
+              "Open five credit cards at once to raise your total limit",
+              "Open a secured or student card, put one small bill on it, and autopay in full",
+              "Avoid credit entirely until you need a mortgage",
+            ],
+            correct: 2,
+            explanation:
+              "One easy-approval card with a small autopaid recurring bill builds exactly what FICO rewards: a long streak of on-time payments at low utilization. Opening many cards at once hurts the new-credit factor.",
+          },
+          {
+            id: 6,
+            question: "Why can closing your oldest credit card hurt your score?",
+            options: [
+              "Closing a card counts as a missed payment",
+              "It shortens your average account age and can raise your overall utilization",
+              "Lenders are notified and flag your file",
+              "It erases your payment history entirely",
+            ],
+            correct: 1,
+            explanation:
+              "Length of credit history is 15% of your score, and losing that card's limit shrinks your available credit — pushing utilization (30% of your score) up. Old cards are worth keeping open.",
+          },
+          {
+            id: 7,
+            question:
+              "On the lesson's $240,000 mortgage example, roughly what does a 760 score save versus a 640 score over 30 years?",
+            options: ["$1,500", "$5,000", "$50,000+", "$240,000"],
+            correct: 2,
+            explanation:
+              "The near one-point rate difference is worth about $150 a month, which compounds to over $50,000 across the life of the loan — same house, wildly different price.",
+          },
+        ],
       },
     ],
   },
@@ -1258,11 +1604,102 @@ export const categories = [
         subtitle: "When and why to restructure your loan",
         duration: "10 min",
         difficulty: "Intermediate",
-        locked: true,
+        locked: false,
         videoUrl: null,
-        content: null,
+        content: `Refinancing means replacing your existing mortgage with a brand-new loan — usually to get a lower rate, a different term, or a different structure. The old loan gets paid off by the new one, and you start making payments under the new terms. Done right, it can save tens of thousands of dollars. Done carelessly, it just pays your lender twice.\n\nWhen refinancing makes sense:\n• Rates dropped — the classic trigger. A common rule of thumb: consider refinancing when you can cut your rate by about 1 percentage point or more. On a $250,000 loan, dropping from 7.5% to 6.5% saves roughly $170 a month\n• Removing PMI — if you bought with less than 20% down, you're paying private mortgage insurance. Once you've built 20% equity (through payments or rising home value), refinancing can shed PMI — often $100-250 a month\n• Escaping an ARM — if your adjustable-rate mortgage is about to exit its fixed period and rates are climbing, refinancing into a fixed rate locks in predictability before your payment jumps\n• Shortening the term — refinancing a 30-year into a 15-year builds equity dramatically faster if you can handle the higher payment\n\nThe catch: refinancing isn't free. You pay closing costs all over again — typically 2-5% of the loan amount, so $5,000-12,500 on a $250,000 loan.\n\nThat's why break-even math is the heart of every refinance decision:\n\nBreak-even months = closing costs ÷ monthly savings\n\nExample: closing costs of $6,000, monthly savings of $200. $6,000 ÷ $200 = 30 months. If you'll stay in the home longer than 2.5 years, the refinance pays for itself and everything after is profit. Planning to move in 2 years? You'd eat $1,200 of unrecovered costs — skip it.\n\nOne trap to watch: resetting the clock. If you're 8 years into a 30-year loan and refinance into a fresh 30-year, you now have 38 total years of interest payments. Even at a lower rate, stretching the timeline can cost more overall. Ask the lender to match your remaining term, or just pay extra each month.\n\nWhat this means for you as a young adult: you probably won't refinance anything soon, but understanding this now changes how you'll buy. Your first mortgage rate isn't a life sentence — buy when YOU'RE ready, not when rates are perfect, knowing you can refinance if rates fall later.`,
         transcript: null,
-        quiz: null,
+        quiz: [
+          {
+            id: 1,
+            question: "What does refinancing a mortgage actually mean?",
+            options: [
+              "Negotiating a lower rate on your existing loan",
+              "Replacing your existing mortgage with a brand-new loan under new terms",
+              "Skipping payments during financial hardship",
+              "Selling the home back to the bank",
+            ],
+            correct: 1,
+            explanation:
+              "A refinance pays off your old mortgage with an entirely new loan — new rate, new term, and a fresh set of closing costs. It's a replacement, not a renegotiation.",
+          },
+          {
+            id: 2,
+            question:
+              "What rate drop does the lesson's rule of thumb suggest before considering a refinance?",
+            options: [
+              "0.1 percentage point",
+              "About 1 percentage point or more",
+              "3 percentage points",
+              "Any drop at all",
+            ],
+            correct: 1,
+            explanation:
+              "Around 1 point of savings (like 7.5% to 6.5%) is usually enough for the monthly savings to overcome the closing costs within a reasonable time.",
+          },
+          {
+            id: 3,
+            question:
+              "Your refinance has $6,000 in closing costs and saves $200 per month. What's your break-even point?",
+            options: ["12 months", "20 months", "30 months", "60 months"],
+            correct: 2,
+            explanation:
+              "$6,000 ÷ $200 = 30 months. Stay past 2.5 years and the refinance turns profitable; leave earlier and you never recover the costs.",
+          },
+          {
+            id: 4,
+            question: "How can refinancing eliminate PMI?",
+            options: [
+              "PMI is automatically waived on any refinance",
+              "Once you have 20% equity, the new loan doesn't require mortgage insurance",
+              "The lender rolls PMI into the interest rate",
+              "PMI transfers to the new loan at half price",
+            ],
+            correct: 1,
+            explanation:
+              "PMI exists to protect lenders on low-equity loans. With 20% equity — from payments or a rising home value — a new loan doesn't need it, often saving $100-250 a month.",
+          },
+          {
+            id: 5,
+            question: "Why might an ARM holder refinance into a fixed-rate loan?",
+            options: [
+              "Fixed rates are always lower than ARM rates",
+              "To lock in a predictable payment before the ARM's fixed period ends and rates adjust upward",
+              "ARMs legally must be refinanced after 5 years",
+              "To remove the loan's rate caps",
+            ],
+            correct: 1,
+            explanation:
+              "When an ARM's fixed window is closing and rates are climbing, refinancing to a fixed rate trades the coming uncertainty for a locked, predictable payment.",
+          },
+          {
+            id: 6,
+            question:
+              "Your break-even is 30 months, but you plan to sell the house in 24 months. Should you refinance?",
+            options: [
+              "Yes — savings always beat costs eventually",
+              "Yes — selling resets the break-even math",
+              "No — you'd move before recovering the closing costs, losing money overall",
+              "No — you can never refinance within 5 years of selling",
+            ],
+            correct: 2,
+            explanation:
+              "At $200 a month you'd recover only $4,800 of the $6,000 in costs before selling — about $1,200 lost. The break-even point only matters if you'll stay past it.",
+          },
+          {
+            id: 7,
+            question:
+              "Why can refinancing 8 years into a 30-year loan with a fresh 30-year term cost more overall, even at a lower rate?",
+            options: [
+              "New loans carry higher property taxes",
+              "It stretches your total payoff to 38 years, adding many extra years of interest",
+              "The lower rate only applies for the first year",
+              "Lenders charge double closing costs on second mortgages",
+            ],
+            correct: 1,
+            explanation:
+              "Resetting the clock means paying interest over 38 total years instead of 30. The longer timeline can outweigh the lower rate — so match your remaining term or pay extra monthly.",
+          },
+        ],
       },
       {
         id: "home-buying-process",
@@ -1270,11 +1707,105 @@ export const categories = [
         subtitle: "From pre-approval to closing day",
         duration: "14 min",
         difficulty: "Intermediate",
-        locked: true,
+        locked: false,
         videoUrl: null,
-        content: null,
+        content: `Buying a home feels overwhelming mostly because nobody explains the sequence. Here's the whole journey as a timeline — six steps, typically 30-60 days from accepted offer to keys in hand.\n\nStep 1: Pre-approval (before you look at a single house)\nA lender reviews your income, debts, and credit, then issues a letter stating how much they'll lend you. This is different from pre-qualification, which is just an unverified estimate. Pre-approval tells you your real budget and — critically — makes sellers take your offers seriously. In a competitive market, offers without one often get ignored.\n\nStep 2: House hunting\nWork with a buyer's agent (typically paid from the seller's side, so their help costs you little or nothing). Make two lists: needs (non-negotiable) and wants (nice to have). Falling in love with a house before checking the budget is how people end up house-poor.\n\nStep 3: The offer\nYou propose a price and terms. To show you're serious, you include earnest money — a deposit of roughly 1-3% of the price held in escrow, credited back to you at closing. Smart offers include contingencies: escape hatches that let you back out (with your earnest money) if the inspection, appraisal, or financing goes sideways.\n\nStep 4: Inspection\nFor $300-500, a professional inspector spends hours documenting the home's real condition — roof, foundation, plumbing, electrical. Find something serious? You can negotiate repairs, ask for a price cut, or walk away under your inspection contingency. Never skip this to make an offer "more competitive" — that $400 can save you from a $40,000 foundation problem.\n\nStep 5: Appraisal\nYour lender orders an independent estimate of the home's value, because the house is their collateral — they won't lend $310,000 on a home worth $295,000. If the appraisal comes in low, you can cover the gap in cash, renegotiate the price with the seller, or exit via your appraisal contingency.\n\nStep 6: Closing\nYou do a final walkthrough, sign a mountain of documents, and pay closing costs — typically 2-5% of the purchase price ($6,000-15,000 on a $300,000 home) on top of your down payment. Then you get the keys. The house is yours.\n\nWhat this means for you as a young adult: the process rewards preparation years in advance. The credit score you're building now sets your rate, your emergency fund becomes earnest money and closing costs, and knowing this timeline means that when the day comes, you'll walk in as the most prepared buyer in the room.`,
         transcript: null,
-        quiz: null,
+        quiz: [
+          {
+            id: 1,
+            question: "What is the first step in the home buying process?",
+            options: [
+              "Touring houses to see what you like",
+              "Making an offer",
+              "Getting pre-approved by a lender",
+              "Hiring an inspector",
+            ],
+            correct: 2,
+            explanation:
+              "Pre-approval comes before you look at a single house — it establishes your real budget and makes sellers treat your offers as credible.",
+          },
+          {
+            id: 2,
+            question: "How is pre-approval different from pre-qualification?",
+            options: [
+              "They're the same thing with different names",
+              "Pre-approval means the lender verified your income, debts, and credit; pre-qualification is just an unverified estimate",
+              "Pre-qualification is more rigorous than pre-approval",
+              "Pre-approval is only required for FHA loans",
+            ],
+            correct: 1,
+            explanation:
+              "Pre-qualification is a quick guess based on what you self-report. Pre-approval is a verified commitment — which is why sellers only take one of them seriously.",
+          },
+          {
+            id: 3,
+            question: "What is earnest money?",
+            options: [
+              "The inspector's fee",
+              "A 1-3% deposit held in escrow that shows the seller you're serious, credited back at closing",
+              "A non-refundable gift to the seller",
+              "Another name for the down payment",
+            ],
+            correct: 1,
+            explanation:
+              "Earnest money backs your offer with real cash. It sits in escrow and counts toward your purchase at closing — and contingencies let you reclaim it if the deal falls through properly.",
+          },
+          {
+            id: 4,
+            question: "Why does the lender order an appraisal?",
+            options: [
+              "To find repairs the seller must make",
+              "To confirm the home is worth the loan amount, since the house is their collateral",
+              "To set the property tax rate",
+              "To verify the buyer's income",
+            ],
+            correct: 1,
+            explanation:
+              "If you default, the lender's protection is the house itself — so they won't lend more than an independent appraiser says it's worth.",
+          },
+          {
+            id: 5,
+            question:
+              "You offer $310,000 but the appraisal comes in at $295,000. Which is NOT one of your options?",
+            options: [
+              "Cover the $15,000 gap in cash",
+              "Renegotiate the price with the seller",
+              "Exit the deal through your appraisal contingency",
+              "Require the lender to loan the full $310,000 anyway",
+            ],
+            correct: 3,
+            explanation:
+              "The lender won't lend beyond the appraised value — the home is their collateral. Your real choices are paying the gap yourself, renegotiating, or walking away via the contingency.",
+          },
+          {
+            id: 6,
+            question: "What do closing costs typically run on a $300,000 home?",
+            options: [
+              "$500-1,000",
+              "$1,000-3,000",
+              "$6,000-15,000 (2-5% of the price)",
+              "$60,000 (20% of the price)",
+            ],
+            correct: 2,
+            explanation:
+              "Closing costs run 2-5% of the purchase price — $6,000-15,000 here — and come due on top of your down payment, which is why buyers need cash beyond the down payment alone.",
+          },
+          {
+            id: 7,
+            question:
+              "Why does the lesson warn against skipping the inspection to make your offer 'more competitive'?",
+            options: [
+              "Skipping it is illegal in most states",
+              "It delays closing by several months",
+              "A $300-500 inspection can reveal hidden problems that would cost tens of thousands after you own the home",
+              "Sellers are required to pay for it anyway",
+            ],
+            correct: 2,
+            explanation:
+              "The inspection is your only professional look at the home's true condition before it becomes your problem. A $400 fee that catches a $40,000 foundation issue is the best money in the whole process.",
+          },
+        ],
       },
     ],
   },
