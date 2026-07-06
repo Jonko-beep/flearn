@@ -1037,6 +1037,114 @@ export const categories = [
           },
         ],
       },
+      {
+        id: "credit-cards",
+        title: "Credit Cards Done Right",
+        subtitle: "The tool that builds wealth or destroys it",
+        duration: "12 min",
+        difficulty: "Intermediate",
+        locked: false,
+        videoUrl: null,
+        content: `A credit card is the most polarizing tool in personal finance, and both sides are right. Used carelessly, it's the fastest way to bury yourself in 24% debt. Used with discipline, it's free rewards, fraud protection, and the raw material of the credit score you built in the last lesson. The difference comes down to three rules.\n\nRule 1: Pay the statement balance — not the minimum.\nEvery statement shows three numbers:\n• Statement balance — everything you charged during the last billing cycle. This is the number that matters\n• Minimum payment — the tiny amount (often ~$25-50) that keeps your account in good standing\n• Current balance — the statement balance plus whatever you've charged since the cycle closed\n\nThe minimum payment is a trap dressed up as a courtesy. Carry a $2,000 balance at 24% APR and pay the ~$50 minimum, and you'll be paying for nearly seven years — over $2,000 in interest on a $2,000 purchase. Pay the full statement balance every month instead and you pay ZERO interest, ever. Here's the mechanism: the grace period — the window where new purchases accrue no interest — only exists when you pay in full. Carry even a small balance and interest starts running on everything immediately.\n\nRule 2: Match your rewards to your actual spending.\nCards are tailored to categories: dining cards pay 3-4% at restaurants, travel cards reward flights and hotels, grocery/gas cards cover the weekly errands, and flat-rate cards pay a simple 2% on everything. Look at where your money actually goes and pick accordingly — a young adult who eats out a lot might pair a no-annual-fee dining card with a flat 2% card for everything else, and quietly collect a few hundred dollars a year. The golden caveat: rewards are only profit if you never pay interest. Carrying a balance at 24% APR to earn 3% back is losing 21%.\n\nRule 3: Only charge what's already in your checking account.\nA credit card is a payment method, not a loan. Treat every swipe as if the money left checking that instant — if the cash isn't sitting there, you can't afford the purchase, no matter what your credit limit says. The practical tactic: set autopay to pay the statement in full so carrying a balance becomes structurally impossible.\n\nFollow these rules and your card quietly feeds the two biggest credit score factors from the last lesson — every autopaid statement builds payment history (35%) and low charging keeps utilization (30%) in the excellent zone.\n\nOne honest caveat: if you can't yet trust yourself to follow Rule 3 — if a $5,000 limit feels like $5,000 of spending money — you're not ready for a credit card, and that's fine. A debit card can't charge you interest, and there's no shame in using one while you build the habit. The card will still be there when you are.`,
+        transcript: null,
+        quiz: [
+          {
+            id: 1,
+            question:
+              "Which of the three numbers on your credit card statement should you pay every month to never owe interest?",
+            options: [
+              "The minimum payment",
+              "The statement balance",
+              "The current balance",
+              "Half of the current balance",
+            ],
+            correct: 1,
+            explanation:
+              "Paying the full statement balance — everything from the last billing cycle — keeps your grace period alive, so you never pay a cent of interest. The minimum just keeps the account in good standing while interest piles up.",
+          },
+          {
+            id: 2,
+            question: "Under what condition does the grace period on new purchases exist?",
+            options: [
+              "Whenever you make at least the minimum payment",
+              "During your first year with the card",
+              "Only when you pay your statement balance in full",
+              "It always applies to purchases under $100",
+            ],
+            correct: 2,
+            explanation:
+              "The grace period only exists when you pay in full. Carry even a small balance and interest starts accruing on everything immediately — including new purchases.",
+          },
+          {
+            id: 3,
+            question:
+              "You carry a $2,000 balance at 24% APR and pay only the ~$50 minimum each month. Roughly what happens?",
+            options: [
+              "It's paid off in about a year with minimal interest",
+              "It takes nearly seven years and costs over $2,000 in interest",
+              "It takes two years and costs about $200 in interest",
+              "The card company forgives the balance after five years",
+            ],
+            correct: 1,
+            explanation:
+              "At 24% APR, most of that $50 goes to interest, not principal. The debt drags on for nearly seven years and the interest alone exceeds the original $2,000 purchase — the minimum payment trap in action.",
+          },
+          {
+            id: 4,
+            question: "What is the lesson's core strategy for choosing rewards cards?",
+            options: [
+              "Always pick the card with the biggest sign-up bonus",
+              "Open one card in every category to maximize coverage",
+              "Match cards to where your money actually goes, like pairing a dining card with a flat 2% card",
+              "Only use cards with annual fees, since they have the best rewards",
+            ],
+            correct: 2,
+            explanation:
+              "Cards are tailored to spending categories — dining, travel, groceries, gas, or flat-rate. Look at your actual spending and pick accordingly, like a no-annual-fee dining card plus a flat 2% card for everything else.",
+          },
+          {
+            id: 5,
+            question:
+              "You carry a balance at 24% APR on a card that earns 3% cash back. What's your net result?",
+            options: [
+              "Earning 3%, since rewards are separate from interest",
+              "Breaking even",
+              "Losing 21%",
+              "Losing 3%",
+            ],
+            correct: 2,
+            explanation:
+              "Paying 24% in interest to earn 3% in rewards nets out to losing 21%. Rewards are only profit if you never pay interest — a carried balance wipes them out many times over.",
+          },
+          {
+            id: 6,
+            question: "What is the lesson's discipline rule for credit card spending?",
+            options: [
+              "Never spend more than half your credit limit",
+              "Only charge what's already sitting in your checking account",
+              "Keep purchases under $500 per month",
+              "Use the card only for emergencies",
+            ],
+            correct: 1,
+            explanation:
+              "Treat the card as a payment method, not a loan: every swipe should be money that's already in checking. Pair it with autopay-in-full and carrying a balance becomes structurally impossible.",
+          },
+          {
+            id: 7,
+            question:
+              "Why does using a credit card with autopay-in-full and light spending strengthen your credit score?",
+            options: [
+              "Card companies report bonus points to the credit bureaus",
+              "It feeds the two biggest FICO factors: on-time payments build payment history and low balances keep utilization down",
+              "Autopay counts as a separate type of credit, improving your credit mix",
+              "It lengthens your credit history faster than manual payments",
+            ],
+            correct: 1,
+            explanation:
+              "Every autopaid statement adds to payment history (35% of your score) and charging lightly keeps utilization (30%) in the excellent zone — the same two factors from the credit scores lesson, built automatically.",
+          },
+        ],
+      },
     ],
   },
   {
