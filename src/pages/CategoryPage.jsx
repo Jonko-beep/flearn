@@ -25,6 +25,13 @@ export default function CategoryPage() {
           >
             💼 Portfolio
           </Link>
+          <Link
+            to="/tools"
+            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
+            style={{ borderColor: "#D9770655", color: "#D97706", background: "#D9770610" }}
+          >
+            🛠️ Tools
+          </Link>
         </div>
 
         <div className="mb-8 animate-fade-in-down">
