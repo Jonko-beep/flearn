@@ -11,7 +11,7 @@ export default function CategoryPage() {
   return (
     <div className="min-h-screen p-8">
       <div className="mx-auto max-w-[640px]">
-        <div className="mb-8 flex items-center gap-5">
+        <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2">
           <Link
             to="/"
             className="text-sm text-ink-muted transition-colors hover:text-ink-secondary"
@@ -31,6 +31,13 @@ export default function CategoryPage() {
             style={{ borderColor: "#D9770655", color: "#D97706", background: "#D9770610" }}
           >
             🛠️ Tools
+          </Link>
+          <Link
+            to="/glossary"
+            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
+            style={{ borderColor: "#7C3AED55", color: "#7C3AED", background: "#7C3AED10" }}
+          >
+            📖 Glossary
           </Link>
         </div>
 

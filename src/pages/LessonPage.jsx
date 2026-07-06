@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getLesson, getNextLesson, getMasteryInfo } from "../data/curriculum.js";
+import { getTermsForLesson } from "../data/glossary.js";
 import { useProgress } from "../hooks/useProgress.js";
 import VideoPlayer from "../components/VideoPlayer.jsx";
 import Transcript from "../components/Transcript.jsx";
@@ -45,6 +46,33 @@ function LessonBody({ content, color }) {
           </p>
         );
       })}
+    </div>
+  );
+}
+
+// Chips linking each glossary term this lesson teaches into /glossary,
+// pre-filled as the search query.
+function KeyTerms({ lessonId, color }) {
+  const terms = getTermsForLesson(lessonId);
+  if (terms.length === 0) return null;
+  return (
+    <div className="mt-6 rounded-card border border-edge bg-card p-6">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="text-lg">🔑</span>
+        <span className="text-sm font-semibold text-ink-secondary">KEY TERMS</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {terms.map((entry) => (
+          <Link
+            key={entry.term}
+            to={`/glossary?q=${encodeURIComponent(entry.term)}`}
+            className="rounded-full border px-3.5 py-1.5 text-[0.8rem] font-medium transition-all hover:-translate-y-px"
+            style={{ borderColor: `${color}44`, color, background: `${color}10` }}
+          >
+            {entry.term}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -199,6 +227,8 @@ export default function LessonPage() {
             )}
 
             {lesson.content && <LessonBody content={lesson.content} color={category.color} />}
+
+            <KeyTerms lessonId={lesson.id} color={category.color} />
 
             <div className="mt-6 text-center">
               {hasQuiz ? (
