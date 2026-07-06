@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { hasOnboarded } from "../lib/onboarding.js";
 
 export default function StartPage() {
+  // First visit → path quiz; returning users skip straight to the lessons.
+  const ctaTarget = hasOnboarded() ? "/learn" : "/welcome";
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden p-8 font-serif">
       {/* Ambient glow orbs */}
@@ -41,7 +44,7 @@ export default function StartPage() {
       </p>
 
       <Link
-        to="/learn"
+        to={ctaTarget}
         className="rounded-full px-12 py-4 font-serif text-lg font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
         style={{
           background: "linear-gradient(135deg, #0D9488, #0f766e)",

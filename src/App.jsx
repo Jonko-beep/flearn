@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import StartPage from "./pages/StartPage.jsx";
+import WelcomePage from "./pages/WelcomePage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import LessonListPage from "./pages/LessonListPage.jsx";
 import LessonPage from "./pages/LessonPage.jsx";
@@ -29,6 +30,7 @@ export default function App() {
       <XpToaster />
       <Routes>
         <Route path="/" element={<StartPage />} />
+        <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/learn" element={<CategoryPage />} />
         <Route path="/learn/:categoryId" element={<LessonListPage />} />
         <Route path="/learn/:categoryId/:lessonId" element={<LessonPage />} />

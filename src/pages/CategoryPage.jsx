@@ -66,6 +66,15 @@ export default function CategoryPage() {
             />
           ))}
         </div>
+
+        <footer className="mt-10 text-center">
+          <Link
+            to="/welcome"
+            className="text-sm text-ink-muted transition-colors hover:text-ink-secondary"
+          >
+            🧭 Not sure where to start? Retake the path quiz →
+          </Link>
+        </footer>
       </div>
     </div>
   );
