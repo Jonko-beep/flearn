@@ -19,6 +19,33 @@ const TOOLS = [
     description:
       "Allocate a month of real income across 8 categories, then get graded against the 50/30/20 rule by Benjamin the Bear.",
   },
+  {
+    to: "/tools/debt",
+    emoji: "💳",
+    color: "#7C3AED",
+    title: "Debt Payoff Calculator",
+    tag: "Calculator",
+    description:
+      "Enter your debts and one monthly budget — Benjamin compares avalanche vs. snowball and shows what each path costs.",
+  },
+  {
+    to: "/tools/mortgage",
+    emoji: "🏠",
+    color: "#D97706",
+    title: "Mortgage Calculator",
+    tag: "Calculator",
+    description:
+      "Charlie turns a home price into a full PITI payment, flags the PMI trap, and charts the amortization crossover.",
+  },
+  {
+    to: "/tools/paycheck",
+    emoji: "🧾",
+    color: "#0D9488",
+    title: "Paycheck Calculator",
+    tag: "Calculator",
+    description:
+      "Warren estimates your real take-home per check — federal tax, FICA, and what your time is truly worth per hour.",
+  },
 ];
 
 function ToolCard({ tool, index }) {

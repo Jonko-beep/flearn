@@ -11,8 +11,11 @@ import ToolsPage from "./pages/ToolsPage.jsx";
 import GlossaryPage from "./pages/GlossaryPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
 
-// recharts is heavy — load the visualizer only when the route is visited
+// recharts is heavy — load the calculators only when their routes are visited
 const CompoundPage = lazy(() => import("./pages/CompoundPage.jsx"));
+const DebtPage = lazy(() => import("./pages/DebtPage.jsx"));
+const MortgagePage = lazy(() => import("./pages/MortgagePage.jsx"));
+const PaycheckPage = lazy(() => import("./pages/PaycheckPage.jsx"));
 import XpBadge from "./components/XpBadge.jsx";
 import XpToaster from "./components/XpToaster.jsx";
 
@@ -46,6 +49,30 @@ export default function App() {
           element={
             <Suspense fallback={null}>
               <CompoundPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tools/debt"
+          element={
+            <Suspense fallback={null}>
+              <DebtPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tools/mortgage"
+          element={
+            <Suspense fallback={null}>
+              <MortgagePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tools/paycheck"
+          element={
+            <Suspense fallback={null}>
+              <PaycheckPage />
             </Suspense>
           }
         />

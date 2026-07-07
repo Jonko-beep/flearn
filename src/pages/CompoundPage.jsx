@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { markToolUsed } from "../lib/achievements.js";
+import { fmt$, fmtAxis, SliderField, StatCard } from "../components/CalcKit.jsx";
 import {
   Area,
   AreaChart,
@@ -20,16 +21,6 @@ const PRESETS = [
   { age: 30, label: "Start at 30", years: RETIRE_AGE - 30 },
   { age: 40, label: "Start at 40", years: RETIRE_AGE - 40 },
 ];
-
-function fmt$(n) {
-  return `$${Math.round(n).toLocaleString("en-US")}`;
-}
-
-function fmtAxis(n) {
-  if (n >= 1e6) return `$${(n / 1e6).toFixed(n >= 1e7 ? 0 : 1)}M`;
-  if (n >= 1e3) return `$${Math.round(n / 1e3)}k`;
-  return `$${Math.round(n)}`;
-}
 
 // Month-by-month compounding, sampled once per year for the chart.
 function simulate(start, monthly, rate, years) {
@@ -97,83 +88,6 @@ function ChartTooltip({ active, payload, label }) {
           </span>
         </div>
       ))}
-    </div>
-  );
-}
-
-function SliderField({ label, value, min, max, step, onChange, prefix, suffix, display }) {
-  const [text, setText] = useState(String(value));
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    if (!focused) setText(String(value));
-  }, [value, focused]);
-
-  const clamp = (n) => Math.min(max, Math.max(min, n));
-  const handleText = (raw) => {
-    setText(raw);
-    const n = parseFloat(raw);
-    if (Number.isFinite(n)) onChange(clamp(n));
-  };
-
-  return (
-    <div className="rounded-card border border-edge bg-well/50 px-4 py-3.5">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <label className="text-sm font-medium text-ink">{label}</label>
-        <div className="relative">
-          {prefix && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
-              {prefix}
-            </span>
-          )}
-          <input
-            type="number"
-            min={min}
-            max={max}
-            step={step}
-            value={text}
-            onFocus={() => setFocused(true)}
-            onBlur={() => {
-              setFocused(false);
-              setText(String(value));
-            }}
-            onChange={(e) => handleText(e.target.value)}
-            className={`w-[110px] rounded-card border border-edge bg-well py-1.5 pr-2 text-right text-sm text-ink outline-none transition-colors focus:border-invest ${prefix ? "pl-7" : "pl-2"} ${suffix ? "pr-8" : ""}`}
-            aria-label={`${label} value`}
-          />
-          {suffix && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
-              {suffix}
-            </span>
-          )}
-        </div>
-      </div>
-      <div className="flex items-center gap-3">
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(clamp(parseFloat(e.target.value)))}
-          className="h-1.5 w-full cursor-pointer accent-invest"
-          aria-label={`${label} slider`}
-        />
-        <span className="w-14 shrink-0 text-right text-xs text-ink-muted">{display(value)}</span>
-      </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value, color, delay }) {
-  return (
-    <div
-      className="rounded-card-lg border bg-card p-5"
-      style={{ borderColor: `${color}33`, animation: `fadeInUp 0.6s ease-out ${delay}s both` }}
-    >
-      <div className="mb-1 text-xs tracking-wide text-ink-muted uppercase">{label}</div>
-      <div className="font-serif text-[1.65rem] font-bold tracking-heading" style={{ color }}>
-        {value}
-      </div>
     </div>
   );
 }
