@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { getLesson, getNextLesson, getMasteryInfo } from "../data/curriculum.js";
 import { getTermsForLesson } from "../data/glossary.js";
 import { useProgress } from "../hooks/useProgress.js";
+import { recordQuizAnswer } from "../lib/review.js";
 import VideoPlayer from "../components/VideoPlayer.jsx";
 import Transcript from "../components/Transcript.jsx";
 import Quiz from "../components/Quiz.jsx";
@@ -264,6 +265,9 @@ export default function LessonPage() {
             quiz={lesson.quiz}
             color={category.color}
             onComplete={handleQuizComplete}
+            onAnswer={(question, correct) =>
+              recordQuizAnswer(lesson.id, question.id, correct)
+            }
           />
         )}
 

@@ -2,8 +2,10 @@ import { useState } from "react";
 
 // One question at a time: pick an option, submit to lock it in and reveal the
 // explanation, then advance. Calls onComplete(answers) after the last question,
-// where answers is { [questionIndex]: { selected, correct } }.
-export default function Quiz({ quiz, color, onComplete }) {
+// where answers is { [questionIndex]: { selected, correct } }. Optional
+// onAnswer(question, correct) fires as each answer is locked in; questions may
+// carry a { tag, tagColor } for a small source pill (used by review sessions).
+export default function Quiz({ quiz, color, onComplete, onAnswer }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selected, setSelected] = useState(null);
@@ -15,10 +17,9 @@ export default function Quiz({ quiz, color, onComplete }) {
 
   const handleConfirm = () => {
     if (selected === null || answered) return;
-    setAnswers({
-      ...answers,
-      [current]: { selected, correct: selected === question.correct },
-    });
+    const correct = selected === question.correct;
+    setAnswers({ ...answers, [current]: { selected, correct } });
+    onAnswer?.(question, correct);
   };
 
   const handleNext = () => {
@@ -89,6 +90,17 @@ export default function Quiz({ quiz, color, onComplete }) {
 
       {/* Question card */}
       <div className="mb-4 rounded-card-lg border border-edge bg-card p-6">
+        {question.tag && (
+          <span
+            className="mb-3 inline-block rounded-full px-2.5 py-1 text-xs"
+            style={{
+              background: `${question.tagColor ?? color}15`,
+              color: question.tagColor ?? color,
+            }}
+          >
+            {question.tag}
+          </span>
+        )}
         <h3 className="m-0 mb-5 font-sans text-[1.05rem] font-semibold leading-normal tracking-normal">
           {question.question}
         </h3>

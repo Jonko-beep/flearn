@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { categories } from "../data/curriculum.js";
 import { useProgress } from "../hooks/useProgress.js";
 import { checkAchievements } from "../lib/achievements.js";
+import { useReview, countDue } from "../lib/review.js";
 import CategoryCard from "../components/CategoryCard.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
 import StatsStrip from "../components/StatsStrip.jsx";
@@ -10,6 +11,7 @@ import AchievementsGrid from "../components/AchievementsGrid.jsx";
 
 export default function CategoryPage() {
   const { getCategoryStats, totalLessons, masteredCount, overallPercent } = useProgress();
+  const dueCount = countDue(useReview());
 
   // Sweep for unlocks earned before this feature existed (or missed offline)
   useEffect(() => {
@@ -46,6 +48,18 @@ export default function CategoryPage() {
             style={{ borderColor: "#7C3AED55", color: "#7C3AED", background: "#7C3AED10" }}
           >
             📖 Glossary
+          </Link>
+          <Link
+            to="/review"
+            className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
+            style={{ borderColor: "#3B82F655", color: "#3B82F6", background: "#3B82F610" }}
+          >
+            🔁 Review
+            {dueCount > 0 && (
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#3B82F6] px-1.5 text-xs font-bold text-white">
+                {dueCount}
+              </span>
+            )}
           </Link>
         </div>
 
