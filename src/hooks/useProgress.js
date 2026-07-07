@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { categories, MASTERY_THRESHOLD } from "../data/curriculum.js";
 import { awardXp, recordAction } from "../lib/gamification.js";
+import { checkAchievements } from "../lib/achievements.js";
 
 const STORAGE_KEY = "flearn_progress";
 
@@ -54,6 +55,7 @@ export function useProgress() {
       } else if (wasCompleted && score > prevBest) {
         awardXp(20, "New Best Score!");
       }
+      checkAchievements();
     },
     [progress]
   );

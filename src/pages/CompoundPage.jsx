@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { markToolUsed } from "../lib/achievements.js";
 import {
   Area,
   AreaChart,
@@ -183,6 +184,10 @@ export default function CompoundPage() {
   const [rate, setRate] = useState(8);
   const [years, setYearsRaw] = useState(30);
   const [activePreset, setActivePreset] = useState(null);
+
+  useEffect(() => {
+    markToolUsed("compound"); // Tool Time achievement
+  }, []);
 
   const setYears = (n) => {
     setYearsRaw(n);

@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { awardXp, recordAction } from "../lib/gamification.js";
+import { checkAchievements } from "../lib/achievements.js";
 
 const STORAGE_KEY = "flearn_portfolio";
 export const STARTING_CASH = 10000;
@@ -67,6 +68,7 @@ export function usePortfolio() {
   const recordTrade = () => {
     recordAction(); // trades count toward the daily streak
     awardXp(25, "First Trade!", "trade:first");
+    checkAchievements();
   };
 
   const buy = useCallback(
