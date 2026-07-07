@@ -1,5 +1,6 @@
 node_modules
 dist
+FLEARN_FEATURE_PROMPTS*.md
 .DS_Store
 *.local
 .vercel
