@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { awardXp, recordAction } from "../lib/gamification.js";
+import { checkAchievements } from "../lib/achievements.js";
 
 const ACCENT = "#7C3AED";
 const STORAGE_KEY = "flearn_budget";
@@ -249,6 +250,7 @@ export default function BudgetPage() {
     writeBudget({ income, allocations, completedAt: new Date().toISOString() });
     recordAction(); // completing the exercise counts toward the daily streak
     awardXp(50, "Budget Built!", "budget:first");
+    checkAchievements();
     setStep(3);
   };
 

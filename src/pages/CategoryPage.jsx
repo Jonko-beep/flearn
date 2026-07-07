@@ -1,12 +1,20 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { categories } from "../data/curriculum.js";
 import { useProgress } from "../hooks/useProgress.js";
+import { checkAchievements } from "../lib/achievements.js";
 import CategoryCard from "../components/CategoryCard.jsx";
 import ProgressBar from "../components/ProgressBar.jsx";
 import StatsStrip from "../components/StatsStrip.jsx";
+import AchievementsGrid from "../components/AchievementsGrid.jsx";
 
 export default function CategoryPage() {
   const { getCategoryStats, totalLessons, masteredCount, overallPercent } = useProgress();
+
+  // Sweep for unlocks earned before this feature existed (or missed offline)
+  useEffect(() => {
+    checkAchievements();
+  }, []);
 
   return (
     <div className="min-h-screen p-8">
@@ -62,6 +70,8 @@ export default function CategoryPage() {
         </div>
 
         <StatsStrip masteredCount={masteredCount} />
+
+        <AchievementsGrid />
 
         <div className="flex flex-col gap-4">
           {categories.map((category, i) => (

@@ -97,16 +97,18 @@ export function recordAction() {
 
 /**
  * Award XP. Pass a onceKey to make the award one-time-ever (guarded against
- * the persisted events log). Returns true if XP was actually granted.
+ * the persisted events log). Pass { silent: true } to skip the XP toast
+ * (achievement unlocks announce their bonus through their own gold toast).
+ * Returns true if XP was actually granted.
  */
-export function awardXp(amount, reason, onceKey = null) {
+export function awardXp(amount, reason, onceKey = null, { silent = false } = {}) {
   if (onceKey && state.xp.events.some((e) => e.key === onceKey)) return false;
   const event = { amount, reason, key: onceKey, date: new Date().toISOString() };
   const xp = { total: state.xp.total + amount, events: [...state.xp.events, event] };
   writeJson(XP_KEY, xp);
   state = { ...state, xp };
   notify();
-  for (const fn of toastListeners) fn({ amount, reason });
+  if (!silent) for (const fn of toastListeners) fn({ amount, reason });
   return true;
 }
 
