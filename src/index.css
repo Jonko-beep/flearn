@@ -17,3 +17,17 @@
     @apply font-serif tracking-heading;
   }
 }
+
+/* Certificate printing: light page, keep the paper card's colors, one page. */
+@media print {
+  body {
+    background: white !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    margin: 1cm;
+  }
+}

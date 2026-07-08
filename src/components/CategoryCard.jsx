@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useFinals } from "../lib/finals.js";
 
 export default function CategoryCard({ category, stats, index }) {
+  const passedFinal = useFinals()[category.id]?.passed;
+
   return (
     <Link
       to={`/learn/${category.id}`}
@@ -24,7 +27,14 @@ export default function CategoryCard({ category, stats, index }) {
             {category.emoji}
           </span>
           <div>
-            <h3 className="text-xl font-semibold text-ink">{category.title}</h3>
+            <h3 className="text-xl font-semibold text-ink">
+              {category.title}
+              {passedFinal && (
+                <span className="ml-2 text-base" title="Final exam passed — certificate earned">
+                  🎓
+                </span>
+              )}
+            </h3>
             <span className="text-sm text-ink-muted">
               {stats.mastered}/{stats.total} mastered
             </span>
