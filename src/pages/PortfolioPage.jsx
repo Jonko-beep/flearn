@@ -4,7 +4,9 @@ import { stocks, getStock, sectorColors } from "../data/stocks.js";
 import { getQuote } from "../lib/prices.js";
 import { usePortfolio, holdingShares, holdingCost } from "../hooks/usePortfolio.js";
 import { fmtMoney, fmtPct, fmtShares } from "../lib/format.js";
+import { computeBenchmark } from "../lib/benchmark.js";
 import TradeModal from "../components/TradeModal.jsx";
+import BenchmarkCard from "../components/BenchmarkCard.jsx";
 
 const ACCENT = "#0D9488";
 
@@ -41,6 +43,9 @@ export default function PortfolioPage() {
     for (const s of stocks) map[s.ticker] = getQuote(s.ticker);
     return map;
   }, []);
+
+  // Null until the first transaction, which hides the benchmark card.
+  const benchmark = useMemo(() => computeBenchmark(portfolio), [portfolio]);
 
   const holdings = useMemo(() => {
     return Object.entries(portfolio.holdings)
@@ -137,6 +142,9 @@ export default function PortfolioPage() {
             </div>
           </div>
         </div>
+
+        {/* You vs. the Market */}
+        <BenchmarkCard benchmark={benchmark} />
 
         {/* Holdings */}
         <section className="mb-8" style={{ animation: "fadeInUp 0.6s ease-out 0.2s both" }}>
