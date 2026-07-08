@@ -17,6 +17,7 @@ const AVALANCHE = "#0D9488";
 const SNOWBALL = "#8B5CF6";
 const MAX_DEBTS = 5;
 const MAX_MONTHS = 600; // 50 years — past this, the plan isn't working
+const STORAGE_KEY = "flearn_debts";
 
 /**
  * Simulate paying off a set of debts with a fixed monthly budget.
@@ -108,6 +109,36 @@ const DEFAULT_DEBTS = [
   { name: "Medical bill", balance: 1200, apr: 0, minPayment: 50 },
   { name: "Student loan", balance: 10000, apr: 5.5, minPayment: 120 },
 ];
+const DEFAULT_BUDGET = 500;
+
+function readSaved() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.debts) || parsed.debts.length === 0) return null;
+    const num = (n, max) => (Number.isFinite(n) ? Math.min(max, Math.max(0, n)) : 0);
+    return {
+      debts: parsed.debts.slice(0, MAX_DEBTS).map((d, i) => ({
+        name: typeof d.name === "string" ? d.name.slice(0, 24) : `Debt ${i + 1}`,
+        balance: num(d.balance, 1e6),
+        apr: num(d.apr, 100),
+        minPayment: num(d.minPayment, 1e5),
+      })),
+      budget: num(parsed.budget, 5000) || DEFAULT_BUDGET,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeSaved(debts, budget) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ debts, budget }));
+  } catch {
+    // storage unavailable — the calculator still works, it just won't persist
+  }
+}
 
 function DebtRow({ debt, onChange, onRemove, canRemove }) {
   const num = (key, raw, min, max) => {
@@ -200,12 +231,17 @@ function StrategyColumn({ title, emoji, color, result, delay }) {
 }
 
 export default function DebtPage() {
-  const [debts, setDebts] = useState(DEFAULT_DEBTS);
-  const [budget, setBudget] = useState(500);
+  const [saved] = useState(readSaved);
+  const [debts, setDebts] = useState(saved?.debts ?? DEFAULT_DEBTS);
+  const [budget, setBudget] = useState(saved?.budget ?? DEFAULT_BUDGET);
 
   useEffect(() => {
     markToolUsed("debt");
   }, []);
+
+  useEffect(() => {
+    writeSaved(debts, budget);
+  }, [debts, budget]);
 
   const validDebts = useMemo(() => debts.filter((d) => d.balance > 0), [debts]);
   const minTotal = useMemo(
