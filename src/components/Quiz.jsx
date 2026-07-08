@@ -5,7 +5,9 @@ import { useState } from "react";
 // where answers is { [questionIndex]: { selected, correct } }. Optional
 // onAnswer(question, correct) fires as each answer is locked in; questions may
 // carry a { tag, tagColor } for a small source pill (used by review sessions).
-export default function Quiz({ quiz, color, onComplete, onAnswer }) {
+// examMode locks in and advances in one step with no feedback until the end —
+// no correct/incorrect reveal, no explanation, no running score.
+export default function Quiz({ quiz, color, onComplete, onAnswer, examMode = false }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selected, setSelected] = useState(null);
@@ -18,8 +20,18 @@ export default function Quiz({ quiz, color, onComplete, onAnswer }) {
   const handleConfirm = () => {
     if (selected === null || answered) return;
     const correct = selected === question.correct;
-    setAnswers({ ...answers, [current]: { selected, correct } });
+    const next = { ...answers, [current]: { selected, correct } };
+    setAnswers(next);
     onAnswer?.(question, correct);
+    if (examMode) {
+      // No feedback between questions — advance immediately
+      if (current < total - 1) {
+        setCurrent(current + 1);
+        setSelected(null);
+      } else {
+        onComplete(next);
+      }
+    }
   };
 
   const handleNext = () => {
@@ -75,7 +87,9 @@ export default function Quiz({ quiz, color, onComplete, onAnswer }) {
           <span className="text-ink-secondary">
             Question {current + 1} of {total}
           </span>
-          <span className="text-ink-muted">{correctCount} correct so far</span>
+          <span className="text-ink-muted">
+            {examMode ? "Results at the end" : `${correctCount} correct so far`}
+          </span>
         </div>
         <div className="h-1 overflow-hidden rounded-sm bg-well">
           <div
@@ -168,7 +182,11 @@ export default function Quiz({ quiz, color, onComplete, onAnswer }) {
               cursor: selected === null ? "not-allowed" : "pointer",
             }}
           >
-            Submit Answer
+            {examMode
+              ? current < total - 1
+                ? "Next Question →"
+                : "Finish Exam →"
+              : "Submit Answer"}
           </button>
         ) : (
           <button

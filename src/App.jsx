@@ -5,6 +5,8 @@ import WelcomePage from "./pages/WelcomePage.jsx";
 import CategoryPage from "./pages/CategoryPage.jsx";
 import LessonListPage from "./pages/LessonListPage.jsx";
 import LessonPage from "./pages/LessonPage.jsx";
+import FinalExamPage from "./pages/FinalExamPage.jsx";
+import CertificatePage from "./pages/CertificatePage.jsx";
 import PortfolioPage from "./pages/PortfolioPage.jsx";
 import BudgetPage from "./pages/BudgetPage.jsx";
 import ToolsPage from "./pages/ToolsPage.jsx";
@@ -38,6 +40,8 @@ export default function App() {
         <Route path="/welcome" element={<WelcomePage />} />
         <Route path="/learn" element={<CategoryPage />} />
         <Route path="/learn/:categoryId" element={<LessonListPage />} />
+        <Route path="/learn/:categoryId/final" element={<FinalExamPage />} />
+        <Route path="/learn/:categoryId/certificate" element={<CertificatePage />} />
         <Route path="/learn/:categoryId/:lessonId" element={<LessonPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />

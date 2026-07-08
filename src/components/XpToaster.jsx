@@ -34,7 +34,7 @@ export default function XpToaster() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-2">
+    <div className="pointer-events-none fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 flex-col items-center gap-2 print:hidden">
       {toasts.map((t) =>
         t.kind === "achievement" ? (
           <div

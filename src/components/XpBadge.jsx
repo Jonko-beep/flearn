@@ -8,7 +8,7 @@ export default function XpBadge() {
 
   return (
     <div
-      className="fixed top-4 right-4 z-40 flex items-center gap-3 rounded-full border border-edge bg-card/90 px-4 py-2 backdrop-blur-sm"
+      className="fixed top-4 right-4 z-40 flex items-center gap-3 rounded-full border border-edge bg-card/90 px-4 py-2 backdrop-blur-sm print:hidden"
       title={`${xp.total.toLocaleString()} XP total · ${intoLevel}/${XP_PER_LEVEL} to next level`}
     >
       <span className={`text-sm font-semibold ${fire > 0 ? "text-warning" : "text-ink-muted"}`}>

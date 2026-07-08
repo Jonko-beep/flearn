@@ -1,15 +1,21 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { getCategory } from "../data/curriculum.js";
 import { useProgress } from "../hooks/useProgress.js";
+import { useFinals } from "../lib/finals.js";
 import LessonCard from "../components/LessonCard.jsx";
+import FinalExamCard from "../components/FinalExamCard.jsx";
 import MascotCard from "../components/MascotCard.jsx";
 
 export default function LessonListPage() {
   const { categoryId } = useParams();
   const category = getCategory(categoryId);
-  const { getLessonProgress } = useProgress();
+  const { getLessonProgress, getCategoryStats } = useProgress();
+  const finals = useFinals();
 
   if (!category) return <Navigate to="/learn" replace />;
+
+  const stats = getCategoryStats(category);
+  const examUnlocked = stats.total > 0 && stats.mastered === stats.total;
 
   return (
     <div className="min-h-screen p-8">
@@ -76,6 +82,12 @@ export default function LessonListPage() {
               index={i}
             />
           ))}
+          <FinalExamCard
+            category={category}
+            unlocked={examUnlocked}
+            final={finals[category.id]}
+            index={category.lessons.length}
+          />
         </div>
       </div>
     </div>
