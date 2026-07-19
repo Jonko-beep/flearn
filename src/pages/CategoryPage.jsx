@@ -61,6 +61,13 @@ export default function CategoryPage() {
               </span>
             )}
           </Link>
+          <Link
+            to="/align"
+            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
+            style={{ borderColor: "#EC489955", color: "#EC4899", background: "#EC489910" }}
+          >
+            🧭 Who Do I Align With?
+          </Link>
         </div>
 
         <div className="mb-8 animate-fade-in-down">

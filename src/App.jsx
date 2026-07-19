@@ -12,6 +12,8 @@ import BudgetPage from "./pages/BudgetPage.jsx";
 import ToolsPage from "./pages/ToolsPage.jsx";
 import GlossaryPage from "./pages/GlossaryPage.jsx";
 import ReviewPage from "./pages/ReviewPage.jsx";
+import AlignPage from "./pages/AlignPage.jsx";
+import PhilosopherPage from "./pages/PhilosopherPage.jsx";
 
 // recharts is heavy — load the calculators only when their routes are visited
 const CompoundPage = lazy(() => import("./pages/CompoundPage.jsx"));
@@ -46,6 +48,8 @@ export default function App() {
         <Route path="/portfolio" element={<PortfolioPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="/review" element={<ReviewPage />} />
+        <Route path="/align" element={<AlignPage />} />
+        <Route path="/align/:slug" element={<PhilosopherPage />} />
         <Route path="/tools" element={<ToolsPage />} />
         <Route path="/tools/budget" element={<BudgetPage />} />
         <Route
