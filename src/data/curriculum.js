@@ -524,6 +524,105 @@ export const categories = [
           },
         ],
       },
+      {
+        id: "dividend-investing",
+        title: "Dividend Investing",
+        subtitle: "Getting paid to own great companies",
+        duration: "10 min",
+        difficulty: "Intermediate",
+        locked: false,
+        videoUrl: null,
+        content: `A dividend is a company sharing its profits directly with you, the shareholder — usually as a cash payment every three months. Own 100 shares of a company paying $0.50 per share each quarter and $50 lands in your account four times a year, whether the stock price went up, down, or sideways. Mature, profitable companies (think consumer staples, utilities, big banks) pay dividends because they generate more cash than they can usefully reinvest. Young growth companies usually pay nothing — they plow every dollar back into growing.\n\nThe key number is dividend yield: annual dividends divided by share price. A $50 stock paying $2 per year yields 4%. But here's the counterintuitive part — a very HIGH yield is often a warning sign, not a bargain. Yield rises when the price falls, so a 12% yield frequently means the market expects the dividend to be cut. This is the yield trap. To judge whether a dividend is safe, check the payout ratio: dividends as a percentage of earnings. A company paying out 40% of its earnings has room to keep paying through a rough year; one paying out 95% is one bad quarter away from a cut.\n\nThe quiet superpower of dividend investing is reinvestment. A DRIP (Dividend Reinvestment Plan) automatically uses each payment to buy more shares — and those new shares pay dividends of their own. That's compounding with a paycheck attached: reinvested dividends have historically accounted for a large share of the stock market's total long-term return.\n\nSome companies treat their dividend as sacred. The Dividend Aristocrats are S&P 500 companies that have RAISED their dividend every single year for 25+ consecutive years — through recessions, wars, and pandemics. A rising dividend also means your yield on cost grows: buy at $50 with a $2 dividend (4%), and if the dividend grows to $4 while you hold, you're earning 8% a year on your original money.\n\nTwo honest caveats. First, dividends aren't free money — on the ex-dividend date, the stock price drops by roughly the dividend amount. What matters is TOTAL return: price growth plus dividends, together. A 3% yield on a shrinking company loses to a 0% yield on a thriving one. Second, dividends are taxed in the year you receive them (unlike price gains, which you don't owe taxes on until you sell) — which is why dividend-heavy holdings fit especially well inside tax-advantaged accounts like a Roth IRA.\n\nWhat this means for you as a young adult: you don't need to pick individual dividend stocks — a dividend-focused index fund or ETF gives you hundreds of payers at once. Start one, turn on automatic reinvestment, and let every quarterly payment quietly buy you a slightly bigger slice of the machine.`,
+        transcript: null,
+        quiz: [
+          {
+            id: 1,
+            question: "What is a dividend?",
+            options: [
+              "A fee brokers charge for holding stocks",
+              "A share of company profits paid directly to shareholders, usually quarterly",
+              "The increase in a stock's price over time",
+              "A type of bond issued by large companies",
+            ],
+            correct: 1,
+            explanation:
+              "A dividend is the company handing part of its profits straight to shareholders as cash — typically every three months, regardless of what the stock price did.",
+          },
+          {
+            id: 2,
+            question: "A $50 stock pays $2 per share in dividends each year. What is its dividend yield?",
+            options: ["2%", "4%", "8%", "25%"],
+            correct: 1,
+            explanation:
+              "Yield = annual dividend ÷ share price. $2 ÷ $50 = 0.04, or 4%.",
+          },
+          {
+            id: 3,
+            question: "Why can a very high dividend yield (say 12%) be a warning sign?",
+            options: [
+              "High yields are illegal for most companies",
+              "It means the company is too small to invest in",
+              "Yield rises when the price falls, so a huge yield often signals the market expects a dividend cut",
+              "High-yield stocks are always utilities",
+            ],
+            correct: 2,
+            explanation:
+              "This is the yield trap: because yield is dividend ÷ price, a collapsing price inflates the yield. The market is often pricing in a cut that hasn't been announced yet.",
+          },
+          {
+            id: 4,
+            question: "What does the payout ratio tell you?",
+            options: [
+              "How much of the share price is paid out annually",
+              "What percentage of its earnings a company pays out as dividends — a gauge of dividend safety",
+              "How many shareholders receive the dividend",
+              "The tax rate applied to dividends",
+            ],
+            correct: 1,
+            explanation:
+              "Payout ratio = dividends ÷ earnings. Around 40% leaves a cushion for bad years; near 95%, one rough quarter can force a cut.",
+          },
+          {
+            id: 5,
+            question: "What makes a DRIP so powerful over long periods?",
+            options: [
+              "It guarantees the dividend is never cut",
+              "It avoids all taxes on dividends",
+              "Each payment automatically buys more shares, which then pay dividends of their own — compounding",
+              "It lets you sell shares without fees",
+            ],
+            correct: 2,
+            explanation:
+              "Reinvested dividends buy shares that generate their own dividends — a compounding loop that has historically driven a large share of the market's total long-term return.",
+          },
+          {
+            id: 6,
+            question: "What is a Dividend Aristocrat?",
+            options: [
+              "Any stock yielding more than 5%",
+              "An S&P 500 company that has raised its dividend every year for 25+ consecutive years",
+              "A company that has never missed an earnings estimate",
+              "The highest-yielding stock in each sector",
+            ],
+            correct: 1,
+            explanation:
+              "Aristocrats have increased — not just maintained — their dividend for at least 25 straight years, through recessions and crises. The streak signals a deeply reliable business.",
+          },
+          {
+            id: 7,
+            question: "Why aren't dividends 'free money' on top of the stock price?",
+            options: [
+              "Because dividends are capped by law at 2% of the price",
+              "Because brokers keep half of every dividend",
+              "Because companies only pay dividends when the stock is falling",
+              "Because the share price drops by roughly the dividend amount on the ex-dividend date — total return is what counts",
+            ],
+            correct: 3,
+            explanation:
+              "The cash comes out of the company's value, so the price adjusts down by about the dividend when it's paid. Judge investments on total return: price growth plus dividends together.",
+          },
+        ],
+      },
     ],
   },
   {
