@@ -78,8 +78,15 @@ function KeyTerms({ lessonId, color }) {
   );
 }
 
+// The route element stays mounted when only the URL params change ("Next
+// Lesson →"), so key the view by lesson: otherwise the previous lesson's
+// phase and answers carry over and get graded against the new lesson's quiz.
 export default function LessonPage() {
   const { categoryId, lessonId } = useParams();
+  return <LessonView key={`${categoryId}/${lessonId}`} categoryId={categoryId} lessonId={lessonId} />;
+}
+
+function LessonView({ categoryId, lessonId }) {
   const { category, lesson } = getLesson(categoryId, lessonId);
   const { recordAttempt, getLessonProgress } = useProgress();
 

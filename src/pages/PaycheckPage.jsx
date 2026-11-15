@@ -10,24 +10,12 @@ import {
   ToggleRow,
 } from "../components/CalcKit.jsx";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { computePaycheck } from "../lib/paycheck.js";
 
 const ACCENT = "#0D9488"; // Warren's teal
 const TAKE_HOME = "#0D9488";
 const FEDERAL = "#6366F1";
 const FICA_COLOR = "#D97706";
-
-// Simplified 2026 federal brackets, single filer (IRS Rev. Proc. 2025-32).
-export const STANDARD_DEDUCTION_2026 = 16100;
-export const BRACKETS_2026 = [
-  { upTo: 12400, rate: 0.1 },
-  { upTo: 50400, rate: 0.12 },
-  { upTo: 105700, rate: 0.22 },
-  { upTo: 201775, rate: 0.24 },
-  { upTo: 256225, rate: 0.32 },
-  { upTo: 640600, rate: 0.35 },
-  { upTo: Infinity, rate: 0.37 },
-];
-const FICA_RATE = 0.0765; // 6.2% Social Security + 1.45% Medicare
 
 export const FREQUENCIES = [
   { value: 52, label: "Weekly" },
@@ -35,43 +23,6 @@ export const FREQUENCIES = [
   { value: 24, label: "Semimonthly" },
   { value: 12, label: "Monthly" },
 ];
-
-/**
- * Educational take-home estimate: 2026 single-filer brackets after the standard
- * deduction, plus flat FICA. No state/local tax, credits, or benefits.
- * Pure function so it's testable.
- */
-export function computePaycheck({ mode, salary, wage, hoursPerWeek, periodsPerYear }) {
-  const hours = mode === "salary" ? 40 : hoursPerWeek;
-  const grossAnnual = mode === "salary" ? salary : wage * hoursPerWeek * 52;
-
-  const taxable = Math.max(0, grossAnnual - STANDARD_DEDUCTION_2026);
-  let federal = 0;
-  let prev = 0;
-  for (const { upTo, rate } of BRACKETS_2026) {
-    if (taxable <= prev) break;
-    federal += (Math.min(taxable, upTo) - prev) * rate;
-    prev = upTo;
-  }
-
-  const fica = grossAnnual * FICA_RATE;
-  const takeHomeAnnual = grossAnnual - federal - fica;
-
-  const per = (n) => n / periodsPerYear;
-  return {
-    grossAnnual,
-    federal,
-    fica,
-    takeHomeAnnual,
-    grossPer: per(grossAnnual),
-    federalPer: per(federal),
-    ficaPer: per(fica),
-    takeHomePer: per(takeHomeAnnual),
-    effectiveRate: grossAnnual > 0 ? (federal + fica) / grossAnnual : 0,
-    grossHourly: hours > 0 ? grossAnnual / (hours * 52) : 0,
-    trueHourly: hours > 0 ? takeHomeAnnual / (hours * 52) : 0,
-  };
-}
 
 function fmtCents(n) {
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -295,8 +246,9 @@ export default function PaycheckPage() {
           style={{ animation: "fadeInUp 0.6s ease-out 0.4s both" }}
         >
           <span className="font-semibold text-ink-secondary">📌 Educational estimate only.</span>{" "}
-          This uses simplified 2026 federal brackets for a single filer taking the standard
-          deduction, plus flat 7.65% FICA. Real paychecks also reflect state and local taxes,
+          This uses 2026 federal brackets for a single filer taking the standard deduction, plus
+          FICA (6.2% Social Security on the first $184,500 of wages and 1.45% Medicare, with an
+          extra 0.9% Medicare above $200,000). Real paychecks also reflect state and local taxes,
           401(k) and health-insurance deductions, tax credits, and other adjustments — so yours
           will differ. This is for understanding your paystub, not tax advice.
         </div>
@@ -306,7 +258,8 @@ export default function PaycheckPage() {
           deposit lands and it's... less. Nobody stole from you — you've just met withholding.
           Federal income tax comes out in brackets, so only the dollars above each threshold pay
           the higher rate (a raise can never make your take-home shrink, whatever your uncle
-          claims). FICA is your Social Security and Medicare contribution — that one's flat. The
+          claims). FICA is your Social Security and Medicare contribution — a flat 7.65% of every
+          dollar for most earners (the Social Security part stops once your wages pass a yearly cap). The
           number to burn into memory is your take-home, because that's what rent, groceries, and
           your investing plan actually draw from. Budget from take-home, not from salary, and
           you'll never write checks your paycheck can't cash.

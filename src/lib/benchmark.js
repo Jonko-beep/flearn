@@ -47,7 +47,14 @@ export function computeBenchmark(portfolio, today = new Date()) {
   const series = [];
 
   for (let day = 0; day <= totalDays; day++) {
-    const date = new Date(firstDay.getTime() + day * MS_PER_DAY);
+    // Step by calendar day, not by 24h: adding milliseconds drifts off local
+    // midnight across a daylight-saving change, which made every later point
+    // (including "today") read the previous day's prices and trades.
+    const date = new Date(
+      firstDay.getFullYear(),
+      firstDay.getMonth(),
+      firstDay.getDate() + day
+    );
 
     // Apply every transaction dated on (or, defensively, before) this day.
     while (

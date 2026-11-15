@@ -407,9 +407,15 @@ export default function MortgagePage() {
             💡 Insight
           </div>
           <p className="m-0 text-sm leading-relaxed text-ink">
-            {calc.crossoverYear ? (
+            {calc.crossoverYear === 1 ? (
               <>
-                For the first {calc.crossoverYear - 1 || "few"} year
+                On this loan, principal outweighs interest from the very first year — every
+                payment mostly builds YOUR equity instead of renting the bank's money. You'd pay{" "}
+                {fmt$(calc.totalInterest)} of interest on {fmt$(calc.loan)} borrowed.
+              </>
+            ) : calc.crossoverYear ? (
+              <>
+                For the first {calc.crossoverYear - 1} year
                 {calc.crossoverYear - 1 === 1 ? "" : "s"}, most of each payment is interest — rent
                 you pay the bank for the loan. Year {calc.crossoverYear} is the crossover: from
                 there, the majority of every payment finally builds YOUR equity. On this loan
@@ -432,7 +438,7 @@ export default function MortgagePage() {
           fronting you the money). Watch what happens when you toggle 30 years down to 15: the
           payment jumps, but the interest bill collapses, because you're renting the money for half
           as long. And that 20% down payment threshold isn't a style choice — it's the line where
-          PMI disappears and hundreds of dollars a year stop leaking out of your acorn stash.
+          PMI disappears and a fee that often runs $100-200 a month stops leaking out of your acorn stash.
           Stretch for it if you reasonably can; walk away from any payment that leaves you
           house-poor if you can't.
         </MascotCallout>

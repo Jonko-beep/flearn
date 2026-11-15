@@ -96,7 +96,9 @@ function SessionSummary({ results, xpEarned, moreDue, onAgain }) {
         <p className="m-0 text-sm leading-normal text-ink-secondary">
           {xpEarned > 0
             ? `+${xpEarned} XP earned (${REVIEW_XP_PER_CORRECT} per correct answer).`
-            : `You've hit today's ${REVIEW_XP_DAILY_CAP} XP review cap — the reps still count!`}{" "}
+            : correctCount > 0
+              ? `You've hit today's ${REVIEW_XP_DAILY_CAP} XP review cap — the reps still count!`
+              : "No XP this round — review XP comes from correct answers."}{" "}
           Questions you got right won't come back for a while; misses return tomorrow.
         </p>
       </div>

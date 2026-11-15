@@ -11,7 +11,7 @@ import { getStock } from "../data/stocks.js";
 // Walk starts here; dates on/before the epoch return basePrice.
 const EPOCH_UTC = Date.UTC(2026, 0, 1);
 const MS_PER_DAY = 86400000;
-const DAILY_DRIFT = 0.0004; // ~10%/yr upward bias so long holders see growth
+const DAILY_DRIFT = 0.0004; // upward bias so long holders see growth (~15%/yr: the walk steps all 365 days)
 
 function hashString(str) {
   let h = 1779033703 ^ str.length;
