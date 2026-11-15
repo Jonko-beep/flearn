@@ -20,6 +20,7 @@ const CompoundPage = lazy(() => import("./pages/CompoundPage.jsx"));
 const DebtPage = lazy(() => import("./pages/DebtPage.jsx"));
 const MortgagePage = lazy(() => import("./pages/MortgagePage.jsx"));
 const PaycheckPage = lazy(() => import("./pages/PaycheckPage.jsx"));
+const OptionsPage = lazy(() => import("./pages/OptionsPage.jsx"));
 import XpBadge from "./components/XpBadge.jsx";
 import XpToaster from "./components/XpToaster.jsx";
 
@@ -81,6 +82,14 @@ export default function App() {
           element={
             <Suspense fallback={null}>
               <PaycheckPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/tools/options"
+          element={
+            <Suspense fallback={null}>
+              <OptionsPage />
             </Suspense>
           }
         />

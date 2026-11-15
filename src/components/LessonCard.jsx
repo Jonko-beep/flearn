@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import { getMasteryInfo } from "../data/curriculum.js";
 
+const DIFFICULTY_COLORS = {
+  Beginner: "#0D9488",
+  Intermediate: "#7C3AED",
+  Advanced: "#D97706",
+};
+
 export default function LessonCard({ lesson, category, lessonProgress, index }) {
   const bestScore = lessonProgress?.bestScore;
   const hasScore = bestScore !== undefined && bestScore !== null;
   const mastered = lessonProgress?.completed;
   const mastery = getMasteryInfo(hasScore ? bestScore : null);
+  const difficultyColor = DIFFICULTY_COLORS[lesson.difficulty] ?? DIFFICULTY_COLORS.Intermediate;
 
   const inner = (
     <>
@@ -46,8 +53,8 @@ export default function LessonCard({ lesson, category, lessonProgress, index }) 
           <span
             className="rounded-full px-2 py-0.5 text-[0.7rem]"
             style={{
-              background: lesson.difficulty === "Beginner" ? "#0D948815" : "#7C3AED15",
-              color: lesson.difficulty === "Beginner" ? "#0D9488" : "#7C3AED",
+              background: `${difficultyColor}15`,
+              color: difficultyColor,
             }}
           >
             {lesson.locked ? "🔒 " : ""}

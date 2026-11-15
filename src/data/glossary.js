@@ -442,6 +442,148 @@ export const glossary = [
     categoryId: "real-estate-loans",
     lessonId: "home-buying-process",
   },
+
+  // ── Options ────────────────────────────────────────────────────────────
+  {
+    term: "Option",
+    definition:
+      "A contract giving its buyer the right — but not the obligation — to buy or sell a stock at a set price, on or before a set date. You're buying a choice about the stock, not the stock.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Call option",
+    definition:
+      "An option to BUY a stock at the strike price. Calls gain value when the stock rises, and a buyer can lose no more than the premium paid.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Put option",
+    definition:
+      "An option to SELL a stock at the strike price. Puts gain value when the stock falls, which is why they double as insurance on shares you own.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Strike price",
+    definition:
+      "The fixed price written into an option at which the stock can be bought (call) or sold (put). Everything about an option's value is measured against it.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Expiration date",
+    definition:
+      "The last day an option can be used. After it, the contract is gone — and any option that isn't in the money by then is worth nothing.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Premium",
+    definition:
+      "The price of an option, paid by the buyer to the seller. It's quoted per share, and one contract covers 100 shares, so a $2.00 premium costs $200.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Exercise",
+    definition:
+      "Using an option's right — actually buying (call) or selling (put) the 100 shares at the strike price. Most holders sell the contract instead of exercising it.",
+    categoryId: "options",
+    lessonId: "options-basics",
+  },
+  {
+    term: "Breakeven price",
+    definition:
+      "The stock price at expiration where an options trade neither makes nor loses money. For a bought call it's strike plus premium; for a bought put, strike minus premium.",
+    categoryId: "options",
+    lessonId: "buying-calls-puts",
+  },
+  {
+    term: "Protective put",
+    definition:
+      "A put bought on shares you already own, so you can sell at the strike no matter how far the stock falls. It's insurance with a deductible, and the premium is the cost.",
+    categoryId: "options",
+    lessonId: "buying-calls-puts",
+  },
+  {
+    term: "Leverage",
+    definition:
+      "Controlling a large position with a small amount of money, so gains and losses are both magnified. It's why a 10% move in a stock can mean a 100% move in its option.",
+    categoryId: "options",
+    lessonId: "buying-calls-puts",
+  },
+  {
+    term: "Time value",
+    definition:
+      "The part of an option's premium beyond its intrinsic value — what buyers pay for the chance it becomes more valuable before expiration. It shrinks every day and is zero at expiration.",
+    categoryId: "options",
+    lessonId: "option-pricing",
+  },
+  {
+    term: "In the money (ITM)",
+    definition:
+      "An option that would be worth something if it expired right now: a call with a strike below the stock price, or a put with a strike above it. The opposite is out of the money.",
+    categoryId: "options",
+    lessonId: "option-pricing",
+  },
+  {
+    term: "Time decay (theta)",
+    definition:
+      "The daily loss of an option's time value. It speeds up as expiration approaches, working against option buyers and in favor of option sellers.",
+    categoryId: "options",
+    lessonId: "option-pricing",
+  },
+  {
+    term: "Implied volatility",
+    definition:
+      "The market's forecast of how much a stock will swing, baked into option prices. Higher implied volatility means pricier options; it often spikes before earnings and collapses right after.",
+    categoryId: "options",
+    lessonId: "option-pricing",
+  },
+  {
+    term: "Delta",
+    definition:
+      "How much an option's price changes when the stock moves $1. An at-the-money option has a delta near 0.50, so it moves about half as much as the shares.",
+    categoryId: "options",
+    lessonId: "option-pricing",
+  },
+  {
+    term: "Covered call",
+    definition:
+      "Selling a call on 100 shares you already own. You collect the premium now, and in exchange you give up any gains above the strike price.",
+    categoryId: "options",
+    lessonId: "selling-options",
+  },
+  {
+    term: "Cash-secured put",
+    definition:
+      "Selling a put while holding enough cash to buy the shares at the strike. You keep the premium if the stock stays up, and you buy the stock at a discount to the strike if it doesn't.",
+    categoryId: "options",
+    lessonId: "selling-options",
+  },
+  {
+    term: "Assignment",
+    definition:
+      "What happens to an option seller when the buyer exercises: the seller must deliver shares (calls) or buy them (puts) at the strike. It can happen any day before expiration.",
+    categoryId: "options",
+    lessonId: "selling-options",
+  },
+  {
+    term: "Naked call",
+    definition:
+      "A call sold without owning the underlying shares. Because a stock can rise without limit, the possible loss is unlimited — the most dangerous basic options position.",
+    categoryId: "options",
+    lessonId: "selling-options",
+  },
+  {
+    term: "Bid-ask spread",
+    definition:
+      "The gap between the highest price a buyer will pay (bid) and the lowest a seller will accept (ask). It's a hidden cost of trading, and it's often much wider on options than on stocks.",
+    categoryId: "options",
+    lessonId: "options-risk",
+  },
 ];
 
 // Glossary terms taught by a given lesson, in the order they're defined.

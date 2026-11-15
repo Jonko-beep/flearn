@@ -3,6 +3,8 @@
 // videoUrl stays null until a real video is recorded; the lesson page shows a
 // mascot placeholder instead.
 
+import { optionsCategory } from "./optionsCategory.js";
+
 export const MASTERY_THRESHOLD = 70;
 
 export const categories = [
@@ -2016,6 +2018,7 @@ export const categories = [
       },
     ],
   },
+  optionsCategory,
 ];
 
 export function getCategory(categoryId) {

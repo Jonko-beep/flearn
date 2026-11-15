@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-// Shared building blocks for the /tools calculators (compound, debt, mortgage, paycheck).
+// Shared building blocks for the /tools calculators (compound, debt, mortgage, paycheck, options).
 
 export function fmt$(n) {
   return `$${Math.round(n).toLocaleString("en-US")}`;
@@ -17,6 +17,7 @@ const ACCENT_CLASSES = {
   invest: { focus: "focus:border-invest", range: "accent-invest" },
   save: { focus: "focus:border-save", range: "accent-save" },
   estate: { focus: "focus:border-estate", range: "accent-estate" },
+  options: { focus: "focus:border-options", range: "accent-options" },
 };
 
 export function SliderField({ label, value, min, max, step, onChange, prefix, suffix, display, accent = "invest" }) {
