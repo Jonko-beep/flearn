@@ -145,7 +145,7 @@ function buildFeedback(income, allocations) {
     );
   } else if (savingsPct >= 20) {
     observations.push(
-      `A ${Math.round(savingsPct)}% savings rate (${fmt$(savings$)}/month) clears the 20% bar — that's the single best predictor of long-term wealth.`
+      `A ${Math.round(savingsPct)}% savings rate (${fmt$(savings$)}/month) clears the 20% bar — and your savings rate is one of the biggest drivers of long-term wealth.`
     );
   } else if (savingsPct < 10) {
     observations.push(

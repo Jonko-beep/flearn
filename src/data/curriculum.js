@@ -124,7 +124,7 @@ export const categories = [
         difficulty: "Beginner",
         locked: false,
         videoUrl: null,
-        content: `Tangible assets are physical items that hold value — things you can actually touch and hold. The most common examples are precious metals like gold and silver, but tangible assets also include real estate, collectibles, art, and even commodities like oil.\n\nWhy do people invest in tangible assets?\n• Inflation hedge — gold has historically maintained purchasing power over centuries\n• Portfolio diversification — tangible assets often move differently than stocks\n• Intrinsic value — unlike a stock certificate, gold has inherent worth\n\nGold: Often called a "safe haven" asset. When markets crash or uncertainty spikes, investors flock to gold. An ounce of gold in 1970 cost about $35. Today it's over $2,000. That's not just price appreciation — it reflects how the dollar has lost purchasing power.\n\nSilver: More volatile than gold but also more affordable to start with. Silver has industrial uses (electronics, solar panels) which adds demand beyond just investment.\n\nThe downsides? Tangible assets don't produce income like dividends from stocks or interest from bonds. Storage and insurance can cost money. And prices can be volatile in the short term.\n\nFor young investors, allocating a small portion (5-15%) of a portfolio to tangible assets can provide valuable diversification.`,
+        content: `Tangible assets are physical items that hold value — things you can actually touch and hold. The most common examples are precious metals like gold and silver, but tangible assets also include real estate, collectibles, art, and even commodities like oil.\n\nWhy do people invest in tangible assets?\n• Inflation hedge — gold has historically maintained purchasing power over centuries\n• Portfolio diversification — tangible assets often move differently than stocks\n• Scarcity — gold can't be printed, and it isn't a claim on anyone else's promise to pay\n\nGold: Often called a "safe haven" asset. When markets crash or uncertainty spikes, investors flock to gold. An ounce of gold cost about $35 in 1970, back when its price was officially pegged to the dollar. It has since climbed into the thousands — around $4,000 in 2026. Part of that is the dollar losing purchasing power (everyday prices are up roughly eightfold since 1970), and part is rising demand for gold itself. The ride isn't smooth, though: after peaking in 1980, gold fell about 70% and took until 2008 to get back to that price.\n\nSilver: More volatile than gold but also more affordable to start with. Silver has industrial uses (electronics, solar panels) which adds demand beyond just investment.\n\nThe downsides? Tangible assets don't produce income like dividends from stocks or interest from bonds. Storage and insurance can cost money. And prices can be volatile in the short term.\n\nFor young investors, allocating a small portion (5-15%) of a portfolio to tangible assets can provide valuable diversification.`,
         transcript: null,
         quiz: [
           {
@@ -169,7 +169,7 @@ export const categories = [
           {
             id: 4,
             question:
-              "What percentage of a portfolio do experts suggest allocating to tangible assets for young investors?",
+              "What percentage of a portfolio does the lesson suggest young investors might allocate to tangible assets?",
             options: ["0%", "5-15%", "50-60%", "100%"],
             correct: 1,
             explanation:
@@ -194,7 +194,7 @@ export const categories = [
               "A friend puts 60% of their portfolio into gold and silver. Based on the lesson, what's the problem?",
             options: [
               "Tangible assets always lose value",
-              "Experts suggest only 5-15% — that much sacrifices the income and growth stocks provide",
+              "The lesson suggests only 5-15% — that much sacrifices the income and growth stocks provide",
               "Gold can't be sold quickly",
               "Precious metals aren't allowed in investment portfolios",
             ],
@@ -205,16 +205,16 @@ export const categories = [
           {
             id: 7,
             question:
-              "Gold rising from about $35 an ounce in 1970 to over $2,000 today mostly reflects:",
+              "Gold has risen from about $35 an ounce in 1970 into the thousands today. What does the lesson say is behind that climb?",
             options: [
-              "Gold becoming rarer",
+              "Only the dollar losing value — gold's real worth never changed",
               "Government price supports",
-              "The dollar losing purchasing power over those decades",
-              "Industrial demand for gold",
+              "Partly the dollar losing purchasing power, partly rising demand for gold itself",
+              "Dividends reinvested over decades",
             ],
             correct: 2,
             explanation:
-              "The lesson notes that gold's long climb isn't just price appreciation — it mirrors how much purchasing power the dollar has lost, which is exactly why gold works as an inflation hedge.",
+              "Everyday prices are up roughly eightfold since 1970, which explains some of the rise — the rest is growing demand for gold. And it wasn't a smooth ride: gold fell about 70% after its 1980 peak and took until 2008 to recover.",
           },
         ],
       },
@@ -430,7 +430,7 @@ export const categories = [
         difficulty: "Intermediate",
         locked: false,
         videoUrl: null,
-        content: `A portfolio is simply the collection of everything you're invested in — stocks, bonds, funds, cash, maybe a little gold. Building a good one isn't about picking winners. It's about combining pieces so that no single mistake can wreck you.\n\nDiversification is your armor. Put $1,000 into one company and a 50% drop costs you $500. Spread that same $1,000 across 500 companies and one of them can go to zero while you barely notice. The remarkable part: diversification lowers your risk WITHOUT proportionally lowering your expected return. It's the closest thing to a free lunch in investing.\n\nAsset allocation — how you split money between stocks, bonds, and cash — matters more than which specific stocks you pick. The right split depends on your time horizon:\n• Money you need within 3 years (tuition, a car) — savings account or CDs, not the market\n• 3-10 years out (a house down payment) — a balanced mix, something like 60% stocks / 40% bonds\n• 10+ years out (retirement) — mostly stocks, because you have decades to ride out crashes\n\nA classic rule of thumb: hold roughly your age as a percentage in bonds. At 20, that means about 80-90% stocks — aggressive, but appropriate, because at 20 a market crash is a buying opportunity, not a catastrophe. You won't touch the money for decades.\n\nFor beginners, index funds are the default answer. An index fund (like one tracking the S&P 500) buys tiny slices of hundreds of companies in a single purchase, charges near-zero fees (often 0.03% versus 1%+ for actively managed funds), and outperforms the majority of professional stock pickers over long periods. That fee gap is bigger than it looks: on a $100,000 portfolio, 0.03% is $30 a year while 1% is $1,000 — and the difference compounds for decades.\n\nA simple starter portfolio: 80% total US stock market index fund, 10% international index fund, 10% bonds. Boring? Absolutely. Effective? Devastatingly.\n\nOne maintenance habit: rebalance once a year. If stocks surge and your 80/10/10 drifts to 88/7/5, sell a little of what grew and top up what lagged. It quietly forces you to buy low and sell high.\n\nWhat this means for you as a young adult: your first portfolio can be ONE index fund and an automatic $50 monthly contribution. That single boring decision, sustained for decades, will likely beat almost any clever stock-picking scheme you could devise.`,
+        content: `A portfolio is simply the collection of everything you're invested in — stocks, bonds, funds, cash, maybe a little gold. Building a good one isn't about picking winners. It's about combining pieces so that no single mistake can wreck you.\n\nDiversification is your armor. Put $1,000 into one company and a 50% drop costs you $500. Spread that same $1,000 across 500 companies and one of them can go to zero while you barely notice. The remarkable part: diversification lowers your risk WITHOUT proportionally lowering your expected return. It's the closest thing to a free lunch in investing.\n\nAsset allocation — how you split money between stocks, bonds, and cash — matters more than which specific stocks you pick. The right split depends on your time horizon:\n• Money you need within 3 years (tuition, a car) — savings account or CDs, not the market\n• 3-10 years out (a house down payment) — a balanced mix, something like 60% stocks / 40% bonds\n• 10+ years out (retirement) — mostly stocks, because you have decades to ride out crashes\n\nA classic rule of thumb: hold roughly your age as a percentage in bonds. At 20, that means about 80% stocks (and many modern versions of the rule go higher) — aggressive, but appropriate, because at 20 a market crash is a buying opportunity, not a catastrophe. You won't touch the money for decades.\n\nFor beginners, index funds are the default answer. An index fund (like one tracking the S&P 500) buys tiny slices of hundreds of companies in a single purchase, charges near-zero fees (often 0.03% versus 1%+ for actively managed funds), and outperforms the majority of professional stock pickers over long periods. That fee gap is bigger than it looks: on a $100,000 portfolio, 0.03% is $30 a year while 1% is $1,000 — and the difference compounds for decades.\n\nA simple starter portfolio: 80% total US stock market index fund, 10% international index fund, 10% bonds. Boring? Absolutely. Effective? Devastatingly.\n\nOne maintenance habit: rebalance once a year. If stocks surge and your 80/10/10 drifts to 88/7/5, sell a little of what grew and top up what lagged. It quietly forces you to buy low and sell high.\n\nWhat this means for you as a young adult: your first portfolio can be ONE index fund and an automatic $50 monthly contribution. That single boring decision, sustained for decades, will likely beat almost any clever stock-picking scheme you could devise.`,
         transcript: null,
         quiz: [
           {
@@ -480,12 +480,12 @@ export const categories = [
             options: [
               "20% stocks, 80% bonds",
               "50% stocks, 50% bonds",
-              "80-90% stocks",
+              "About 80% stocks",
               "100% bonds",
             ],
             correct: 2,
             explanation:
-              "Age in bonds means about 20% bonds at age 20, leaving 80-90% in stocks. That's aggressive, but decades of time horizon turn crashes into buying opportunities.",
+              "Age in bonds means about 20% bonds at age 20, leaving about 80% in stocks. That's aggressive, but decades of time horizon turn crashes into buying opportunities.",
           },
           {
             id: 5,
@@ -733,7 +733,7 @@ export const categories = [
         difficulty: "Beginner",
         locked: false,
         videoUrl: null,
-        content: `If your money is sitting in a regular bank savings account earning 0.01% interest, you're essentially losing money to inflation every single day. A high-yield savings account (HYSA) is one of the simplest financial upgrades you can make.\n\nWhat is a HYSA?\nIt's a savings account — usually at an online bank — that pays significantly higher interest rates than traditional banks. While your local bank might offer 0.01-0.05% APY, HYSAs currently offer 4-5% APY.\n\nLet's do the math on $5,000:\n• Regular savings (0.05% APY): earns $2.50/year\n• High-yield savings (4.5% APY): earns $225/year\n\nThat's not life-changing money, but it's free money for doing basically nothing different.\n\nWhere to open one:\nOnline banks like Marcus (Goldman Sachs), Ally, or Capital One offer competitive HYSA rates. They're FDIC insured up to $250,000 — meaning your money is just as safe as at any traditional bank.\n\nWhat to keep in a HYSA:\n• Your emergency fund (3-6 months of expenses)\n• Short-term savings goals (car, vacation, moving costs)\n• Money you'll need within 1-2 years\n\nWhat NOT to keep there:\n• Long-term investments — over 2+ years, the stock market historically outperforms savings rates\n• Money you need daily — keep that in checking for easy access\n\nA HYSA is not an investment strategy. It's a foundation. Get your emergency fund set, then focus on investing for real growth.`,
+        content: `If your money is sitting in a regular bank savings account earning 0.01% interest, you're essentially losing money to inflation every single day. A high-yield savings account (HYSA) is one of the simplest financial upgrades you can make.\n\nWhat is a HYSA?\nIt's a savings account — usually at an online bank — that pays significantly higher interest rates than traditional banks. While a big traditional bank might offer 0.01-0.05% APY, the best HYSAs have recently paid around 4% APY. Savings rates rise and fall with the Federal Reserve's interest rates, so always check current offers.\n\nLet's do the math on $5,000:\n• Regular savings (0.05% APY): earns $2.50/year\n• High-yield savings (4% APY): earns $200/year\n\nThat's not life-changing money, but it's free money for doing basically nothing different.\n\nWhere to open one:\nOnline banks like Marcus (Goldman Sachs), Ally, or Capital One offer competitive HYSA rates. They're FDIC insured up to $250,000 per depositor, per bank — meaning your money is just as safe as at any traditional bank.\n\nWhat to keep in a HYSA:\n• Your emergency fund (3-6 months of expenses)\n• Short-term savings goals (car, vacation, moving costs)\n• Money you'll need within the next few years\n\nWhat NOT to keep there:\n• Long-term investments — money you won't touch for 5+ years has historically grown far more in the stock market\n• Money you need daily — keep that in checking for easy access\n\nA HYSA is not an investment strategy. It's a foundation. Get your emergency fund set, then focus on investing for real growth.`,
         transcript: [
           {
             time: "0:00",
@@ -741,23 +741,23 @@ export const categories = [
           },
           {
             time: "0:18",
-            text: "So what exactly is a HYSA? It's a savings account — usually at an online bank — that pays significantly higher interest rates than traditional banks. While your local bank might offer 0.01 to 0.05% APY, high-yield savings accounts currently offer around 4 to 5% APY.",
+            text: "So what exactly is a HYSA? It's a savings account — usually at an online bank — that pays significantly higher interest rates than traditional banks. While a big traditional bank might offer 0.01 to 0.05% APY, the best high-yield savings accounts have recently paid around 4% APY — and that rate moves with the Federal Reserve's.",
           },
           {
             time: "0:38",
-            text: "Let's do the math. If you have $5,000 in a regular savings account at 0.05% APY, you earn just $2.50 per year. That same $5,000 in a HYSA at 4.5% APY earns you $225 per year. That's free money for doing basically nothing different.",
+            text: "Let's do the math. If you have $5,000 in a regular savings account at 0.05% APY, you earn just $2.50 per year. That same $5,000 in a HYSA at 4% APY earns you $200 per year. That's free money for doing basically nothing different.",
           },
           {
             time: "1:02",
-            text: "Where can you open one? Online banks like Marcus by Goldman Sachs, Ally, or Capital One offer competitive HYSA rates. They're FDIC insured up to $250,000 — meaning your money is just as safe as at any traditional bank.",
+            text: "Where can you open one? Online banks like Marcus by Goldman Sachs, Ally, or Capital One offer competitive HYSA rates. They're FDIC insured up to $250,000 per depositor, per bank — meaning your money is just as safe as at any traditional bank.",
           },
           {
             time: "1:22",
-            text: "What should you keep in a HYSA? Your emergency fund — that's 3 to 6 months of expenses. Short-term savings goals like a car, vacation, or moving costs. And any money you'll need within 1 to 2 years.",
+            text: "What should you keep in a HYSA? Your emergency fund — that's 3 to 6 months of expenses. Short-term savings goals like a car, vacation, or moving costs. And any money you'll need within the next few years.",
           },
           {
             time: "1:40",
-            text: "What should you NOT keep there? Long-term investments. Over 2 or more years, the stock market historically outperforms savings rates. And money you need daily — keep that in checking for easy access.",
+            text: "What should you NOT keep there? Long-term investments. Money you won't touch for 5 or more years has historically grown far more in the stock market. And money you need daily — keep that in checking for easy access.",
           },
           {
             time: "1:55",
@@ -776,15 +776,15 @@ export const categories = [
             ],
             correct: 1,
             explanation:
-              "HYSAs offer interest rates of 4-5% APY compared to 0.01-0.05% at traditional banks — that's the core advantage.",
+              "HYSAs have recently paid around 4% APY compared to 0.01-0.05% at big traditional banks — that's the core advantage.",
           },
           {
             id: 2,
-            question: "How much would $5,000 earn in one year in a HYSA at 4.5% APY?",
-            options: ["$2.50", "$45", "$225", "$450"],
+            question: "How much would $5,000 earn in one year in a HYSA at 4% APY?",
+            options: ["$2.50", "$20", "$200", "$400"],
             correct: 2,
             explanation:
-              "$5,000 × 4.5% = $225 per year. Compare that to just $2.50 at a traditional bank's 0.05% rate.",
+              "$5,000 × 4% = $200 per year. Compare that to just $2.50 at a traditional bank's 0.05% rate.",
           },
           {
             id: 3,
@@ -810,7 +810,7 @@ export const categories = [
             ],
             correct: 2,
             explanation:
-              "Long-term investments (2+ years) should be in the stock market, which historically outperforms savings rates. HYSAs are for short-term needs and emergency funds.",
+              "Money you won't touch for 5+ years has historically grown far more in the stock market. HYSAs are for short-term needs and emergency funds.",
           },
           {
             id: 5,
@@ -851,7 +851,7 @@ export const categories = [
             ],
             correct: 2,
             explanation:
-              "If inflation is 3% and you're earning 0.05%, your money loses about 2.95% of its purchasing power each year. A HYSA at 4.5% would actually beat inflation, preserving and slightly growing your real purchasing power.",
+              "If inflation is 3% and you're earning 0.05%, your money loses about 2.95% of its purchasing power each year. A HYSA at 4% would actually beat inflation, preserving and slightly growing your real purchasing power.",
           },
         ],
       },
@@ -1358,7 +1358,7 @@ export const categories = [
         difficulty: "Beginner",
         locked: false,
         videoUrl: null,
-        content: `Conventional loans are the most common type of mortgage in the U.S. They're not backed by any government agency — instead, they're offered by private lenders like banks, credit unions, and mortgage companies.\n\nTwo types of conventional loans:\n• Conforming — meets the guidelines set by Fannie Mae and Freddie Mac (government-sponsored enterprises that buy mortgages from lenders). In 2024, the conforming loan limit is $766,550 in most areas.\n• Non-conforming (Jumbo) — exceeds conforming limits. These typically require higher credit scores and larger down payments.\n\nWhat you need to qualify:\n• Credit score: typically 620+ (though 740+ gets you the best rates)\n• Down payment: as low as 3%, but 20% avoids PMI\n• Debt-to-income ratio: generally below 43-45%\n• Stable employment and income history\n\nThe PMI trap:\nIf you put down less than 20%, you'll pay Private Mortgage Insurance (PMI) — an extra monthly fee that protects the LENDER (not you) if you default. PMI typically costs 0.5-1% of the loan amount per year. On a $240,000 loan, that's $100-200/month on top of your mortgage payment. The good news: PMI drops off automatically once you reach 22% equity in the home.\n\nConventional loans come in fixed-rate and adjustable-rate varieties, which we'll cover in separate lessons. For most young buyers, a conventional loan with the largest down payment you can manage is a solid starting point.`,
+        content: `Conventional loans are the most common type of mortgage in the U.S. They're not backed by any government agency — instead, they're offered by private lenders like banks, credit unions, and mortgage companies.\n\nTwo types of conventional loans:\n• Conforming — meets the guidelines set by Fannie Mae and Freddie Mac (government-sponsored enterprises that buy mortgages from lenders). For 2026, the conforming loan limit is $832,750 in most areas (higher in expensive markets, and it's adjusted every year).\n• Non-conforming (Jumbo) — exceeds conforming limits. These typically require higher credit scores and larger down payments.\n\nWhat you need to qualify:\n• Credit score: typically 620+ (though 740+ gets you the best rates)\n• Down payment: as low as 3%, but 20% avoids PMI\n• Debt-to-income ratio: generally below 43-45%\n• Stable employment and income history\n\nThe PMI trap:\nIf you put down less than 20%, you'll pay Private Mortgage Insurance (PMI) — an extra monthly fee that protects the LENDER (not you) if you default. PMI typically costs 0.5-1% of the loan amount per year. On a $240,000 loan, that's $100-200/month on top of your mortgage payment. The good news: PMI drops off automatically once you reach 22% equity in the home, and you can ask your lender to remove it at 20%.\n\nConventional loans come in fixed-rate and adjustable-rate varieties, which we'll cover in separate lessons. For most young buyers, a conventional loan with the largest down payment you can manage is a solid starting point.`,
         transcript: null,
         quiz: [
           {
@@ -1449,7 +1449,7 @@ export const categories = [
         difficulty: "Beginner",
         locked: false,
         videoUrl: null,
-        content: `FHA loans are mortgages insured by the Federal Housing Administration — a government agency created in 1934 to make homeownership more accessible. They're especially popular with first-time buyers and people with lower credit scores.\n\nWhy FHA loans exist:\nAfter the Great Depression wiped out the housing market, the government created the FHA to encourage lending by reducing risk for banks. If a borrower defaults on an FHA loan, the government covers the lender's losses. This lets lenders offer more relaxed requirements.\n\nThe benefits:\n• Down payment as low as 3.5% (with a 580+ credit score)\n• Credit scores as low as 500 accepted (with 10% down)\n• More flexible debt-to-income ratios\n• Lower interest rates than many conventional options for borrowers with imperfect credit\n\nThe catch — MIP (Mortgage Insurance Premium):\nFHA loans require two types of mortgage insurance:\n1. Upfront MIP — 1.75% of the loan amount, paid at closing (usually rolled into the loan)\n2. Annual MIP — 0.55% of the loan amount, paid monthly for the LIFE of the loan\n\nThat last part is the big drawback. Unlike conventional PMI that drops off at 20% equity, FHA mortgage insurance stays forever (unless you refinance into a conventional loan later). On a $250,000 loan, that's about $115/month you'll never stop paying.\n\nWhen FHA makes sense:\nIf your credit score is below 700 or you can only put 3.5% down, FHA might be your best path to homeownership. But if you can qualify for conventional with even 5% down, run the numbers — the long-term cost of permanent MIP often makes conventional the better deal.`,
+        content: `FHA loans are mortgages insured by the Federal Housing Administration — a government agency created in 1934 to make homeownership more accessible. They're especially popular with first-time buyers and people with lower credit scores.\n\nWhy FHA loans exist:\nAfter the Great Depression wiped out the housing market, the government created the FHA to encourage lending by reducing risk for banks. If a borrower defaults on an FHA loan, the government covers the lender's losses. This lets lenders offer more relaxed requirements.\n\nThe benefits:\n• Down payment as low as 3.5% (with a 580+ credit score)\n• Credit scores as low as 500 accepted (with 10% down)\n• More flexible debt-to-income ratios\n• Lower interest rates than many conventional options for borrowers with imperfect credit\n\nThe catch — MIP (Mortgage Insurance Premium):\nFHA loans require two types of mortgage insurance:\n1. Upfront MIP — 1.75% of the loan amount, paid at closing (usually rolled into the loan)\n2. Annual MIP — about 0.55% of the loan amount for most borrowers, paid monthly for the LIFE of the loan if you put down less than 10% (with 10% or more down, it ends after 11 years)\n\nThat last part is the big drawback. Unlike conventional PMI, which drops off once you've built 20-22% equity, FHA mortgage insurance on a minimum-down-payment loan never goes away (unless you refinance into a conventional loan later). On a $250,000 loan, that's about $115/month for as long as you keep the loan.\n\nWhen FHA makes sense:\nIf your credit score is below 700 or you can only put 3.5% down, FHA might be your best path to homeownership. But if you can qualify for conventional with even 5% down, run the numbers — the long-term cost of permanent MIP often makes conventional the better deal.`,
         transcript: null,
         quiz: [
           {
@@ -1485,7 +1485,7 @@ export const categories = [
             ],
             correct: 1,
             explanation:
-              "Unlike conventional PMI that drops off at 20-22% equity, FHA's annual MIP stays for the life of the loan unless you refinance out of it.",
+              "Unlike conventional PMI that drops off at 20-22% equity, FHA's annual MIP stays for the life of the loan when you put less than 10% down — the typical FHA buyer — unless you refinance out of it.",
           },
           {
             id: 4,
@@ -1540,7 +1540,7 @@ export const categories = [
         difficulty: "Beginner",
         locked: false,
         videoUrl: null,
-        content: `VA loans are mortgages guaranteed by the U.S. Department of Veterans Affairs, available to active-duty service members, veterans, and eligible surviving spouses. Many financial experts call them the single best mortgage product available in the country.\n\nWhy VA loans are exceptional:\n• Zero down payment required — you can finance 100% of the home's value\n• No PMI or monthly mortgage insurance — ever\n• Typically the lowest interest rates of any loan type\n• No prepayment penalties\n• Limited closing costs (the VA restricts what lenders can charge)\n• No loan limit for borrowers with full entitlement\n\nWho qualifies:\n• Active duty: 90+ continuous days of service\n• Veterans: varies by era, generally 90 days (wartime) or 181 days (peacetime)\n• National Guard/Reserves: 6+ years of service or 90 days of active duty\n• Surviving spouses of veterans who died in service or from service-connected disabilities\n\nThe VA Funding Fee:\nInstead of monthly mortgage insurance, VA loans charge a one-time funding fee (1.25-3.3% of the loan, depending on down payment and usage). This can be rolled into the loan. Some veterans are exempt — those with service-connected disabilities, Purple Heart recipients, and surviving spouses.\n\nLet's compare on a $300,000 home:\n• Conventional (5% down): $285,000 loan + PMI of ~$140/month\n• FHA (3.5% down): $289,500 loan + $133/month MIP forever\n• VA (0% down): $300,000 loan + no monthly insurance\n\nEven borrowing the full amount, the VA borrower often has a lower monthly payment because there's no insurance premium. Over 30 years, that savings can exceed $50,000.\n\nIf you qualify for a VA loan, it should almost always be your first choice.`,
+        content: `VA loans are mortgages guaranteed by the U.S. Department of Veterans Affairs, available to active-duty service members, veterans, and eligible surviving spouses. Many financial experts call them the single best mortgage product available in the country.\n\nWhy VA loans are exceptional:\n• Zero down payment required — you can finance 100% of the home's value\n• No PMI or monthly mortgage insurance — ever\n• Typically the lowest interest rates of any loan type\n• No prepayment penalties\n• Limited closing costs (the VA restricts what lenders can charge)\n• No loan limit for borrowers with full entitlement\n\nWho qualifies:\n• Active duty: 90+ continuous days of service\n• Veterans: varies by era, generally 90 days (wartime) or 181 days (peacetime)\n• National Guard/Reserves: 6+ years of service or 90 days of active duty\n• Surviving spouses of veterans who died in service or from service-connected disabilities\n\nThe VA Funding Fee:\nInstead of monthly mortgage insurance, VA loans charge a one-time funding fee (1.25-3.3% of the loan, depending on down payment and usage). This can be rolled into the loan. Some veterans are exempt — those with service-connected disabilities, Purple Heart recipients, and surviving spouses.\n\nLet's compare on a $300,000 home:\n• Conventional (5% down): $285,000 loan + PMI of ~$140/month\n• FHA (3.5% down): $289,500 loan + $133/month MIP forever\n• VA (0% down): $300,000 loan + no monthly insurance\n\nEven borrowing the full amount, the VA borrower often has a lower monthly payment because there's no insurance premium. Over the life of the loan, skipping that premium can add up to tens of thousands of dollars.\n\nIf you qualify for a VA loan, it should almost always be your first choice.`,
         transcript: null,
         quiz: [
           {
@@ -1611,16 +1611,16 @@ export const categories = [
           {
             id: 7,
             question:
-              "Over 30 years, roughly how much can a VA borrower save versus comparable loans, per the lesson's $300,000 comparison?",
+              "Over the life of the loan, roughly how much can skipping monthly mortgage insurance save a VA borrower, per the lesson's $300,000 comparison?",
             options: [
-              "$500",
-              "$5,000",
-              "More than $50,000",
+              "About $500",
+              "About $1,500",
+              "Tens of thousands of dollars",
               "Nothing — the funding fee cancels it out",
             ],
             correct: 2,
             explanation:
-              "Skipping a ~$130-140 monthly insurance premium for decades adds up — the lesson's comparison puts the savings above $50,000, even accounting for the one-time funding fee.",
+              "A ~$130-140 monthly insurance premium paid for decades adds up to tens of thousands of dollars. The VA's one-time funding fee is small by comparison.",
           },
         ],
       },
@@ -1717,7 +1717,7 @@ export const categories = [
         difficulty: "Intermediate",
         locked: false,
         videoUrl: null,
-        content: `Every mortgage has an interest rate structure — and the two main types are fixed-rate and adjustable-rate (ARM). This choice affects how much you pay every single month for the life of your loan.\n\nFixed-Rate Mortgages:\nYour interest rate never changes. If you lock in at 6.5%, you pay 6.5% whether rates go to 10% or drop to 3%. Your monthly principal and interest payment stays identical from month 1 to month 360.\n• Most common terms: 30-year and 15-year\n• 30-year: lower monthly payments, more total interest paid\n• 15-year: higher monthly payments, dramatically less interest paid, build equity faster\n\nLet's compare on a $250,000 loan at 6.5%:\n• 30-year: $1,580/month — total interest paid: $319,000\n• 15-year: $2,179/month — total interest paid: $142,000\n\nThat's $177,000 saved by choosing 15-year — but your monthly payment is $599 higher.\n\nAdjustable-Rate Mortgages (ARMs):\nARMs start with a lower "teaser" rate for a fixed period, then adjust periodically based on market conditions.\n• Common structures: 5/1 ARM, 7/1 ARM, 10/1 ARM\n• 5/1 means: fixed rate for 5 years, then adjusts every 1 year after that\n• ARMs have caps that limit how much the rate can increase per adjustment and over the loan's lifetime\n\nWhy choose an ARM?\nIf you plan to sell or refinance within 5-7 years, the lower initial rate saves money. If rates drop, your payment decreases automatically.\n\nThe risk:\nIf rates rise and you're still in the home, your payment can increase significantly. People who got 1-year ARMs before 2008 saw their payments double, which contributed to the housing crisis.\n\nGeneral guidance for young buyers:\nIf this is your first home and you plan to stay 7+ years, a 30-year fixed gives you predictability and peace of mind. If you know you'll move within 5 years, a 5/1 or 7/1 ARM could save you thousands in interest during that window.`,
+        content: `Every mortgage has an interest rate structure — and the two main types are fixed-rate and adjustable-rate (ARM). This choice affects how much you pay every single month for the life of your loan.\n\nFixed-Rate Mortgages:\nYour interest rate never changes. If you lock in at 6.5%, you pay 6.5% whether rates go to 10% or drop to 3%. Your monthly principal and interest payment stays identical from month 1 to month 360.\n• Most common terms: 30-year and 15-year\n• 30-year: lower monthly payments, more total interest paid\n• 15-year: higher monthly payments, dramatically less interest paid, build equity faster\n\nLet's compare on a $250,000 loan at 6.5%:\n• 30-year: $1,580/month — total interest paid: $319,000\n• 15-year: $2,178/month — total interest paid: $142,000\n\nThat's $177,000 saved by choosing 15-year — but your monthly payment is $598 higher.\n\nAdjustable-Rate Mortgages (ARMs):\nARMs start with a lower "teaser" rate for a fixed period, then adjust periodically based on market conditions.\n• Common structures: 5/1 ARM, 7/1 ARM, 10/1 ARM\n• 5/1 means: fixed rate for 5 years, then adjusts every 1 year after that\n• Many newer ARMs are written as 5/6 or 7/6 — same idea, but the rate adjusts every 6 months after the fixed period\n• ARMs have caps that limit how much the rate can increase per adjustment and over the loan's lifetime\n\nWhy choose an ARM?\nIf you plan to sell or refinance within 5-7 years, the lower initial rate saves money. If rates drop, your payment decreases automatically.\n\nThe risk:\nIf rates rise and you're still in the home, your payment can increase significantly. In the mid-2000s, many borrowers took ARMs with low teaser rates that lasted only two or three years. When those rates reset, payments jumped sharply, many couldn't keep up, and the wave of defaults helped fuel the 2008 housing crisis.\n\nGeneral guidance for young buyers:\nIf this is your first home and you plan to stay 7+ years, a 30-year fixed gives you predictability and peace of mind. If you know you'll move within 5 years, a 5/1 or 7/1 ARM could save you thousands in interest during that window.`,
         transcript: null,
         quiz: [
           {
@@ -1753,7 +1753,7 @@ export const categories = [
             options: ["$50,000", "$100,000", "$177,000", "$250,000"],
             correct: 2,
             explanation:
-              "The 30-year costs about $319,000 in total interest versus $142,000 for the 15-year — a $177,000 saving, at the price of a $599 higher monthly payment.",
+              "The 30-year costs about $319,000 in total interest versus $142,000 for the 15-year — a $177,000 saving, at the price of a $598 higher monthly payment.",
           },
           {
             id: 4,
@@ -1770,25 +1770,25 @@ export const categories = [
           },
           {
             id: 5,
-            question: "What contributed to the 2008 housing crisis related to ARMs?",
+            question: "How did ARMs contribute to the 2008 housing crisis?",
             options: [
-              "Rates were too low",
-              "People with 1-year ARMs saw payments double when rates rose",
-              "ARMs were banned",
-              "Fixed rates increased",
+              "ARM rates were set too high from the start",
+              "Short teaser-rate periods ended and payments jumped beyond what many borrowers could afford",
+              "ARMs were banned, forcing everyone to refinance",
+              "Fixed-rate borrowers were switched to ARMs",
             ],
             correct: 1,
             explanation:
-              "Borrowers with short-adjustment ARMs saw payments double when rates rose, triggering defaults that fed the housing crisis.",
+              "Many mid-2000s ARMs had teaser rates lasting only two or three years. When they reset, payments jumped sharply and the resulting defaults helped fuel the crisis.",
           },
           {
             id: 6,
             question:
               "On the lesson's $250,000 comparison at 6.5%, how much higher is the 15-year monthly payment than the 30-year?",
-            options: ["$99", "$299", "$599", "$1,099"],
+            options: ["$98", "$298", "$598", "$1,098"],
             correct: 2,
             explanation:
-              "$2,179 versus $1,580 — a $599 higher monthly payment. In exchange, you pay about $177,000 less in total interest and build equity much faster.",
+              "$2,178 versus $1,580 — a $598 higher monthly payment. In exchange, you pay about $177,000 less in total interest and build equity much faster.",
           },
           {
             id: 7,
@@ -1916,7 +1916,7 @@ export const categories = [
         difficulty: "Intermediate",
         locked: false,
         videoUrl: null,
-        content: `Buying a home feels overwhelming mostly because nobody explains the sequence. Here's the whole journey as a timeline — six steps, typically 30-60 days from accepted offer to keys in hand.\n\nStep 1: Pre-approval (before you look at a single house)\nA lender reviews your income, debts, and credit, then issues a letter stating how much they'll lend you. This is different from pre-qualification, which is just an unverified estimate. Pre-approval tells you your real budget and — critically — makes sellers take your offers seriously. In a competitive market, offers without one often get ignored.\n\nStep 2: House hunting\nWork with a buyer's agent (typically paid from the seller's side, so their help costs you little or nothing). Make two lists: needs (non-negotiable) and wants (nice to have). Falling in love with a house before checking the budget is how people end up house-poor.\n\nStep 3: The offer\nYou propose a price and terms. To show you're serious, you include earnest money — a deposit of roughly 1-3% of the price held in escrow, credited back to you at closing. Smart offers include contingencies: escape hatches that let you back out (with your earnest money) if the inspection, appraisal, or financing goes sideways.\n\nStep 4: Inspection\nFor $300-500, a professional inspector spends hours documenting the home's real condition — roof, foundation, plumbing, electrical. Find something serious? You can negotiate repairs, ask for a price cut, or walk away under your inspection contingency. Never skip this to make an offer "more competitive" — that $400 can save you from a $40,000 foundation problem.\n\nStep 5: Appraisal\nYour lender orders an independent estimate of the home's value, because the house is their collateral — they won't lend $310,000 on a home worth $295,000. If the appraisal comes in low, you can cover the gap in cash, renegotiate the price with the seller, or exit via your appraisal contingency.\n\nStep 6: Closing\nYou do a final walkthrough, sign a mountain of documents, and pay closing costs — typically 2-5% of the purchase price ($6,000-15,000 on a $300,000 home) on top of your down payment. Then you get the keys. The house is yours.\n\nWhat this means for you as a young adult: the process rewards preparation years in advance. The credit score you're building now sets your rate, your emergency fund becomes earnest money and closing costs, and knowing this timeline means that when the day comes, you'll walk in as the most prepared buyer in the room.`,
+        content: `Buying a home feels overwhelming mostly because nobody explains the sequence. Here's the whole journey as a timeline — six steps, typically 30-60 days from accepted offer to keys in hand.\n\nStep 1: Pre-approval (before you look at a single house)\nA lender reviews your income, debts, and credit, then issues a letter stating how much they'll lend you. This is different from pre-qualification, which is just an unverified estimate. Pre-approval tells you your real budget and — critically — makes sellers take your offers seriously. In a competitive market, offers without one often get ignored.\n\nStep 2: House hunting\nWork with a buyer's agent. Since 2024 you sign a written agreement up front that spells out how your agent gets paid — sellers often still cover the fee, but it's negotiable, so ask before you start touring. Make two lists: needs (non-negotiable) and wants (nice to have). Falling in love with a house before checking the budget is how people end up house-poor.\n\nStep 3: The offer\nYou propose a price and terms. To show you're serious, you include earnest money — a deposit of roughly 1-3% of the price held in escrow, credited back to you at closing. Smart offers include contingencies: escape hatches that let you back out (with your earnest money) if the inspection, appraisal, or financing goes sideways.\n\nStep 4: Inspection\nFor $300-500, a professional inspector spends hours documenting the home's real condition — roof, foundation, plumbing, electrical. Find something serious? You can negotiate repairs, ask for a price cut, or walk away under your inspection contingency. Never skip this to make an offer "more competitive" — that $400 can save you from a $40,000 foundation problem.\n\nStep 5: Appraisal\nYour lender orders an independent estimate of the home's value, because the house is their collateral — they won't lend $310,000 on a home worth $295,000. If the appraisal comes in low, you can cover the gap in cash, renegotiate the price with the seller, or exit via your appraisal contingency.\n\nStep 6: Closing\nYou do a final walkthrough, sign a mountain of documents, and pay closing costs — typically 2-5% of the purchase price ($6,000-15,000 on a $300,000 home) on top of your down payment. Then you get the keys. The house is yours.\n\nWhat this means for you as a young adult: the process rewards preparation years in advance. The credit score you're building now sets your rate, your emergency fund becomes earnest money and closing costs, and knowing this timeline means that when the day comes, you'll walk in as the most prepared buyer in the room.`,
         transcript: null,
         quiz: [
           {

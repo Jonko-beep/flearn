@@ -177,7 +177,7 @@ export const glossary = [
   {
     term: "High-yield savings account (HYSA)",
     definition:
-      "A savings account, usually at an online bank, paying dramatically more interest than a traditional bank — think 4-5% APY instead of 0.01%. The natural home for an emergency fund.",
+      "A savings account, usually at an online bank, paying dramatically more interest than a traditional bank — recently around 4% APY instead of 0.01%. The natural home for an emergency fund.",
     categoryId: "saving-budgeting",
     lessonId: "hysa",
   },
@@ -191,7 +191,7 @@ export const glossary = [
   {
     term: "FDIC insurance",
     definition:
-      "Government-backed insurance that protects up to $250,000 of your money per bank if the bank itself fails. It's why an online bank is just as safe as the branch down the street.",
+      "Government-backed insurance that protects up to $250,000 of your deposits per bank if the bank itself fails. It's why an online bank is just as safe as the branch down the street.",
     categoryId: "saving-budgeting",
     lessonId: "hysa",
   },
@@ -368,14 +368,14 @@ export const glossary = [
   {
     term: "FHA loan",
     definition:
-      "A mortgage insured by the Federal Housing Administration, designed to make buying accessible: 3.5% down with a 580+ credit score. The trade-off is mortgage insurance (MIP) that lasts the life of the loan.",
+      "A mortgage insured by the Federal Housing Administration, designed to make buying accessible: 3.5% down with a 580+ credit score. The trade-off is mortgage insurance (MIP) that lasts the life of the loan unless you put at least 10% down.",
     categoryId: "real-estate-loans",
     lessonId: "fha-loans",
   },
   {
     term: "MIP",
     definition:
-      "Mortgage insurance premium — the FHA loan's version of PMI, with an upfront charge plus a monthly fee. Unlike PMI, the monthly part never drops off unless you refinance out of the FHA loan.",
+      "Mortgage insurance premium — the FHA loan's version of PMI, with an upfront charge plus a monthly fee. Unlike PMI, the monthly part never drops off on a low-down-payment loan (under 10% down) unless you refinance out of the FHA loan.",
     categoryId: "real-estate-loans",
     lessonId: "fha-loans",
   },
