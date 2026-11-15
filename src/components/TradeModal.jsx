@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { fmtMoney, fmtPct, fmtShares } from "../lib/format.js";
+import { sharesForOrder } from "../lib/trade.js";
 
 const ACCENT = "#0D9488";
 
@@ -16,8 +17,13 @@ export default function TradeModal({ stock, quote, ownedShares, cash, onTrade, o
 
   const amount = parseFloat(input);
   const valid = Number.isFinite(amount) && amount > 0;
-  const shares = !valid ? 0 : mode === "dollars" ? amount / quote.price : amount;
-  const roundedShares = Math.round(shares * 10000) / 10000;
+  const roundedShares = sharesForOrder({
+    side,
+    mode,
+    amount,
+    price: quote.price,
+    ownedShares,
+  });
   const cost = roundedShares * quote.price;
 
   const overCash = side === "buy" && valid && cost > cash + 0.005;

@@ -6,6 +6,22 @@ import LessonCard from "../components/LessonCard.jsx";
 import FinalExamCard from "../components/FinalExamCard.jsx";
 import MascotCard from "../components/MascotCard.jsx";
 
+// Hands-on tool featured at the top of a category's lesson list.
+const PRACTICE = {
+  "saving-budgeting": {
+    to: "/tools/budget",
+    emoji: "🧮",
+    title: "Practice: Build Your First Budget",
+    blurb: "Allocate a real paycheck and get graded against the 50/30/20 rule",
+  },
+  options: {
+    to: "/tools/options",
+    emoji: "🎯",
+    title: "Practice: Options Payoff Visualizer",
+    blurb: "See what a call, put, or covered call is worth at expiration — no money at risk",
+  },
+};
+
 export default function LessonListPage() {
   const { categoryId } = useParams();
   const category = getCategory(categoryId);
@@ -15,6 +31,7 @@ export default function LessonListPage() {
   if (!category) return <Navigate to="/learn" replace />;
 
   const stats = getCategoryStats(category);
+  const practice = PRACTICE[category.id];
   const examUnlocked = stats.total > 0 && stats.mastered === stats.total;
 
   return (
@@ -42,9 +59,9 @@ export default function LessonListPage() {
         <MascotCard mascot={category.mascot} color={category.color} />
 
         <div className="flex flex-col gap-3">
-          {category.id === "saving-budgeting" && (
+          {practice && (
             <Link
-              to="/tools/budget"
+              to={practice.to}
               className="flex items-center gap-4 rounded-card bg-card p-5 transition-all duration-300 hover:-translate-y-px"
               style={{
                 border: `1px solid ${category.color}44`,
@@ -55,15 +72,13 @@ export default function LessonListPage() {
                 className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg"
                 style={{ background: `${category.color}15` }}
               >
-                🧮
+                {practice.emoji}
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="m-0 mb-0.5 font-sans text-base font-semibold tracking-normal text-ink">
-                  Practice: Build Your First Budget
+                  {practice.title}
                 </h4>
-                <p className="m-0 text-sm text-ink-muted">
-                  Allocate a real paycheck and get graded against the 50/30/20 rule
-                </p>
+                <p className="m-0 text-sm text-ink-muted">{practice.blurb}</p>
               </div>
               <span
                 className="shrink-0 rounded-full px-2 py-0.5 text-[0.7rem] font-semibold"

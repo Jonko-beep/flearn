@@ -131,7 +131,7 @@ export default function CompoundPage() {
       const diff = mine - o.final;
       return `${fmt$(Math.abs(diff))} ${diff >= 0 ? "more than" : "less than"} starting at ${o.age}`;
     });
-    return `Retiring at ${RETIRE_AGE} with the same ${fmt$(monthly)}/month: that's ${parts.join(" and ")}. Same money in — the only difference is time.`;
+    return `Retiring at ${RETIRE_AGE} with the same ${fmt$(monthly)}/month: that's ${parts.join(" and ")}. Same monthly habit — the earlier start adds deposits, but most of the gap is extra years of compounding.`;
   }, [activePreset, presetFinals, monthly]);
 
   return (

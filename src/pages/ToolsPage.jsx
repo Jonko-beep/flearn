@@ -46,6 +46,15 @@ const TOOLS = [
     description:
       "Warren estimates your real take-home per check — federal tax, FICA, and what your time is truly worth per hour.",
   },
+  {
+    to: "/tools/options",
+    emoji: "🎯",
+    color: "#0EA5E9",
+    title: "Options Payoff Visualizer",
+    tag: "Simulator",
+    description:
+      "Fischer charts what a call, put, covered call, or cash-secured put is worth at expiration — breakeven, max loss, and how it compares with just owning the shares.",
+  },
 ];
 
 function ToolCard({ tool, index }) {

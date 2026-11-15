@@ -33,7 +33,7 @@ export const philosophers = [
     emoji: "🛡️",
     color: "#0D9488",
     summary: "Financial security is personal power — protect first, grow second.",
-    bio: "Went from waitress to Merrill Lynch broker after a broker lost her customers' $50,000 gift — then spent a decade hosting CNBC's The Suze Orman Show and wrote ten consecutive NYT bestsellers.",
+    bio: "Went from waitress to Merrill Lynch broker after a broker lost her customers' $50,000 gift — then spent 13 years hosting CNBC's The Suze Orman Show and wrote ten consecutive NYT bestsellers.",
     philosophy:
       "Financial security is personal power; protect first (emergency fund, insurance, Roth IRAs), grow second; money decisions are emotional decisions.",
     signatureBooks: [
@@ -147,7 +147,7 @@ export const philosophers = [
     emoji: "🏗️",
     color: "#F59E0B",
     summary: "Wealth starts with creating value — income creation precedes investing.",
-    bio: "Nearly went broke scaling gyms, pivoted to Gym Launch ($17M profit by 2017), sold a majority stake, now runs Acquisition.com with a portfolio doing $200M+ annually.",
+    bio: "Nearly went broke scaling gyms, pivoted to Gym Launch (licensing his turnaround playbook to thousands of gym owners), sold a majority stake in 2021, and now runs Acquisition.com, which invests in and advises growing companies.",
     philosophy:
       "Wealth starts with creating value — build offers so good people feel stupid saying no, then master lead generation; income creation precedes investing.",
     signatureBooks: ["$100M Offers", "$100M Leads", "$100M Money Models"],

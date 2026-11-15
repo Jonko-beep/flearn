@@ -84,6 +84,14 @@ export const achievements = [
     condition: "categoryMastered:real-estate-loans",
   },
   {
+    id: "options-graduate",
+    title: "Options Graduate",
+    description: "Master every lesson in Options",
+    emoji: "🦊",
+    xpBonus: 200,
+    condition: "categoryMastered:options",
+  },
+  {
     id: "tool-time",
     title: "Tool Time",
     description: "Try the compound interest visualizer",

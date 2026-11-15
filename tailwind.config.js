@@ -20,6 +20,7 @@ export default {
         invest: "#0D9488",
         save: "#7C3AED",
         estate: "#D97706",
+        options: "#0EA5E9",
         success: "#059669",
         warning: "#f59e0b",
         error: "#dc2626",
