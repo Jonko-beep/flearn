@@ -1,14 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { markToolUsed } from "../lib/achievements.js";
-import {
-  fmt$,
-  SliderField,
-  StatCard,
-  ToolHeader,
-  MascotCallout,
-  ToggleRow,
-} from "../components/CalcKit.jsx";
+import { TriangleAlert } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -19,6 +11,20 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { markToolUsed } from "../lib/achievements.js";
+import {
+  fmt$,
+  SliderField,
+  StatCard,
+  ToolHeader,
+  ToolLayout,
+  ChartCard,
+  ChartTooltip,
+  Insight,
+  GroupLabel,
+  MascotCallout,
+  chart,
+} from "../components/CalcKit.jsx";
 import {
   STRATEGIES,
   computeOptionPayoff,
@@ -26,12 +32,8 @@ import {
   intrinsicValue,
   moveToBreakevenPct,
 } from "../lib/options.js";
-
-const ACCENT = "#0EA5E9"; // Fischer's sky blue
-const PROFIT = "#059669";
-const LOSS = "#dc2626";
-
-const TOGGLE_OPTIONS = STRATEGIES.map((s) => ({ value: s.id, label: s.label }));
+import { Badge, Callout, Card, cx } from "../ui/kit.jsx";
+import { color, hue } from "../ui/theme.js";
 
 function fmtPrice(n) {
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -50,20 +52,22 @@ function fmtPLAxis(n) {
   return n < 0 ? `−${body}` : body;
 }
 
-function plColor(n) {
-  return Math.round(n) > 0 ? PROFIT : Math.round(n) < 0 ? LOSS : "#94a3b8";
-}
+const plTone = (n) => (Math.round(n) > 0 ? "text-gain" : Math.round(n) < 0 ? "text-loss" : "text-ink-secondary");
 
-function ChartTooltip({ active, payload, label }) {
+function PayoffTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const profit = payload[0].value;
   return (
-    <div className="rounded-card border border-edge bg-well px-4 py-3 text-sm shadow-xl">
-      <div className="mb-1 text-ink-secondary">Stock at {fmtPrice(Number(label))}</div>
-      <div className="font-semibold" style={{ color: plColor(profit) }}>
-        {fmtPL(profit)}
-      </div>
-    </div>
+    <ChartTooltip
+      title={`Stock at ${fmtPrice(Number(label))}`}
+      rows={[
+        {
+          label: "Profit or loss",
+          value: <span className={plTone(profit)}>{fmtPL(profit)}</span>,
+          strong: true,
+        },
+      ]}
+    />
   );
 }
 
@@ -116,6 +120,18 @@ function buildInsight(strategy, { stockPrice, strike, premium }, payoff) {
   }
 }
 
+function ScenarioFigure({ label, value, sub }) {
+  return (
+    <div className="rounded-xl border border-edge bg-raised px-4 py-3.5">
+      <div className="eyebrow">{label}</div>
+      <div className={cx("num mt-1.5 font-display text-[1.6rem] font-semibold leading-none tracking-tight", plTone(value))}>
+        {fmtPL(value)}
+      </div>
+      {sub && <div className="num mt-1.5 text-[0.8125rem] text-ink-muted">{sub}</div>}
+    </div>
+  );
+}
+
 export default function OptionsPage() {
   const [strategy, setStrategy] = useState("long-call");
   const [stockPrice, setStockPrice] = useState(100);
@@ -163,120 +179,108 @@ export default function OptionsPage() {
   const move = moveToBreakevenPct(stockPrice, payoff.breakeven);
 
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[760px]">
-        <Link
-          to="/tools"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to tools
-        </Link>
+    <div className="animate-enter" style={hue("options")}>
+      <ToolHeader
+        tool="options"
+        hueKey="options"
+        title="Options payoff visualizer"
+        tagline="What an options trade is worth at expiration — worked out before you risk a dollar."
+      />
 
-        <ToolHeader
-          emoji="🎯"
-          accent={ACCENT}
-          title="Options Payoff Visualizer"
-          tagline="What an options trade is worth at expiration — worked out before you risk a dollar."
-        />
+      <ToolLayout
+        controls={
+          <>
+            <Card className="p-4">
+              <GroupLabel className="!pt-0">Strategy</GroupLabel>
+              <div className="mt-3 grid grid-cols-2 gap-1.5" role="tablist" aria-label="Strategy">
+                {STRATEGIES.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={strategy === s.id}
+                    onClick={() => chooseStrategy(s.id)}
+                    className={cx(
+                      "h-9 rounded-lg border text-[0.8125rem] font-semibold transition-colors",
+                      strategy === s.id
+                        ? "border-accent bg-accent text-accent-fg"
+                        : "border-edge-strong text-ink-secondary hover:bg-raised hover:text-ink"
+                    )}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-3.5 flex items-start gap-2.5 text-sm leading-relaxed text-ink-secondary">
+                <Badge tone="cat" className="mt-0.5">
+                  {info.outlook}
+                </Badge>
+                <span>{info.summary}</span>
+              </div>
+            </Card>
 
-        {/* Strategy */}
-        <div
-          className="mb-4 rounded-card border border-edge bg-well/50 px-4 py-3.5"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.1s both" }}
-        >
-          <label className="mb-2.5 block text-sm font-medium text-ink">🧭 Strategy</label>
-          <ToggleRow accent={ACCENT} value={strategy} onChange={chooseStrategy} options={TOGGLE_OPTIONS} />
-          <p className="m-0 mt-3 text-sm leading-relaxed text-ink-secondary">
-            <span
-              className="mr-2 rounded-full px-2 py-0.5 text-[0.7rem] font-semibold"
-              style={{ background: `${ACCENT}15`, color: ACCENT }}
-            >
-              {info.outlook}
-            </span>
-            {info.summary}
-          </p>
-        </div>
-
-        {/* Inputs */}
-        <div
-          className="mb-4 grid grid-cols-2 gap-3 max-md:grid-cols-1"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.15s both" }}
-        >
-          <SliderField
-            label="📈 Stock price today"
-            value={stockPrice}
-            min={1}
-            max={500}
-            step={1}
-            onChange={setStockPrice}
-            prefix="$"
-            display={(v) => fmt$(v)}
-            accent="options"
-          />
-          <SliderField
-            label="🎯 Strike price"
-            value={strike}
-            min={1}
-            max={500}
-            step={1}
-            onChange={setStrike}
-            prefix="$"
-            display={(v) => fmt$(v)}
-            accent="options"
-          />
-          <SliderField
-            label="🏷️ Premium per share"
-            value={premium}
-            min={0.05}
-            max={50}
-            step={0.05}
-            onChange={(v) => setPremium(Math.round(v * 100) / 100)}
-            prefix="$"
-            display={(v) => fmtPrice(v)}
-            accent="options"
-          />
-          <SliderField
-            label="📄 Contracts (100 shares each)"
-            value={contracts}
-            min={1}
-            max={10}
-            step={1}
-            onChange={(v) => setContracts(Math.round(v))}
-            display={(v) => `${v * 100} sh`}
-            accent="options"
-          />
-        </div>
-
+            <SliderField
+              label="Stock price today"
+              value={stockPrice}
+              min={1}
+              max={500}
+              step={1}
+              onChange={setStockPrice}
+              prefix="$"
+              display={(v) => fmt$(v)}
+            />
+            <SliderField
+              label="Strike price"
+              value={strike}
+              min={1}
+              max={500}
+              step={1}
+              onChange={setStrike}
+              prefix="$"
+              display={(v) => fmt$(v)}
+            />
+            <SliderField
+              label="Premium per share"
+              value={premium}
+              min={0.05}
+              max={50}
+              step={0.05}
+              onChange={(v) => setPremium(Math.round(v * 100) / 100)}
+              prefix="$"
+              display={(v) => fmtPrice(v)}
+            />
+            <SliderField
+              label="Contracts"
+              value={contracts}
+              min={1}
+              max={10}
+              step={1}
+              onChange={(v) => setContracts(Math.round(v))}
+              display={(v) => `${v}`}
+              hint={`${contracts * 100} shares · 100 each`}
+            />
+          </>
+        }
+      >
         {underpriced && (
-          <div
-            className="mb-4 rounded-card border p-4 text-sm leading-relaxed text-ink"
-            style={{ borderColor: "#f59e0b55", background: "#f59e0b10" }}
-          >
-            <span className="font-semibold text-warning">Unrealistic premium:</span> with the stock at{" "}
-            {fmtPrice(stockPrice)}, this option is already {fmtPrice(floor)} in the money, so in a real
-            market it would cost at least that much. Raise the premium to {fmtPrice(floor)} or more for
-            a picture you could actually trade.
-          </div>
+          <Callout tone="warn" icon={TriangleAlert} title="Unrealistic premium">
+            With the stock at {fmtPrice(stockPrice)}, this option is already {fmtPrice(floor)} in the money, so in a
+            real market it would cost at least that much. Raise the premium to {fmtPrice(floor)} or more for a
+            picture you could actually trade.
+          </Callout>
         )}
 
-        {/* Stats */}
-        <div className="mb-4 grid grid-cols-3 gap-3 max-md:grid-cols-1">
+        <div className="grid grid-cols-3 gap-3 max-sm:grid-cols-1">
           <StatCard
             label="Max loss"
             value={fmt$(payoff.maxLoss)}
-            color="#f87171"
-            delay={0.2}
-            sub={
-              strategy === "long-call" || strategy === "long-put"
-                ? "the premium — all of it"
-                : "if the stock goes to $0"
-            }
+            tone="loss"
+            sub={strategy === "long-call" || strategy === "long-put" ? "the premium — all of it" : "if the stock goes to $0"}
           />
           <StatCard
             label="Max profit"
             value={payoff.maxProfit === Infinity ? "Unlimited" : fmt$(Math.max(0, payoff.maxProfit))}
-            color="#34d399"
-            delay={0.25}
+            tone="gain"
             sub={
               strategy === "long-call"
                 ? "grows as the stock rises"
@@ -290,8 +294,6 @@ export default function OptionsPage() {
           <StatCard
             label="Breakeven at expiration"
             value={payoff.breakeven === null ? "—" : fmtPrice(payoff.breakeven)}
-            color="#f1f5f9"
-            delay={0.3}
             sub={
               move === null
                 ? "no price breaks even"
@@ -300,66 +302,50 @@ export default function OptionsPage() {
           />
         </div>
 
-        {/* Payoff chart */}
-        <div
-          className="mb-4 rounded-card-lg border border-edge bg-card p-5 max-md:p-3"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.35s both" }}
+        <ChartCard
+          title="Profit or loss at expiration"
+          legend={[
+            { label: "Profit", color: chart.gain },
+            { label: "Loss", color: chart.loss },
+          ]}
+          note="Stock price at expiration along the bottom; your total profit or loss up the side."
         >
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-            <h3 className="m-0 text-lg font-semibold">Profit or loss at expiration</h3>
-            <div className="flex gap-4 text-xs text-ink-secondary">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: PROFIT }} />
-                Profit
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: LOSS }} />
-                Loss
-              </span>
-            </div>
-          </div>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={payoff.series} margin={{ top: 16, right: 12, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="optionsPlFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset={zeroOffset} stopColor={PROFIT} stopOpacity={0.35} />
-                  <stop offset={zeroOffset} stopColor={LOSS} stopOpacity={0.35} />
+                  <stop offset={zeroOffset} stopColor={chart.gain} stopOpacity={0.3} />
+                  <stop offset={zeroOffset} stopColor={chart.loss} stopOpacity={0.3} />
                 </linearGradient>
                 <linearGradient id="optionsPlStroke" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset={zeroOffset} stopColor={PROFIT} />
-                  <stop offset={zeroOffset} stopColor={LOSS} />
+                  <stop offset={zeroOffset} stopColor={chart.gain} />
+                  <stop offset={zeroOffset} stopColor={chart.loss} />
                 </linearGradient>
               </defs>
-              <CartesianGrid stroke="#334155" strokeOpacity={0.4} vertical={false} />
+              <CartesianGrid stroke={chart.grid} vertical={false} />
               <XAxis
                 dataKey="price"
                 type="number"
                 domain={[0, chartTop]}
-                tick={{ fill: "#64748b", fontSize: 12 }}
+                tick={chart.tick}
                 tickLine={false}
-                axisLine={{ stroke: "#334155" }}
+                axisLine={{ stroke: chart.axis }}
                 tickFormatter={(v) => `$${Math.round(v)}`}
               />
-              <YAxis
-                tickFormatter={fmtPLAxis}
-                tick={{ fill: "#64748b", fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={58}
-              />
-              <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#64748b", strokeDasharray: "4 4" }} />
-              <ReferenceLine y={0} stroke="#94a3b8" strokeOpacity={0.7} />
+              <YAxis tickFormatter={fmtPLAxis} tick={chart.tick} tickLine={false} axisLine={false} width={58} />
+              <Tooltip content={<PayoffTooltip />} cursor={chart.cursor} />
+              <ReferenceLine y={0} stroke={chart.muted} />
               <ReferenceLine
                 x={stockPrice}
-                stroke="#94a3b8"
+                stroke={chart.muted}
                 strokeDasharray="4 4"
-                label={{ value: "Today", position: "top", fill: "#94a3b8", fontSize: 11 }}
+                label={{ value: "Today", position: "top", fill: chart.muted, fontSize: 11 }}
               />
               <ReferenceLine
                 x={scenarioPrice}
-                stroke={ACCENT}
+                stroke={color("cat")}
                 strokeDasharray="2 3"
-                label={{ value: "Scenario", position: "insideTopRight", fill: ACCENT, fontSize: 11 }}
+                label={{ value: "Scenario", position: "insideTopRight", fill: color("cat"), fontSize: 11 }}
               />
               <Area
                 type="linear"
@@ -373,19 +359,12 @@ export default function OptionsPage() {
               />
             </AreaChart>
           </ResponsiveContainer>
-          <p className="m-0 mt-2 px-1 text-xs text-ink-muted">
-            Stock price at expiration along the bottom; your total profit or loss up the side.
-          </p>
-        </div>
+        </ChartCard>
 
-        {/* Scenario */}
-        <div
-          className="mb-4 rounded-card-lg border border-edge bg-card p-5"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.4s both" }}
-        >
-          <h3 className="m-0 mb-3 text-lg font-semibold">Play it forward</h3>
+        <Card className="p-4 sm:p-5">
+          <h2 className="mb-4 text-[1.15rem]">Play it forward</h2>
           <SliderField
-            label="🔮 Stock price at expiration"
+            label="Stock price at expiration"
             value={scenarioPrice}
             min={0}
             max={Math.floor(chartTop)}
@@ -393,79 +372,47 @@ export default function OptionsPage() {
             onChange={setExpiryPrice}
             prefix="$"
             display={(v) => fmt$(v)}
-            accent="options"
+            hint={`stock ${scenarioPrice >= stockPrice ? "up" : "down"} ${Math.abs((scenarioPrice / stockPrice - 1) * 100).toFixed(0)}% from today`}
           />
-          <div className="mt-3 grid grid-cols-2 gap-3 max-md:grid-cols-1">
-            <div className="rounded-card border border-edge bg-well/50 px-4 py-3">
-              <div className="mb-1 text-xs tracking-wide text-ink-muted uppercase">{info.label}</div>
-              <div className="font-serif text-2xl font-bold tracking-heading" style={{ color: plColor(scenarioPL) }}>
-                {fmtPL(scenarioPL)}
-              </div>
-              {payoff.capital > 0 && (
-                <div className="mt-0.5 text-xs text-ink-muted">
-                  {((scenarioPL / payoff.capital) * 100).toFixed(0)}% on {fmt$(payoff.capital)} put up
-                </div>
-              )}
-            </div>
-            <div className="rounded-card border border-edge bg-well/50 px-4 py-3">
-              <div className="mb-1 text-xs tracking-wide text-ink-muted uppercase">{comparison.label}</div>
-              <div
-                className="font-serif text-2xl font-bold tracking-heading"
-                style={{ color: plColor(comparison.profit) }}
-              >
-                {fmtPL(comparison.profit)}
-              </div>
-              <div className="mt-0.5 text-xs text-ink-muted">
-                stock {scenarioPrice >= stockPrice ? "up" : "down"}{" "}
-                {Math.abs((scenarioPrice / stockPrice - 1) * 100).toFixed(0)}% from today
-              </div>
-            </div>
+          <div className="mt-3 grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+            <ScenarioFigure
+              label={info.label}
+              value={scenarioPL}
+              sub={
+                payoff.capital > 0
+                  ? `${((scenarioPL / payoff.capital) * 100).toFixed(0)}% on ${fmt$(payoff.capital)} put up`
+                  : null
+              }
+            />
+            <ScenarioFigure label={comparison.label} value={comparison.profit} />
           </div>
-        </div>
+        </Card>
 
-        {/* Insight */}
-        <div
-          className="mb-4 rounded-card border p-4"
-          style={{
-            borderColor: `${ACCENT}33`,
-            background: `${ACCENT}0d`,
-            animation: "fadeInUp 0.6s ease-out 0.45s both",
-          }}
-        >
-          <div className="mb-1 text-xs font-semibold tracking-wide uppercase" style={{ color: ACCENT }}>
-            💡 Insight
-          </div>
-          <p className="m-0 text-sm leading-relaxed text-ink">{insight}</p>
-        </div>
+        <Insight>{insight}</Insight>
 
-        {/* Disclaimer */}
-        <div
-          className="mb-4 rounded-card border border-edge bg-well/50 p-4 text-xs leading-relaxed text-ink-muted"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.5s both" }}
-        >
-          <span className="font-semibold text-ink-secondary">📌 Educational simulator only.</span> It
-          shows value at expiration, when an option is worth exactly its intrinsic value. Before then,
-          prices also depend on time left and volatility. It ignores commissions, bid-ask spreads,
-          taxes, dividends, and early assignment, and you type the premium in yourself — it isn't a
-          market quote. Nothing here is a recommendation to trade options.{" "}
-          <Link to="/learn/options" className="font-semibold underline" style={{ color: ACCENT }}>
+        <MascotCallout emoji="🦊" name="Fischer the Fox" hueKey="options">
+          Every options trade is a picture, and once you can read the picture you can&apos;t be fooled by the pitch.
+          Look at where the line sits below zero: that&apos;s what you pay for being wrong, and for a buyer it&apos;s
+          a flat floor — small, but you hit it often. Look at where it flattens out on top: that&apos;s a
+          seller&apos;s ceiling — the premium, and not a penny more — sitting above a slope that runs a long way
+          down. Then drag the expiration slider and compare with simply owning the shares. Sometimes the option wins
+          big. Notice how often the shares are ahead anyway, and how a stock that goes nowhere can cost an option
+          buyer the whole premium while the shareholder loses nothing. An option is a right, not an obligation — but
+          the premium is due either way.
+        </MascotCallout>
+
+        <p className="border-t border-edge pt-4 text-[0.8125rem] leading-relaxed text-ink-muted">
+          <span className="font-semibold text-ink-secondary">Educational simulator only.</span> It shows value at
+          expiration, when an option is worth exactly its intrinsic value. Before then, prices also depend on time
+          left and volatility. It ignores commissions, bid-ask spreads, taxes, dividends, and early assignment, and
+          you type the premium in yourself — it isn&apos;t a market quote. Nothing here is a recommendation to trade
+          options.{" "}
+          <Link to="/learn/options" className="font-semibold text-accent-ink hover:underline">
             Start with the Options lessons
           </Link>
           .
-        </div>
-
-        <MascotCallout emoji="🦊" name="Fischer the Fox" accent={ACCENT} delay={0.55}>
-          Every options trade is a picture, and once you can read the picture you can't be fooled by
-          the pitch. Look at where the line sits below zero: that's what you pay for being wrong, and
-          for a buyer it's a flat floor — small, but you hit it often. Look at where it flattens out
-          on top: that's a seller's ceiling — the premium, and not a penny more — sitting above a
-          slope that runs a long way down. Then drag the expiration slider and compare with simply
-          owning the shares. Sometimes the option wins big. Notice how often the shares are ahead
-          anyway, and how a stock that goes nowhere can cost an option buyer the whole premium
-          while the shareholder loses nothing. An option is a right, not an obligation — but the premium is
-          due either way.
-        </MascotCallout>
-      </div>
+        </p>
+      </ToolLayout>
     </div>
   );
 }

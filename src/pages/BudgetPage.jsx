@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { ArrowLeft, ArrowRight, Check, PiggyBank, RotateCcw, Rocket } from "lucide-react";
 import { awardXp, recordAction } from "../lib/gamification.js";
 import { checkAchievements } from "../lib/achievements.js";
+import { ToolHeader, Insight } from "../components/CalcKit.jsx";
+import { Avatar, Button, Callout, Card, cx } from "../ui/kit.jsx";
+import { color } from "../ui/theme.js";
 
-const ACCENT = "#7C3AED";
 const STORAGE_KEY = "flearn_budget";
 
 // bucket maps each category onto the 50/30/20 rule
@@ -19,10 +21,11 @@ export const BUDGET_CATEGORIES = [
 ];
 
 const BUCKETS = {
-  needs: { label: "Needs", color: "#0EA5E9", target: 50 },
-  wants: { label: "Wants", color: "#EC4899", target: 30 },
-  savings: { label: "Savings", color: "#10B981", target: 20 },
+  needs: { label: "Needs", color: color("chart-2"), target: 50 },
+  wants: { label: "Wants", color: color("warn"), target: 30 },
+  savings: { label: "Savings", color: color("accent"), target: 20 },
 };
+const BUCKET_ORDER = ["needs", "wants", "savings"];
 
 function emptyAllocations() {
   return Object.fromEntries(BUDGET_CATEGORIES.map((c) => [c.key, 0]));
@@ -52,55 +55,52 @@ function fmt$(n) {
   return `$${Math.round(n).toLocaleString("en-US")}`;
 }
 
-function StepDots({ step }) {
+function Steps({ step }) {
   return (
-    <div className="mb-8 flex items-center gap-2 text-xs text-ink-muted">
+    <ol className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.8125rem]">
       {["Income", "Allocate", "Results"].map((label, i) => {
         const active = step === i + 1;
         const done = step > i + 1;
         return (
-          <span key={label} className="flex items-center gap-2">
-            {i > 0 && <span className="text-edge">—</span>}
-            <span
-              className="flex h-6 w-6 items-center justify-center rounded-full text-[0.7rem] font-semibold"
-              style={{
-                background: active || done ? ACCENT : "#0f172a",
-                color: active || done ? "#fff" : "#64748b",
-              }}
-            >
-              {done ? "✓" : i + 1}
+          <li key={label} className="flex items-center gap-3">
+            {i > 0 && <span className="h-px w-6 bg-edge-strong" aria-hidden />}
+            <span className="flex items-center gap-2">
+              <span
+                className={cx(
+                  "num flex h-6 w-6 items-center justify-center rounded-full text-2xs font-bold",
+                  active || done ? "bg-accent text-accent-fg" : "border border-edge-strong text-ink-muted"
+                )}
+              >
+                {done ? <Check size={12} strokeWidth={3} aria-hidden /> : i + 1}
+              </span>
+              <span className={active ? "font-semibold text-ink" : "text-ink-muted"}>{label}</span>
             </span>
-            <span style={{ color: active ? "#f1f5f9" : undefined }}>{label}</span>
-          </span>
+          </li>
         );
       })}
-    </div>
+    </ol>
   );
 }
 
-function StackedBar({ label, needsPct, wantsPct, savingsPct }) {
-  const segments = [
-    { pct: needsPct, ...BUCKETS.needs },
-    { pct: wantsPct, ...BUCKETS.wants },
-    { pct: savingsPct, ...BUCKETS.savings },
-  ];
+function StackedBar({ label, pcts }) {
   return (
-    <div className="mb-4">
-      <div className="mb-1.5 text-sm font-medium text-ink-secondary">{label}</div>
-      <div className="flex h-9 w-full overflow-hidden rounded-card border border-edge bg-well">
-        {segments.map(
-          (s) =>
-            s.pct > 0 && (
-              <div
-                key={s.label}
-                className="flex items-center justify-center overflow-hidden text-[0.7rem] font-semibold text-white transition-all duration-500 whitespace-nowrap"
-                style={{ width: `${s.pct}%`, background: s.color }}
-                title={`${s.label}: ${s.pct.toFixed(1)}%`}
-              >
-                {s.pct >= 11 && `${Math.round(s.pct)}%`}
-              </div>
-            )
-        )}
+    <div>
+      <div className="mb-2 text-sm font-medium text-ink-secondary">{label}</div>
+      <div className="flex h-9 w-full overflow-hidden rounded-lg bg-edge">
+        {BUCKET_ORDER.map((key) => {
+          const pct = pcts[key];
+          if (pct <= 0) return null;
+          return (
+            <div
+              key={key}
+              className="num flex items-center justify-center overflow-hidden whitespace-nowrap border-r-2 border-card text-2xs font-bold text-canvas transition-[width] duration-500 last:border-r-0"
+              style={{ width: `${pct}%`, background: BUCKETS[key].color }}
+              title={`${BUCKETS[key].label}: ${pct.toFixed(1)}%`}
+            >
+              {pct >= 11 && `${Math.round(pct)}%`}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -111,10 +111,7 @@ function buildFeedback(income, allocations) {
   const dollars = (key) => allocations[key];
   const pct = (n) => (n / income) * 100;
 
-  const needs$ = BUDGET_CATEGORIES.filter((c) => c.bucket === "needs").reduce(
-    (s, c) => s + dollars(c.key),
-    0
-  );
+  const needs$ = BUDGET_CATEGORIES.filter((c) => c.bucket === "needs").reduce((s, c) => s + dollars(c.key), 0);
   const wants$ = dollars("fun") + dollars("subscriptions");
   const savings$ = dollars("savings");
   const needsPct = pct(needs$);
@@ -218,6 +215,8 @@ function buildFeedback(income, allocations) {
   };
 }
 
+const GRADE_TONE = { A: "text-gain", B: "text-accent-ink", C: "text-warn", D: "text-loss" };
+
 export default function BudgetPage() {
   const saved = useMemo(readBudget, []);
   const [step, setStep] = useState(1);
@@ -266,132 +265,80 @@ export default function BudgetPage() {
   };
 
   const feedback = step === 3 ? buildFeedback(income, allocations) : null;
+  const bucketTotal = (bucket) =>
+    BUDGET_CATEGORIES.filter((c) => c.bucket === bucket).reduce((s, c) => s + allocations[c.key], 0);
 
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[640px]">
-        <Link
-          to="/learn/saving-budgeting"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to Saving & Budgeting
-        </Link>
+    <div className="animate-enter">
+      <ToolHeader
+        tool="budget"
+        hueKey="saving"
+        title="Build your first budget"
+        tagline="Allocate a month of income, then see how it stacks up against 50/30/20."
+      />
 
-        <div className="mb-6 animate-fade-in-down">
-          <div className="flex items-center gap-3">
-            <span
-              className="flex h-[52px] w-[52px] items-center justify-center rounded-card text-3xl"
-              style={{ background: `${ACCENT}15` }}
-            >
-              🧮
-            </span>
-            <div>
-              <h2 className="m-0 text-3xl font-bold">Build Your First Budget</h2>
-              <span className="text-sm text-ink-muted">
-                Allocate a month of income, then see how it stacks up against 50/30/20.
-              </span>
-            </div>
+      <Steps step={step} />
+
+      {/* Step 1 — income */}
+      {step === 1 && (
+        <Card className="max-w-[640px] animate-enter p-6 sm:p-8">
+          <h2 className="text-[1.5rem]">What&apos;s your monthly after-tax income?</h2>
+          <p className="mt-2 leading-relaxed text-ink-secondary">
+            Whatever actually lands in your account each month — a part-time gig, a side hustle, or a full salary all
+            work here.
+          </p>
+          <div className="relative mt-6 max-w-[280px]">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-ink-muted">$</span>
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={incomeInput}
+              onChange={(e) => setIncomeInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && incomeValid && goToAllocate()}
+              placeholder="2,500"
+              aria-label="Monthly after-tax income"
+              autoFocus
+              className="field num h-14 pl-9 text-[1.3rem] font-semibold"
+            />
           </div>
-        </div>
+          <p className="mt-2 min-h-[1.25rem] text-sm text-warn" role="alert">
+            {incomeInput !== "" &&
+              !incomeValid &&
+              (income < 50
+                ? "Enter at least $50 — even a small budget deserves a plan."
+                : "That's above the $1,000,000/month cap — congrats, and try a smaller number.")}
+          </p>
+          <Button size="lg" iconRight={ArrowRight} onClick={goToAllocate} disabled={!incomeValid} className="mt-3">
+            Continue
+          </Button>
+        </Card>
+      )}
 
-        <StepDots step={step} />
-
-        {/* Step 1 — income */}
-        {step === 1 && (
-          <div
-            className="rounded-card-lg border border-edge bg-card p-6"
-            style={{ animation: "fadeInUp 0.5s ease-out both" }}
-          >
-            <h3 className="m-0 mb-1 text-xl font-semibold">
-              What's your monthly after-tax income?
-            </h3>
-            <p className="m-0 mb-5 text-sm text-ink-secondary">
-              Whatever actually lands in your account each month — a part-time gig, a
-              side hustle, or a full salary all work here.
-            </p>
-            <div className="relative mb-2 max-w-[280px]">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-ink-muted">
-                $
-              </span>
-              <input
-                type="number"
-                min="0"
-                step="1"
-                value={incomeInput}
-                onChange={(e) => setIncomeInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && incomeValid && goToAllocate()}
-                placeholder="2,500"
-                autoFocus
-                className="w-full rounded-card border border-edge bg-well py-3 pl-9 pr-4 text-lg text-ink outline-none transition-colors focus:border-save"
-              />
-            </div>
-            <p className="m-0 mb-5 min-h-[1.25rem] text-sm text-warning">
-              {incomeInput !== "" && !incomeValid &&
-                (income < 50
-                  ? "Enter at least $50 — even a small budget deserves a plan."
-                  : "That's above the $1,000,000/month cap — congrats, and try a smaller number.")}
-            </p>
-            <button
-              onClick={goToAllocate}
-              disabled={!incomeValid}
-              className="rounded-card px-8 py-3 font-serif text-base font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-40"
-              style={{ background: `linear-gradient(135deg, ${ACCENT}, #6D28D9)` }}
-            >
-              Continue →
-            </button>
-          </div>
-        )}
-
-        {/* Step 2 — allocate */}
-        {step === 2 && (
-          <div style={{ animation: "fadeInUp 0.5s ease-out both" }}>
-            <div
-              className="sticky top-3 z-10 mb-4 flex items-center justify-between rounded-card-lg border bg-card px-5 py-4"
-              style={{
-                borderColor:
-                  remaining === 0 ? "#10B98155" : remaining < 0 ? "#dc262655" : `${ACCENT}33`,
-              }}
-            >
-              <div>
-                <div className="text-xs text-ink-muted">
-                  {remaining < 0 ? "Over-allocated by" : "Left to allocate"}
-                </div>
-                <div
-                  className="font-serif text-2xl font-bold"
-                  style={{
-                    color: remaining === 0 ? "#10B981" : remaining < 0 ? "#ef4444" : "#f1f5f9",
-                  }}
-                >
-                  {remaining === 0 ? "$0 — perfect ✓" : fmt$(Math.abs(remaining))}
-                </div>
-              </div>
-              <div className="text-right text-xs text-ink-muted">
-                of {fmt$(income)}/month
-                {remaining > 0 && (
-                  <div>
-                    <button
-                      onClick={() => setAllocation("savings", allocations.savings + remaining)}
-                      className="mt-1 rounded-full border px-3 py-1 text-xs font-medium transition-all hover:-translate-y-px"
-                      style={{ borderColor: `${ACCENT}55`, color: ACCENT, background: `${ACCENT}10` }}
-                    >
-                      💰 Put {fmt$(remaining)} into savings
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="mb-4 flex flex-col gap-3">
-              {BUDGET_CATEGORIES.map((c) => (
-                <div key={c.key} className="rounded-card border border-edge bg-card px-5 py-4">
-                  <div className="mb-2 flex items-center justify-between gap-3">
-                    <label htmlFor={`alloc-${c.key}`} className="text-sm font-medium text-ink">
-                      {c.emoji} {c.label}
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
-                        $
+      {/* Step 2 — allocate */}
+      {step === 2 && (
+        <div className="grid animate-enter items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <Card className="divide-y divide-edge">
+            {BUDGET_CATEGORIES.map((c) => {
+              const share = income > 0 ? (allocations[c.key] / income) * 100 : 0;
+              return (
+                <div key={c.key} className="px-4 py-3.5 sm:px-5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-raised text-base" aria-hidden>
+                      {c.emoji}
+                    </span>
+                    <label htmlFor={`alloc-${c.key}`} className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold text-ink">{c.label}</span>
+                      <span className="flex items-center gap-1.5 text-2xs text-ink-muted">
+                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: BUCKETS[c.bucket].color }} />
+                        {BUCKETS[c.bucket].label}
                       </span>
+                    </label>
+                    <span className="num hidden w-10 text-right text-[0.8125rem] text-ink-muted sm:block">
+                      {Math.round(share)}%
+                    </span>
+                    <div className="relative shrink-0">
+                      <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-ink-muted">$</span>
                       <input
                         id={`alloc-${c.key}`}
                         type="number"
@@ -400,168 +347,181 @@ export default function BudgetPage() {
                         step="1"
                         value={allocations[c.key]}
                         onChange={(e) => setAllocation(c.key, e.target.value)}
-                        className="w-[110px] rounded-card border border-edge bg-well py-1.5 pl-7 pr-2 text-right text-sm text-ink outline-none transition-colors focus:border-save"
+                        className="field num h-9 w-[112px] pl-6 pr-2.5 text-right font-semibold"
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min="0"
-                      max={income}
-                      step="1"
-                      value={allocations[c.key]}
-                      onChange={(e) => setAllocation(c.key, e.target.value)}
-                      className="h-1.5 w-full cursor-pointer accent-save"
-                      aria-label={`${c.label} slider`}
-                    />
-                    <span className="w-10 shrink-0 text-right text-xs text-ink-muted">
-                      {income > 0 ? Math.round((allocations[c.key] / income) * 100) : 0}%
-                    </span>
-                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max={income}
+                    step="1"
+                    value={allocations[c.key]}
+                    onChange={(e) => setAllocation(c.key, e.target.value)}
+                    className="slider mt-2"
+                    style={{ "--pct": `${share}%` }}
+                    aria-label={`${c.label} slider`}
+                  />
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </Card>
 
-            <div className="flex items-center justify-between">
-              <button
-                onClick={() => setStep(1)}
-                className="text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-              >
-                ← Change income
-              </button>
-              <button
-                onClick={goToResults}
-                disabled={remaining !== 0}
-                className="rounded-card px-8 py-3 font-serif text-base font-semibold text-white transition-all disabled:cursor-not-allowed disabled:opacity-40"
-                style={{ background: `linear-gradient(135deg, ${ACCENT}, #6D28D9)` }}
-                title={remaining !== 0 ? "Allocate every dollar to continue" : undefined}
-              >
-                See my results →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3 — results */}
-        {step === 3 && feedback && (
-          <div style={{ animation: "fadeInUp 0.5s ease-out both" }}>
-            {/* Grade card */}
-            <div
-              className="mb-6 rounded-card-lg border bg-card p-6"
-              style={{ borderColor: `${ACCENT}33` }}
+          {/* Running total — stays in view while you allocate */}
+          <aside className="flex flex-col gap-3 lg:sticky lg:top-8">
+            <Card
+              className={cx(
+                "p-5",
+                remaining === 0 ? "border-gain/50" : remaining < 0 ? "border-loss/50" : undefined
+              )}
             >
-              <div className="flex items-start gap-4">
-                <span className="text-5xl">🐻</span>
-                <div className="min-w-0">
-                  <div className="mb-1 text-xs tracking-wide text-ink-muted uppercase">
-                    Benjamin the Bear's verdict
-                  </div>
-                  <div className="flex items-baseline gap-3">
-                    <span
-                      className="font-serif text-5xl font-bold"
-                      style={{
-                        color:
-                          feedback.grade === "A"
-                            ? "#10B981"
-                            : feedback.grade === "B"
-                              ? "#0EA5E9"
-                              : feedback.grade === "C"
-                                ? "#f59e0b"
-                                : "#ef4444",
-                      }}
-                    >
-                      {feedback.grade}
-                    </span>
-                    <span className="text-base text-ink-secondary">{feedback.gradeLine}</span>
-                  </div>
-                </div>
+              <div className="eyebrow">{remaining < 0 ? "Over-allocated by" : "Left to allocate"}</div>
+              <div
+                className={cx(
+                  "num mt-1.5 flex items-center gap-2 font-display text-[2rem] font-semibold leading-none",
+                  remaining === 0 ? "text-gain" : remaining < 0 ? "text-loss" : "text-ink"
+                )}
+              >
+                {fmt$(Math.abs(remaining))}
+                {remaining === 0 && <Check size={22} strokeWidth={2.6} aria-label="Every dollar allocated" />}
               </div>
-            </div>
+              <div className="num mt-1.5 text-[0.8125rem] text-ink-muted">of {fmt$(income)} a month</div>
 
-            {/* Comparison bars */}
-            <div className="mb-6 rounded-card-lg border border-edge bg-card p-6">
-              <h3 className="m-0 mb-4 text-xl font-semibold">You vs. the 50/30/20 rule</h3>
+              <div className="mt-4 flex h-2 overflow-hidden rounded-full bg-edge" aria-hidden>
+                {BUCKET_ORDER.map((key) => (
+                  <div
+                    key={key}
+                    className="h-full transition-[width] duration-300"
+                    style={{ width: `${income > 0 ? Math.min(100, (bucketTotal(key) / income) * 100) : 0}%`, background: BUCKETS[key].color }}
+                  />
+                ))}
+              </div>
+              <dl className="num mt-3 space-y-1.5 text-[0.8125rem]">
+                {BUCKET_ORDER.map((key) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <dt className="flex items-center gap-1.5 text-ink-secondary">
+                      <span className="h-2 w-2 rounded-sm" style={{ background: BUCKETS[key].color }} />
+                      {BUCKETS[key].label}
+                      <span className="text-ink-muted">· aim {BUCKETS[key].target}%</span>
+                    </dt>
+                    <dd className="font-semibold text-ink">
+                      {income > 0 ? Math.round((bucketTotal(key) / income) * 100) : 0}%
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+
+              {remaining > 0 && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={PiggyBank}
+                  className="mt-4 w-full"
+                  onClick={() => setAllocation("savings", allocations.savings + remaining)}
+                >
+                  Put {fmt$(remaining)} into savings
+                </Button>
+              )}
+            </Card>
+
+            <Button
+              size="lg"
+              iconRight={ArrowRight}
+              onClick={goToResults}
+              disabled={remaining !== 0}
+              title={remaining !== 0 ? "Allocate every dollar to continue" : undefined}
+            >
+              See my results
+            </Button>
+            <Button variant="ghost" icon={ArrowLeft} onClick={() => setStep(1)}>
+              Change income
+            </Button>
+          </aside>
+        </div>
+      )}
+
+      {/* Step 3 — results */}
+      {step === 3 && feedback && (
+        <div className="flex max-w-[860px] animate-enter flex-col gap-4">
+          <Card className="flex flex-wrap items-center gap-x-6 gap-y-4 p-6">
+            <div
+              className={cx(
+                "flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border border-edge bg-raised font-display text-[3rem] font-semibold leading-none",
+                GRADE_TONE[feedback.grade]
+              )}
+              aria-label={`Grade ${feedback.grade}`}
+            >
+              {feedback.grade}
+            </div>
+            <div className="min-w-0 flex-1 basis-60">
+              <div className="flex items-center gap-2">
+                <Avatar emoji="🐻" size={24} hueKey="saving" />
+                <span className="eyebrow">Benjamin the Bear&apos;s verdict</span>
+              </div>
+              <p className="mt-2 font-display text-[1.35rem] leading-snug text-ink">{feedback.gradeLine}</p>
+            </div>
+          </Card>
+
+          <Card className="p-5 sm:p-6">
+            <h2 className="text-[1.2rem]">You vs. the 50/30/20 rule</h2>
+            <div className="mt-5 flex flex-col gap-4">
               <StackedBar
                 label={`Your budget — ${fmt$(income)}/month`}
-                needsPct={feedback.needsPct}
-                wantsPct={feedback.wantsPct}
-                savingsPct={feedback.savingsPct}
+                pcts={{ needs: feedback.needsPct, wants: feedback.wantsPct, savings: feedback.savingsPct }}
               />
-              <StackedBar label="The 50/30/20 rule" needsPct={50} wantsPct={30} savingsPct={20} />
-              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-ink-secondary">
-                {Object.values(BUCKETS).map((b) => (
-                  <span key={b.label} className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-sm" style={{ background: b.color }} />
-                    {b.label}
-                  </span>
-                ))}
-              </div>
-              <p className="m-0 mt-4 text-sm text-ink-secondary">
-                Needs {fmt$(feedback.needs$)} ({Math.round(feedback.needsPct)}%) · Wants{" "}
-                {fmt$(feedback.wants$)} ({Math.round(feedback.wantsPct)}%) · Savings{" "}
-                {fmt$(feedback.savings$)} ({Math.round(feedback.savingsPct)}%)
-              </p>
+              <StackedBar label="The 50/30/20 rule" pcts={{ needs: 50, wants: 30, savings: 20 }} />
             </div>
-
-            {/* FI callout */}
-            {feedback.savingsPct > 30 && (
-              <div
-                className="mb-6 rounded-card-lg border p-5"
-                style={{ borderColor: "#10B98155", background: "#10B98110" }}
-              >
-                <div className="mb-1 font-serif text-lg font-semibold text-success">
-                  🚀 Financial independence trajectory
+            <dl className="num mt-5 grid grid-cols-3 gap-px overflow-hidden rounded-xl border border-edge bg-edge">
+              {[
+                ["needs", feedback.needs$, feedback.needsPct],
+                ["wants", feedback.wants$, feedback.wantsPct],
+                ["savings", feedback.savings$, feedback.savingsPct],
+              ].map(([key, dollars, pct]) => (
+                <div key={key} className="bg-card px-4 py-3">
+                  <dt className="flex items-center gap-1.5 text-[0.8125rem] text-ink-secondary">
+                    <span className="h-2 w-2 rounded-sm" style={{ background: BUCKETS[key].color }} />
+                    {BUCKETS[key].label}
+                  </dt>
+                  <dd className="mt-1 font-semibold text-ink">
+                    {fmt$(dollars)} <span className="font-normal text-ink-muted">· {Math.round(pct)}%</span>
+                  </dd>
                 </div>
-                <p className="m-0 text-sm leading-relaxed text-ink-secondary">
-                  A {Math.round(feedback.savingsPct)}% savings rate isn't just "good with money" —
-                  it's the pace people use to buy back decades of their working life. Keep this up
-                  and invest the difference, and you're playing a completely different game.
-                </p>
-              </div>
-            )}
+              ))}
+            </dl>
+          </Card>
 
-            {/* Observations */}
-            <div className="mb-6 rounded-card-lg border border-edge bg-card p-6">
-              <h3 className="m-0 mb-3 text-xl font-semibold">What Benjamin noticed</h3>
-              <ul className="m-0 flex list-none flex-col gap-3 p-0">
-                {feedback.observations.map((o, i) => (
-                  <li key={i} className="flex gap-3 text-sm leading-relaxed text-ink-secondary">
-                    <span className="shrink-0" style={{ color: ACCENT }}>
-                      •
-                    </span>
-                    {o}
-                  </li>
-                ))}
-              </ul>
-              <div
-                className="mt-5 rounded-card border p-4"
-                style={{ borderColor: `${ACCENT}33`, background: `${ACCENT}0d` }}
-              >
-                <div className="mb-1 text-xs font-semibold tracking-wide uppercase" style={{ color: ACCENT }}>
-                  Your one next step
-                </div>
-                <p className="m-0 text-sm leading-relaxed text-ink">{feedback.nextStep}</p>
-              </div>
-            </div>
+          {feedback.savingsPct > 30 && (
+            <Callout tone="gain" icon={Rocket} title="Financial independence trajectory">
+              A {Math.round(feedback.savingsPct)}% savings rate isn&apos;t just &quot;good with money&quot; — it&apos;s
+              the pace people use to buy back decades of their working life. Keep this up and invest the difference, and
+              you&apos;re playing a completely different game.
+            </Callout>
+          )}
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <button
-                onClick={() => setStep(2)}
-                className="text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-              >
-                ← Adjust my budget
-              </button>
-              <button
-                onClick={startOver}
-                className="rounded-card border border-edge px-5 py-2.5 text-sm text-ink-secondary transition-colors hover:border-save hover:text-ink"
-              >
-                Start Over
-              </button>
-            </div>
+          <Card className="p-5 sm:p-6">
+            <h2 className="text-[1.2rem]">What Benjamin noticed</h2>
+            <ul className="mt-3 flex flex-col gap-3">
+              {feedback.observations.map((o, i) => (
+                <li key={i} className="flex gap-3 leading-relaxed text-ink-secondary">
+                  <span className="mt-[0.6rem] h-1.5 w-1.5 shrink-0 rounded-full bg-cat" style={{ "--cat": "var(--cat-saving)" }} />
+                  {o}
+                </li>
+              ))}
+            </ul>
+          </Card>
+
+          <Insight title="Your one next step">{feedback.nextStep}</Insight>
+
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Button variant="secondary" icon={ArrowLeft} onClick={() => setStep(2)}>
+              Adjust my budget
+            </Button>
+            <Button variant="ghost" icon={RotateCcw} onClick={startOver}>
+              Start over
+            </Button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

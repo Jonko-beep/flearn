@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { getLesson, getNextLesson, getMasteryInfo } from "../data/curriculum.js";
+import { ArrowRight, BookOpen, CircleCheck, Clock, ListChecks, Lock, Trophy } from "lucide-react";
+import { getLesson, getNextLesson, MASTERY_THRESHOLD } from "../data/curriculum.js";
 import { getTermsForLesson } from "../data/glossary.js";
 import { useProgress } from "../hooks/useProgress.js";
 import { recordQuizAnswer } from "../lib/review.js";
@@ -8,79 +9,94 @@ import VideoPlayer from "../components/VideoPlayer.jsx";
 import Transcript from "../components/Transcript.jsx";
 import Quiz from "../components/Quiz.jsx";
 import ResultsScreen from "../components/ResultsScreen.jsx";
+import { Avatar, Badge, Button, Card, Crumbs, Empty, MascotNote, Segmented } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
+import { masteryBand } from "../ui/mastery.js";
 
-// Lesson body for reading text: plain paragraphs, with bullet/numbered blocks
-// rendered as accent-bordered wells (same treatment as the prototype).
-function LessonBody({ content, color }) {
-  const paragraphs = content.split("\n\n");
+// A list whose every line is "Term — explanation" reads better with the terms
+// emphasised. Only done when the whole list has that shape, so a list never
+// ends up half bold.
+const leadIn = (text) => {
+  const cut = text.indexOf(" — ");
+  return cut > 0 && cut <= 60 ? cut : -1;
+};
+
+function ListLine({ text, emphasise }) {
+  const cut = emphasise ? leadIn(text) : -1;
+  if (cut < 0) return text;
   return (
-    <div className="mt-6 rounded-card border border-edge bg-card p-6">
-      <div className="mb-4 flex items-center gap-2 border-b border-edge pb-4">
-        <span className="text-lg">📖</span>
-        <span className="text-sm font-semibold text-ink-secondary">LESSON NOTES</span>
-      </div>
-      {paragraphs.map((p, i) => {
-        const isBullets = p.includes("•") || /^\d\./m.test(p.trim());
-        if (isBullets) {
-          return (
-            <div
-              key={i}
-              className="my-4 rounded-r-[10px] bg-well px-5 py-4"
-              style={{ borderLeft: `3px solid ${color}` }}
-            >
-              {p.split("\n").map((line, j) => (
-                <p
-                  key={j}
-                  className={`m-0 text-sm leading-relaxed text-slate-300 ${
-                    j > 0 ? "mt-1.5" : ""
-                  }`}
-                >
-                  {line}
-                </p>
-              ))}
-            </div>
-          );
-        }
-        return (
-          <p key={i} className="my-4 text-[0.92rem] leading-[1.8] text-slate-300">
-            {p}
-          </p>
-        );
-      })}
-    </div>
+    <>
+      <strong className="font-semibold text-ink">{text.slice(0, cut)}</strong>
+      {text.slice(cut)}
+    </>
   );
 }
 
-// Chips linking each glossary term this lesson teaches into /glossary,
+// Lesson text: paragraphs separated by blank lines. Lines starting with "•"
+// or "1." inside a paragraph become a real bulleted or numbered list.
+function LessonBody({ content }) {
+  const blocks = content.split("\n\n").map((paragraph) => {
+    const lines = paragraph.split("\n");
+    const bullets = lines.filter((l) => /^\s*•/.test(l));
+    const numbered = lines.filter((l) => /^\s*\d+\.\s/.test(l));
+    if (bullets.length === 0 && numbered.length === 0) return { type: "p", text: paragraph };
+    const isItem = (l) => /^\s*(•|\d+\.\s)/.test(l);
+    return {
+      type: numbered.length > bullets.length ? "ol" : "ul",
+      lead: lines.filter((l) => !isItem(l)).join(" "),
+      items: lines.filter(isItem).map((l) => l.replace(/^\s*(•|\d+\.)\s*/, "")),
+    };
+  });
+
+  return (
+    <article className="prose-lesson">
+      {blocks.map((block, i) => {
+        if (block.type === "p") return <p key={i}>{block.text}</p>;
+        const List = block.type;
+        const emphasise = block.items.every((item) => leadIn(item) > 0);
+        return (
+          <div key={i} className="my-6 rounded-2xl border-2 border-cat/30 bg-cat/[0.07] px-5 py-4">
+            {block.lead && <div className="mb-2.5 font-display text-[1.05rem] font-semibold text-ink">{block.lead}</div>}
+            <List className={`space-y-2 pl-5 text-[0.975rem] leading-relaxed text-ink-secondary marker:text-cat ${List === "ol" ? "list-decimal" : "list-disc"}`}>
+              {block.items.map((item, j) => (
+                <li key={j} className="pl-1">
+                  <ListLine text={item} emphasise={emphasise} />
+                </li>
+              ))}
+            </List>
+          </div>
+        );
+      })}
+    </article>
+  );
+}
+
+// Links from each glossary term this lesson teaches into /glossary,
 // pre-filled as the search query.
-function KeyTerms({ lessonId, color }) {
+function KeyTerms({ lessonId }) {
   const terms = getTermsForLesson(lessonId);
   if (terms.length === 0) return null;
   return (
-    <div className="mt-6 rounded-card border border-edge bg-card p-6">
-      <div className="mb-4 flex items-center gap-2">
-        <span className="text-lg">🔑</span>
-        <span className="text-sm font-semibold text-ink-secondary">KEY TERMS</span>
-      </div>
-      <div className="flex flex-wrap gap-2">
+    <Card className="p-5">
+      <h2 className="text-[1.1rem]">Key terms</h2>
+      <div className="mt-3 flex flex-wrap gap-1.5">
         {terms.map((entry) => (
           <Link
             key={entry.term}
             to={`/glossary?q=${encodeURIComponent(entry.term)}`}
-            className="rounded-full border px-3.5 py-1.5 text-[0.8rem] font-medium transition-all hover:-translate-y-px"
-            style={{ borderColor: `${color}44`, color, background: `${color}10` }}
+            className="rounded-full border-2 border-edge bg-raised px-3 py-1 text-[0.8125rem] font-bold text-ink-secondary transition-colors hover:border-cat/60 hover:text-cat"
           >
             {entry.term}
           </Link>
         ))}
       </div>
-    </div>
+    </Card>
   );
 }
 
 // The route element stays mounted when only the URL params change ("Next
-// Lesson →"), so key the view by lesson: otherwise the previous lesson's
-// phase and answers carry over and get graded against the new lesson's quiz.
+// lesson"), so key the view by lesson: otherwise the previous lesson's phase
+// and answers carry over and get graded against the new lesson's quiz.
 export default function LessonPage() {
   const { categoryId, lessonId } = useParams();
   return <LessonView key={`${categoryId}/${lessonId}`} categoryId={categoryId} lessonId={lessonId} />;
@@ -98,41 +114,39 @@ function LessonView({ categoryId, lessonId }) {
   if (!category) return <Navigate to="/learn" replace />;
   if (!lesson) return <Navigate to={`/learn/${category.id}`} replace />;
 
-  const lessonProgress = getLessonProgress(lesson.id);
-  const bestScore = lessonProgress?.bestScore;
-  const bestMastery = getMasteryInfo(bestScore ?? null);
-  const hasQuiz = Boolean(lesson.quiz?.length);
-  const nextLesson = getNextLesson(category.id, lesson.id);
+  const crumbs = [
+    { label: "Learn", to: "/learn" },
+    { label: category.title, to: `/learn/${category.id}` },
+    { label: lesson.title },
+  ];
 
   // Locked lessons render a notice instead of content
   if (lesson.locked) {
     return (
-      <div className="min-h-screen p-8">
-        <div className="mx-auto max-w-[680px]">
-          <Link
-            to={`/learn/${category.id}`}
-            className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-          >
-            ← Back to lessons
-          </Link>
-          <div className="animate-fade-in-up rounded-card-lg border border-edge bg-card p-12 text-center">
-            <div className="mb-4 text-5xl">🔒</div>
-            <h2 className="m-0 mb-2 text-2xl">{lesson.title}</h2>
-            <p className="m-0 mb-6 text-ink-secondary">
-              This lesson is coming soon. Check back later!
-            </p>
-            <Link
-              to={`/learn/${category.id}`}
-              className="inline-block rounded-full px-6 py-3 text-sm font-semibold text-white"
-              style={{ background: category.color }}
-            >
+      <div className="animate-enter" style={hue(category.id)}>
+        <Crumbs items={crumbs} />
+        <Empty
+          icon={Lock}
+          title={lesson.title}
+          action={
+            <Button to={`/learn/${category.id}`} variant="secondary">
               Back to {category.title}
-            </Link>
-          </div>
-        </div>
+            </Button>
+          }
+        >
+          This lesson is coming soon. Check back later!
+        </Empty>
       </div>
     );
   }
+
+  const lessonProgress = getLessonProgress(lesson.id);
+  const bestScore = lessonProgress?.bestScore;
+  const hasScore = bestScore !== undefined && bestScore !== null;
+  const band = masteryBand(hasScore ? bestScore : null);
+  const hasQuiz = Boolean(lesson.quiz?.length);
+  const nextLesson = getNextLesson(category.id, lesson.id);
+  const position = category.lessons.findIndex((l) => l.id === lesson.id) + 1;
 
   const handleQuizComplete = (finalAnswers) => {
     const correctCount = Object.values(finalAnswers).filter((a) => a.correct).length;
@@ -149,137 +163,88 @@ function LessonView({ categoryId, lessonId }) {
   };
 
   const tabs = [
-    { key: "lesson", label: "📹 Lesson", enabled: true },
-    { key: "quiz", label: "📝 Quiz", enabled: hasQuiz },
-    { key: "results", label: "🏆 Results", enabled: answers !== null },
+    { value: "lesson", label: "Lesson", icon: BookOpen },
+    { value: "quiz", label: "Quiz", icon: lessonProgress?.completed ? CircleCheck : ListChecks, disabled: !hasQuiz },
+    { value: "results", label: "Results", icon: Trophy, disabled: answers === null },
   ];
 
   return (
-    <div className="min-h-screen p-6 sm:p-8">
-      <div className="mx-auto max-w-[680px]">
-        <Link
-          to={`/learn/${category.id}`}
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to lessons
-        </Link>
+    <div className="animate-enter" style={hue(category.id)}>
+      <Crumbs items={crumbs} />
 
-        {/* Header */}
-        <div className="mb-6 animate-fade-in-down">
-          <div className="mb-3 flex flex-wrap gap-2">
-            <span
-              className="rounded-full px-2.5 py-1 text-xs"
-              style={{ background: `${category.color}15`, color: category.color }}
-            >
-              {category.title}
-            </span>
-            <span className="rounded-full bg-card px-2.5 py-1 text-xs text-ink-secondary">
-              {lesson.duration}
-            </span>
-            <span className="rounded-full bg-card px-2.5 py-1 text-xs text-ink-secondary">
-              {category.mascot.emoji} {category.mascot.name}
-            </span>
-            {bestScore !== undefined && (
-              <span
-                className="rounded-full px-2.5 py-1 text-xs font-semibold"
-                style={{ background: bestMastery.bg, color: bestMastery.color }}
-              >
-                Best: {bestScore}% — {bestMastery.label}
-              </span>
-            )}
-          </div>
-          <h1 className="m-0 mb-1 text-[clamp(1.4rem,4vw,1.8rem)] font-bold">
-            {lesson.title}
-          </h1>
-          <p className="m-0 font-serif text-[0.95rem] italic text-ink-secondary">
-            {lesson.subtitle}
-          </p>
+      <header className="mb-6 flex max-w-[860px] items-center gap-5">
+        <Avatar emoji={category.mascot.emoji} size={92} className="hidden sm:flex" />
+        <div className="min-w-0">
+        <div className="text-sm font-bold text-cat">
+          {category.title} · Lesson {position} of {category.lessons.length}
         </div>
-
-        {/* Phase tabs */}
-        <div
-          className="mb-6 flex gap-1 rounded-xl bg-well p-1"
-          style={{ animation: "fadeInDown 0.6s ease-out 0.1s both" }}
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => tab.enabled && setPhase(tab.key)}
-              className="flex-1 rounded-[10px] border-none py-2.5 text-sm transition-all duration-200"
-              style={{
-                fontWeight: phase === tab.key ? 600 : 400,
-                background: phase === tab.key ? `${category.color}20` : "transparent",
-                color: phase === tab.key ? category.color : "#64748b",
-                cursor: tab.enabled ? "pointer" : "not-allowed",
-                opacity: tab.enabled ? 1 : 0.4,
-              }}
-            >
-              {tab.label}
-              {tab.key === "quiz" && lessonProgress?.completed ? " ✓" : ""}
-            </button>
-          ))}
+        <h1 className="mt-1 text-[2rem] sm:text-[2.5rem]">{lesson.title}</h1>
+        <p className="mt-1 text-[1.1rem] font-medium text-ink-secondary">{lesson.subtitle}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Badge icon={Clock}>{lesson.duration}</Badge>
+          <Badge>{lesson.difficulty}</Badge>
+          {hasScore && (
+            <Badge tone={band.tone} className="num">
+              Best {bestScore}% · {band.label}
+            </Badge>
+          )}
         </div>
+        </div>
+      </header>
 
-        {/* ── LESSON PHASE ── */}
-        {phase === "lesson" && (
-          <div className="animate-fade-in-up" style={{ animationDuration: "0.5s" }}>
-            <VideoPlayer lesson={lesson} category={category} startSeconds={startSeconds} />
+      <Segmented options={tabs} value={phase} onChange={setPhase} label="Lesson sections" className="mb-6" />
+
+      {/* ── LESSON ── */}
+      {phase === "lesson" && (
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_240px]">
+          <div className="min-w-0">
+            <VideoPlayer lesson={lesson} startSeconds={startSeconds} />
 
             {lesson.transcript && (
-              <Transcript
-                transcript={lesson.transcript}
-                color={category.color}
-                canSeek={Boolean(lesson.videoUrl)}
-                onSeek={setStartSeconds}
-              />
+              <Transcript transcript={lesson.transcript} canSeek={Boolean(lesson.videoUrl)} onSeek={setStartSeconds} />
             )}
 
-            {lesson.content && <LessonBody content={lesson.content} color={category.color} />}
+            {lesson.content && (
+              <div className="mt-7">
+                <LessonBody content={lesson.content} />
+              </div>
+            )}
 
-            <KeyTerms lessonId={lesson.id} color={category.color} />
-
-            <div className="mt-6 text-center">
-              {hasQuiz ? (
-                <>
-                  <p className="mb-4 text-sm text-ink-muted">
-                    Finished the lesson? Test your knowledge to master it — score 70% or
-                    higher and your best result is saved.
-                  </p>
-                  <button
-                    onClick={() => setPhase("quiz")}
-                    className="cursor-pointer rounded-full border-none px-10 py-3.5 font-serif text-base font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5"
-                    style={{
-                      background: `linear-gradient(135deg, ${category.color}, ${category.color}cc)`,
-                      boxShadow: `0 4px 20px ${category.color}30`,
-                    }}
-                  >
-                    Take the Quiz →
-                  </button>
-                </>
-              ) : (
-                <p className="mb-4 text-sm text-ink-muted">
-                  📝 Quiz coming soon for this lesson.
-                </p>
+            <div className="mt-10 flex flex-wrap items-end gap-4 rounded-3xl border-2 border-cat/30 bg-cat/10 p-5">
+              <MascotNote emoji={category.mascot.emoji} name={category.mascot.name} className="min-w-0 flex-1 basis-72">
+                {hasQuiz
+                  ? `Got it? Take the quiz — score ${MASTERY_THRESHOLD}% or higher and this lesson is mastered. Your best score is saved, so you can always try again.`
+                  : "The quiz for this lesson is still being written. Check back soon!"}
+              </MascotNote>
+              {hasQuiz && (
+                <Button size="lg" iconRight={ArrowRight} onClick={() => setPhase("quiz")} className="ml-auto">
+                  Take the quiz
+                </Button>
               )}
             </div>
           </div>
-        )}
 
-        {/* ── QUIZ PHASE ── */}
-        {phase === "quiz" && hasQuiz && (
+          <aside className="flex flex-col gap-4 lg:sticky lg:top-8">
+            <KeyTerms lessonId={lesson.id} />
+          </aside>
+        </div>
+      )}
+
+      {/* ── QUIZ ── */}
+      {phase === "quiz" && hasQuiz && (
+        <div className="max-w-[760px]">
           <Quiz
             key={quizKey}
             quiz={lesson.quiz}
-            color={category.color}
             onComplete={handleQuizComplete}
-            onAnswer={(question, correct) =>
-              recordQuizAnswer(lesson.id, question.id, correct)
-            }
+            onAnswer={(question, correct) => recordQuizAnswer(lesson.id, question.id, correct)}
           />
-        )}
+        </div>
+      )}
 
-        {/* ── RESULTS PHASE ── */}
-        {phase === "results" && answers && (
+      {/* ── RESULTS ── */}
+      {phase === "results" && answers && (
+        <div className="max-w-[760px]">
           <ResultsScreen
             quiz={lesson.quiz}
             answers={answers}
@@ -288,8 +253,8 @@ function LessonView({ categoryId, lessonId }) {
             onRetake={handleRetake}
             onReview={() => setPhase("lesson")}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

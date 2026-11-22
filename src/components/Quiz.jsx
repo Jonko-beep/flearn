@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { ArrowRight, Check, X } from "lucide-react";
+import { Badge, Button, Card, Progress, cx } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
 
 // One question at a time: pick an option, submit to lock it in and reveal the
 // explanation, then advance. Calls onComplete(answers) after the last question,
 // where answers is { [questionIndex]: { selected, correct } }. Optional
 // onAnswer(question, correct) fires as each answer is locked in; questions may
-// carry a { tag, tagColor } for a small source pill (used by review sessions).
+// carry a { tag, tagColor } for a small source label (used by review sessions).
 // examMode locks in and advances in one step with no feedback until the end —
 // no correct/incorrect reveal, no explanation, no running score.
-export default function Quiz({ quiz, color, onComplete, onAnswer, examMode = false }) {
+export default function Quiz({ quiz, onComplete, onAnswer, examMode = false }) {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [selected, setSelected] = useState(null);
@@ -16,6 +19,7 @@ export default function Quiz({ quiz, color, onComplete, onAnswer, examMode = fal
   const question = quiz[current];
   const answered = answers[current] !== undefined;
   const correctCount = Object.values(answers).filter((a) => a.correct).length;
+  const isLast = current === total - 1;
 
   const handleConfirm = () => {
     if (selected === null || answered) return;
@@ -25,7 +29,7 @@ export default function Quiz({ quiz, color, onComplete, onAnswer, examMode = fal
     onAnswer?.(question, correct);
     if (examMode) {
       // No feedback between questions — advance immediately
-      if (current < total - 1) {
+      if (!isLast) {
         setCurrent(current + 1);
         setSelected(null);
       } else {
@@ -35,7 +39,7 @@ export default function Quiz({ quiz, color, onComplete, onAnswer, examMode = fal
   };
 
   const handleNext = () => {
-    if (current < total - 1) {
+    if (!isLast) {
       setCurrent(current + 1);
       setSelected(null);
     } else {
@@ -43,159 +47,112 @@ export default function Quiz({ quiz, color, onComplete, onAnswer, examMode = fal
     }
   };
 
-  const optionClasses = (i) => {
-    const isSelected = selected === i;
-    const isCorrect = i === question.correct;
-
-    let style = {
-      background: "#1e293b",
-      border: `1px solid ${isSelected && !answered ? `${color}88` : "#334155"}`,
-      color: "#e2e8f0",
-    };
-    if (answered) {
-      if (isCorrect) {
-        style = { background: "#05966920", border: "1px solid #059669", color: "#34d399" };
-      } else if (isSelected) {
-        style = { background: "#dc262620", border: "1px solid #dc2626", color: "#f87171" };
-      } else {
-        style = { ...style, color: "#64748b" };
-      }
-    }
-    return style;
+  // how one answer option looks, given what has happened so far
+  const optionState = (i) => {
+    if (!answered) return selected === i ? "selected" : "idle";
+    if (i === question.correct) return "correct";
+    if (i === selected) return "wrong";
+    return "dimmed";
+  };
+  const OPTION_STYLES = {
+    idle: "border-edge bg-card text-ink shadow-[0_3px_0_rgb(var(--edge))] hover:border-edge-strong hover:bg-raised active:translate-y-[2px] active:shadow-[0_1px_0_rgb(var(--edge))]",
+    selected: "border-accent-ink bg-accent/10 text-ink shadow-[0_3px_0_rgb(var(--accent)/0.6)]",
+    correct: "border-gain bg-gain/10 text-ink shadow-[0_3px_0_rgb(var(--gain)/0.6)]",
+    wrong: "border-loss bg-loss/10 text-ink shadow-[0_3px_0_rgb(var(--loss)/0.6)]",
+    dimmed: "border-edge bg-card text-ink-muted",
+  };
+  const KEY_STYLES = {
+    idle: "border-2 border-edge-strong text-ink-muted",
+    selected: "bg-accent text-accent-fg",
+    correct: "bg-gain text-accent-fg",
+    wrong: "bg-loss text-accent-fg",
+    dimmed: "border-2 border-edge text-ink-muted",
   };
 
-  const badgeStyle = (i) => {
-    const isSelected = selected === i;
-    const isCorrect = i === question.correct;
-    if (answered) {
-      return {
-        background: isCorrect ? "#059669" : isSelected ? "#dc2626" : "#0f172a",
-        color: isCorrect || isSelected ? "white" : "#64748b",
-      };
-    }
-    return {
-      background: isSelected ? color : "#0f172a",
-      color: isSelected ? "white" : "#64748b",
-    };
-  };
+  const result = answers[current];
 
   return (
-    <div className="animate-fade-in-up">
+    <div className="animate-enter">
       {/* Progress */}
-      <div className="mb-6">
-        <div className="mb-1.5 flex justify-between text-sm">
-          <span className="text-ink-secondary">
+      <div className="mb-5">
+        <div className="num mb-2 flex justify-between text-[0.8125rem]">
+          <span className="font-medium text-ink-secondary">
             Question {current + 1} of {total}
           </span>
-          <span className="text-ink-muted">
-            {examMode ? "Results at the end" : `${correctCount} correct so far`}
-          </span>
+          <span className="text-ink-muted">{examMode ? "Results at the end" : `${correctCount} correct so far`}</span>
         </div>
-        <div className="h-1 overflow-hidden rounded-sm bg-well">
-          <div
-            className="h-full rounded-sm transition-all duration-500"
-            style={{
-              width: `${((current + (answered ? 1 : 0)) / total) * 100}%`,
-              background: `linear-gradient(90deg, ${color}, #0D9488)`,
-            }}
-          />
-        </div>
+        <Progress value={((current + (answered ? 1 : 0)) / total) * 100} label="Quiz progress" />
       </div>
 
-      {/* Question card */}
-      <div className="mb-4 rounded-card-lg border border-edge bg-card p-6">
+      <Card className="p-5 sm:p-7">
         {question.tag && (
-          <span
-            className="mb-3 inline-block rounded-full px-2.5 py-1 text-xs"
-            style={{
-              background: `${question.tagColor ?? color}15`,
-              color: question.tagColor ?? color,
-            }}
-          >
+          <Badge tone="cat" className="mb-3" style={hue(question.tagColor)}>
             {question.tag}
-          </span>
+          </Badge>
         )}
-        <h3 className="m-0 mb-5 font-sans text-[1.05rem] font-semibold leading-normal tracking-normal">
-          {question.question}
-        </h3>
+        <h2 className="text-[1.3rem] leading-snug">{question.question}</h2>
 
-        <div className="flex flex-col gap-2.5">
-          {question.options.map((option, i) => (
-            <button
-              key={i}
-              onClick={() => !answered && setSelected(i)}
-              className={`flex w-full items-center gap-3 rounded-xl px-5 py-4 text-left text-[0.92rem] transition-all duration-200 ${
-                answered ? "cursor-default" : "cursor-pointer"
-              }`}
-              style={optionClasses(i)}
-            >
-              <span
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold"
-                style={badgeStyle(i)}
+        <div className="mt-5 flex flex-col gap-2.5" role="radiogroup" aria-label="Answer choices">
+          {question.options.map((option, i) => {
+            const state = optionState(i);
+            return (
+              <button
+                key={i}
+                type="button"
+                role="radio"
+                aria-checked={selected === i}
+                onClick={() => !answered && setSelected(i)}
+                className={cx(
+                  "flex w-full items-center gap-3.5 rounded-2xl border-2 px-4 py-3.5 text-left text-[0.95rem] font-medium leading-snug transition-[transform,box-shadow,border-color,background-color] duration-75",
+                  answered ? "cursor-default" : "cursor-pointer",
+                  OPTION_STYLES[state]
+                )}
               >
-                {answered
-                  ? i === question.correct
-                    ? "✓"
-                    : selected === i
-                      ? "✗"
-                      : String.fromCharCode(65 + i)
-                  : String.fromCharCode(65 + i)}
-              </span>
-              <span>{option}</span>
-            </button>
-          ))}
+                <span
+                  className={cx(
+                    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-display text-sm font-semibold",
+                    KEY_STYLES[state]
+                  )}
+                >
+                  {state === "correct" ? (
+                    <Check size={15} strokeWidth={3} aria-label="Correct answer" />
+                  ) : state === "wrong" ? (
+                    <X size={15} strokeWidth={3} aria-label="Your answer, incorrect" />
+                  ) : (
+                    String.fromCharCode(65 + i)
+                  )}
+                </span>
+                <span>{option}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Explanation */}
-        {answered && (
+        {result && !examMode && (
           <div
-            className="mt-4 animate-fade-in-up rounded-[10px] p-4"
-            style={{
-              background: answers[current].correct ? "#05966912" : "#dc262612",
-              borderLeft: `3px solid ${answers[current].correct ? "#059669" : "#dc2626"}`,
-              animationDuration: "0.3s",
-            }}
+            className={cx(
+              "mt-5 animate-enter rounded-2xl border-2 px-4 py-3.5",
+              result.correct ? "border-gain/40 bg-gain/[0.08]" : "border-loss/40 bg-loss/[0.08]"
+            )}
           >
-            <div
-              className="mb-1 text-sm font-semibold"
-              style={{ color: answers[current].correct ? "#34d399" : "#f87171" }}
-            >
-              {answers[current].correct ? "✓ Correct!" : "✗ Not quite"}
+            <div className={cx("font-display text-[1.1rem] font-semibold", result.correct ? "text-gain" : "text-loss")}>
+              {result.correct ? "Nailed it!" : "Not quite"}
             </div>
-            <p className="m-0 text-sm leading-normal text-ink-secondary">
-              {question.explanation}
-            </p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-secondary">{question.explanation}</p>
           </div>
         )}
-      </div>
+      </Card>
 
-      {/* Action */}
-      <div className="flex justify-end">
+      <div className="mt-5 flex justify-end">
         {!answered ? (
-          <button
-            onClick={handleConfirm}
-            disabled={selected === null}
-            className="rounded-full border-none px-8 py-3 text-[0.95rem] font-semibold transition-all duration-200"
-            style={{
-              background: selected === null ? "#334155" : color,
-              color: selected === null ? "#64748b" : "white",
-              cursor: selected === null ? "not-allowed" : "pointer",
-            }}
-          >
-            {examMode
-              ? current < total - 1
-                ? "Next Question →"
-                : "Finish Exam →"
-              : "Submit Answer"}
-          </button>
+          <Button size="lg" onClick={handleConfirm} disabled={selected === null} iconRight={examMode ? ArrowRight : undefined}>
+            {examMode ? (isLast ? "Finish exam" : "Next question") : "Submit answer"}
+          </Button>
         ) : (
-          <button
-            onClick={handleNext}
-            className="rounded-full border-none px-8 py-3 text-[0.95rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px"
-            style={{ background: color }}
-          >
-            {current < total - 1 ? "Next Question →" : "See Results →"}
-          </button>
+          <Button size="lg" onClick={handleNext} iconRight={ArrowRight}>
+            {isLast ? "See results" : "Next question"}
+          </Button>
         )}
       </div>
     </div>
