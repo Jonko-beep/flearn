@@ -1,140 +1,101 @@
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { Avatar, Badge, IconTile, PageHeader } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
+import { TOOL_ICONS } from "../ui/icons.js";
+import { MASCOT_NAMES } from "../ui/mascots.jsx";
+
+// Which guide runs each tool, by the tool's course colour.
+const MASCOT_OF_HUE = { investing: "walrus", saving: "bear", estate: "chipmunk", options: "fox" };
 
 const TOOLS = [
   {
+    id: "compound",
     to: "/tools/compound",
-    emoji: "📈",
-    color: "#0D9488",
-    title: "Compound Interest Visualizer",
-    tag: "Flagship",
+    hue: "investing",
+    title: "Compound interest visualizer",
+    tag: "Start here",
     description:
       "Watch growth overtake your contributions year by year — and see exactly what starting ten years earlier is worth.",
   },
   {
+    id: "budget",
     to: "/tools/budget",
-    emoji: "🧮",
-    color: "#7C3AED",
-    title: "Build Your First Budget",
+    hue: "saving",
+    title: "Build your first budget",
     tag: "Interactive",
     description:
       "Allocate a month of real income across 8 categories, then get graded against the 50/30/20 rule by Benjamin the Bear.",
   },
   {
+    id: "debt",
     to: "/tools/debt",
-    emoji: "💳",
-    color: "#7C3AED",
-    title: "Debt Payoff Calculator",
+    hue: "saving",
+    title: "Debt payoff calculator",
     tag: "Calculator",
     description:
       "Enter your debts and one monthly budget — Benjamin compares avalanche vs. snowball and shows what each path costs.",
   },
   {
+    id: "mortgage",
     to: "/tools/mortgage",
-    emoji: "🏠",
-    color: "#D97706",
-    title: "Mortgage Calculator",
+    hue: "estate",
+    title: "Mortgage calculator",
     tag: "Calculator",
     description:
       "Charlie turns a home price into a full PITI payment, flags the PMI trap, and charts the amortization crossover.",
   },
   {
+    id: "paycheck",
     to: "/tools/paycheck",
-    emoji: "🧾",
-    color: "#0D9488",
-    title: "Paycheck Calculator",
+    hue: "investing",
+    title: "Paycheck calculator",
     tag: "Calculator",
     description:
       "Warren estimates your real take-home per check — federal tax, FICA, and what your time is truly worth per hour.",
   },
   {
+    id: "options",
     to: "/tools/options",
-    emoji: "🎯",
-    color: "#0EA5E9",
-    title: "Options Payoff Visualizer",
+    hue: "options",
+    title: "Options payoff visualizer",
     tag: "Simulator",
     description:
       "Fischer charts what a call, put, covered call, or cash-secured put is worth at expiration — breakeven, max loss, and how it compares with just owning the shares.",
   },
 ];
 
-function ToolCard({ tool, index }) {
-  return (
-    <Link
-      to={tool.to}
-      className="group relative block overflow-hidden rounded-card-lg bg-card p-6 transition-all duration-300 hover:-translate-y-0.5"
-      style={{
-        border: `1px solid ${tool.color}22`,
-        animation: `fadeInUp 0.6s ease-out ${0.2 + index * 0.1}s both`,
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.borderColor = `${tool.color}55`)}
-      onMouseLeave={(e) => (e.currentTarget.style.borderColor = `${tool.color}22`)}
-    >
-      <div className="pointer-events-none absolute -top-8 -right-5 text-[6rem] opacity-[0.06]">
-        {tool.emoji}
-      </div>
-      <div className="relative">
-        <div className="mb-2 flex items-center gap-3">
-          <span
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-card text-3xl"
-            style={{ background: `${tool.color}15` }}
-          >
-            {tool.emoji}
-          </span>
-          <div>
-            <h3 className="text-xl font-semibold text-ink">{tool.title}</h3>
-            <span
-              className="rounded-full px-2 py-0.5 text-[0.7rem] font-semibold"
-              style={{ background: `${tool.color}15`, color: tool.color }}
-            >
-              {tool.tag}
-            </span>
-          </div>
-          <span
-            className="ml-auto text-xl transition-transform duration-300 group-hover:translate-x-1"
-            style={{ color: tool.color }}
-          >
-            →
-          </span>
-        </div>
-        <p className="m-0 text-sm leading-relaxed text-ink-secondary">{tool.description}</p>
-      </div>
-    </Link>
-  );
-}
-
 export default function ToolsPage() {
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[640px]">
-        <Link
-          to="/learn"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to learning
-        </Link>
+    <div className="animate-enter">
+      <PageHeader title="Tools" subtitle="Hands-on labs where the lessons become muscle memory." />
 
-        <div className="mb-8 animate-fade-in-down">
-          <div className="flex items-center gap-3">
-            <span
-              className="flex h-[52px] w-[52px] items-center justify-center rounded-card text-3xl"
-              style={{ background: "#0D948815" }}
-            >
-              🛠️
-            </span>
-            <div>
-              <h2 className="m-0 text-3xl font-bold">Tools</h2>
-              <span className="text-sm text-ink-muted">
-                Hands-on labs where the lessons become muscle memory.
+      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {TOOLS.map((tool) => (
+          <Link
+            key={tool.id}
+            to={tool.to}
+            style={hue(tool.hue)}
+            className="group flex flex-col rounded-2xl border-2 border-edge bg-card p-5 shadow-tile transition-[border-color,transform] hover:-translate-y-0.5 hover:border-cat/60"
+          >
+            <div className="flex items-center justify-between">
+              <IconTile icon={TOOL_ICONS[tool.id]} size={48} />
+              <Badge tone="cat">{tool.tag}</Badge>
+            </div>
+            <h2 className="mt-4 text-[1.3rem]">{tool.title}</h2>
+            <p className="mt-1.5 flex-1 text-sm leading-relaxed text-ink-secondary">{tool.description}</p>
+            <div className="mt-5 flex items-center justify-between border-t-2 border-edge pt-3.5">
+              <span className="flex items-center gap-2 text-sm font-bold text-ink-muted">
+                <Avatar mascot={MASCOT_OF_HUE[tool.hue]} size={30} />
+                with {MASCOT_NAMES[MASCOT_OF_HUE[tool.hue]].split(" ")[0]}
+              </span>
+              <span className="inline-flex items-center gap-1.5 font-display text-[1rem] font-semibold text-cat">
+                Open
+                <ArrowRight size={17} strokeWidth={2.6} className="transition-transform group-hover:translate-x-1" aria-hidden />
               </span>
             </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4">
-          {TOOLS.map((tool, i) => (
-            <ToolCard key={tool.to} tool={tool} index={i} />
-          ))}
-        </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

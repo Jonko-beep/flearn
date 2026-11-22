@@ -1,173 +1,174 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, ArrowRight, ChevronRight, Compass } from "lucide-react";
 import {
   ONBOARDING_QUESTIONS,
   scoreOnboarding,
   getRecommendedPath,
   writeOnboarding,
+  markOnboardingSkipped,
 } from "../lib/onboarding.js";
+import { philosophers } from "../data/philosophers.js";
+import { PHILOSOPHER_ICONS } from "../ui/icons.js";
+import { Avatar, Button, Card, IconTile, Logo, SpeechBubble, cx } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
+import { ThemeToggle } from "../components/AppShell.jsx";
 
-function QuestionDots({ step, answers }) {
+function Steps({ step }) {
   return (
-    <div className="mb-10 flex items-center justify-center gap-2.5">
-      {ONBOARDING_QUESTIONS.map((q, i) => {
-        const done = answers[q.key] !== undefined;
-        const active = step === i;
-        return (
-          <span
-            key={q.key}
-            className="h-2 rounded-full transition-all duration-300"
-            style={{
-              width: active ? "24px" : "8px",
-              background: active || done ? q.color : "#334155",
-            }}
-          />
-        );
-      })}
+    <div className="mb-8 flex items-center gap-1.5" aria-hidden>
+      {ONBOARDING_QUESTIONS.map((q, i) => (
+        <span
+          key={q.key}
+          className={cx("h-3 flex-1 rounded-full transition-colors duration-300", i <= step ? "bg-accent" : "bg-edge")}
+        />
+      ))}
     </div>
   );
 }
 
 function QuestionScreen({ question, index, selected, onAnswer, onBack }) {
   return (
-    <div key={question.key} className="animate-fade-in-up text-center">
-      <div
-        className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full text-5xl"
-        style={{ background: `${question.color}15` }}
-      >
-        {question.mascot.emoji}
+    <div key={question.key} className="animate-enter" style={hue(question.color)}>
+      <div className="flex items-end gap-4">
+        <Avatar emoji={question.mascot.emoji} size={96} className="shrink-0" />
+        <SpeechBubble className="mb-3 flex-1 !px-5 !py-4">
+          <div className="text-sm font-bold text-cat">
+            {question.mascot.name} · {index + 1} of {ONBOARDING_QUESTIONS.length}
+          </div>
+          <h1 className="mt-1 text-[1.6rem] leading-tight sm:text-[1.85rem]">{question.question}</h1>
+        </SpeechBubble>
       </div>
-      <div className="mb-1 text-sm font-medium" style={{ color: question.color }}>
-        {question.mascot.name} asks…
-      </div>
-      <h2 className="m-0 mb-8 text-2xl font-bold">{question.question}</h2>
 
-      <div className="mx-auto flex max-w-[420px] flex-col gap-3">
+      <div className="mt-8 flex flex-col gap-3">
         {question.options.map((option) => {
           const isSelected = selected === option.value;
           return (
             <button
               key={option.value}
+              type="button"
               onClick={() => onAnswer(option.value)}
-              className="rounded-card border bg-card px-6 py-4 text-left font-sans text-[0.95rem] font-medium text-ink transition-all duration-200 hover:-translate-y-0.5"
-              style={{
-                borderColor: isSelected ? question.color : "#334155",
-                background: isSelected ? `${question.color}15` : undefined,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = question.color)}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.borderColor = isSelected
-                  ? question.color
-                  : "#334155")
-              }
+              className={cx(
+                "group flex items-center gap-3 rounded-2xl border-2 px-5 py-4 text-left text-[1rem] font-semibold transition-[transform,box-shadow,border-color,background-color] duration-75 active:translate-y-[2px]",
+                isSelected
+                  ? "border-accent-ink bg-accent/10 text-ink shadow-[0_3px_0_rgb(var(--accent)/0.6)]"
+                  : "border-edge bg-card text-ink shadow-[0_3px_0_rgb(var(--edge))] hover:border-cat/60 hover:bg-raised active:shadow-[0_1px_0_rgb(var(--edge))]"
+              )}
             >
-              {option.label}
+              <span className="flex-1">{option.label}</span>
+              <ChevronRight size={19} strokeWidth={2.6} className="text-cat transition-transform group-hover:translate-x-1" aria-hidden />
             </button>
           );
         })}
       </div>
 
-      <button
-        onClick={onBack}
-        className="mt-8 bg-transparent font-sans text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-      >
-        ← {index === 0 ? "Back to start" : "Previous question"}
-      </button>
+      {index > 0 && (
+        <Button variant="ghost" size="sm" icon={ArrowLeft} onClick={onBack} className="-ml-3 mt-6">
+          Previous question
+        </Button>
+      )}
     </div>
   );
 }
 
-function ResultsScreen({ recommendation }) {
-  const navigate = useNavigate();
+// After the recommendation: an advert for the "Who do I align with?" quiz.
+// It names no philosophers (the match stays a surprise), just shows that there
+// are several schools of thought to land in.
+function QuizAdvert({ firstLesson }) {
+  return (
+    <div className="animate-enter">
+      <div className="text-sm font-bold text-ink-muted">One more thing…</div>
+      <Card className="mt-3 overflow-hidden" style={hue("align")}>
+        <div className="bg-cat/15 px-6 pb-6 pt-7 sm:px-8">
+          <IconTile icon={Compass} size={56} className="!bg-cat !text-[#0b111e]" />
+          <h1 className="mt-5 text-[2rem] leading-tight sm:text-[2.3rem]">Who do I align with?</h1>
+          <p className="mt-2 text-[1.05rem] leading-relaxed text-ink-secondary">
+            Fifteen gut-check questions about money. At the end you&apos;ll see which well-known personal-finance
+            thinker sees money the way you do, and what to read or try next.
+          </p>
+        </div>
+        <div className="px-6 py-6 sm:px-8">
+          <div className="flex flex-wrap gap-2" aria-hidden>
+            {Object.values(PHILOSOPHER_ICONS).map((Icon, i) => (
+              <span key={i} className="flex h-10 w-10 items-center justify-center rounded-xl bg-cat/10 text-cat">
+                <Icon size={19} strokeWidth={2.2} />
+              </span>
+            ))}
+          </div>
+          <p className="mt-3 text-sm font-semibold text-ink-muted">
+            {philosophers.length} schools of money thinking. Which one is yours?
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
+            <Button to="/align" state={{ start: true }} size="lg" iconRight={ArrowRight} className="!bg-cat">
+
+              Take the quiz
+            </Button>
+            <span className="text-sm font-semibold text-ink-muted">15 questions · about 3 minutes</span>
+          </div>
+        </div>
+      </Card>
+      <div className="mt-6 text-center">
+        <Link
+          to={`/learn/${firstLesson.category.id}/${firstLesson.lesson.id}`}
+          className="text-sm font-bold text-ink-secondary transition-colors hover:text-ink"
+        >
+          Skip for now, start “{firstLesson.lesson.title}” →
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+function ResultsScreen({ recommendation, onContinue }) {
   const { intro, lessons } = getRecommendedPath(recommendation);
   const [first, ...rest] = lessons;
   const mascot = first.category.mascot;
-  const accent = first.category.color;
 
   return (
-    <div className="animate-fade-in-up text-center">
-      <div
-        className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full text-5xl"
-        style={{ background: `${accent}15` }}
-      >
-        {mascot.emoji}
+    <div className="animate-enter">
+      <div className="text-sm font-bold text-accent-ink">Your recommended path</div>
+      <h1 className="mt-1 text-[2rem] sm:text-[2.4rem]">Here's where to begin</h1>
+
+      <div className="mt-6 flex items-end gap-4" style={hue(first.category.id)}>
+        <Avatar emoji={mascot.emoji} size={84} happy className="shrink-0" />
+        <SpeechBubble className="mb-2 flex-1">
+          <div className="text-sm font-bold text-cat">{mascot.name}</div>
+          <p className="mt-0.5 text-[0.975rem] leading-relaxed text-ink-secondary">“{intro}”</p>
+        </SpeechBubble>
       </div>
-      <h2 className="m-0 mb-2 text-3xl font-bold">Your recommended path</h2>
-      <p className="mx-auto m-0 mb-8 max-w-[440px] font-sans text-[0.95rem] leading-relaxed text-ink-secondary">
-        <span className="font-semibold text-ink">{mascot.name}:</span> "{intro}"
-      </p>
 
-      <button
-        onClick={() => navigate(`/learn/${first.category.id}/${first.lesson.id}`)}
-        className="group relative mx-auto mb-6 block w-full max-w-[480px] overflow-hidden rounded-card-lg p-7 text-left transition-all duration-300 hover:-translate-y-0.5"
-        style={{
-          background: "#1e293b",
-          border: `1px solid ${accent}55`,
-          boxShadow: `0 4px 24px ${accent}22`,
-        }}
-      >
-        <div className="pointer-events-none absolute -top-8 -right-5 text-[6rem] opacity-[0.06]">
-          {first.category.emoji}
-        </div>
-        <div
-          className="mb-2 inline-block rounded-full px-3 py-1 text-xs font-semibold"
-          style={{ background: `${accent}20`, color: accent }}
-        >
-          START HERE
-        </div>
-        <h3 className="m-0 mb-1 text-2xl font-bold text-ink">{first.lesson.title}</h3>
-        <p className="m-0 mb-3 font-sans text-sm text-ink-secondary">
-          {first.lesson.subtitle}
-        </p>
-        <span
-          className="font-sans text-sm font-semibold transition-transform duration-300 group-hover:translate-x-1"
-          style={{ color: accent, display: "inline-block" }}
-        >
-          Begin lesson →
-        </span>
-      </button>
-
-      <div className="mx-auto mb-8 max-w-[480px]">
-        <div className="mb-3 text-left font-sans text-xs font-semibold uppercase tracking-wide text-ink-muted">
-          Then continue with
-        </div>
-        <div className="flex flex-col gap-3">
-          {rest.map(({ category, lesson }, i) => (
-            <button
-              key={lesson.id}
-              onClick={() => navigate(`/learn/${category.id}/${lesson.id}`)}
-              className="flex items-center gap-4 rounded-card border border-edge bg-card px-5 py-4 text-left transition-all duration-200 hover:-translate-y-0.5"
-              onMouseEnter={(e) => (e.currentTarget.style.borderColor = `${category.color}55`)}
-              onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#334155")}
+      <Card className="mt-7 overflow-hidden">
+        {[first, ...rest].map(({ category, lesson }, i) => (
+          <div
+            key={lesson.id}
+            style={hue(category.id)}
+            className={cx("flex items-center gap-4 px-5 py-4", i > 0 && "border-t-2 border-edge")}
+          >
+            <span
+              className={cx(
+                "num flex h-10 w-10 shrink-0 items-center justify-center rounded-full font-display text-[1rem] font-semibold",
+                i === 0 ? "bg-accent text-accent-fg shadow-[inset_0_-3px_0_rgb(0_0_0/0.22)]" : "border-2 border-cat/50 text-cat"
+              )}
             >
-              <span
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
-                style={{ background: `${category.color}15`, color: category.color }}
-              >
-                {i + 2}
+              {i + 1}
+            </span>
+            <span className="min-w-0 flex-1">
+              {i === 0 && <span className="mb-0.5 block text-xs font-bold text-accent-ink">Start here</span>}
+              <span className="block font-display text-[1.05rem] font-semibold text-ink">{lesson.title}</span>
+              <span className="block text-[0.8125rem] text-ink-muted">
+                {category.title} · {lesson.subtitle}
               </span>
-              <span>
-                <span className="block font-serif font-semibold text-ink">
-                  {lesson.title}
-                </span>
-                <span className="block font-sans text-xs text-ink-muted">
-                  {lesson.subtitle}
-                </span>
-              </span>
-              <span className="ml-auto" style={{ color: category.color }}>
-                →
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
+            </span>
+            <span className="hidden shrink-0 text-sm font-semibold text-ink-muted sm:block">{lesson.duration}</span>
+          </div>
+        ))}
+      </Card>
 
-      <Link
-        to="/learn"
-        className="font-sans text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-      >
-        Or browse all lessons →
-      </Link>
+      <div className="mt-6">
+        <Button size="lg" iconRight={ArrowRight} onClick={onContinue}>
+          Continue
+        </Button>
+      </div>
     </div>
   );
 }
@@ -177,6 +178,12 @@ export default function WelcomePage() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [recommendation, setRecommendation] = useState(null);
+  const [showAdvert, setShowAdvert] = useState(false);
+
+  const skip = () => {
+    markOnboardingSkipped();
+    navigate("/learn");
+  };
 
   const handleAnswer = (value) => {
     const question = ONBOARDING_QUESTIONS[step];
@@ -191,19 +198,33 @@ export default function WelcomePage() {
     }
   };
 
-  const handleBack = () => {
-    if (step === 0) navigate("/");
-    else setStep(step - 1);
-  };
+  const handleBack = () => setStep(step - 1);
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-8 font-serif">
-      <div className="w-full max-w-[560px]">
-        {recommendation ? (
-          <ResultsScreen recommendation={recommendation} />
+    <div className="flex min-h-screen flex-col">
+      <header className="mx-auto flex h-16 w-full max-w-[1120px] items-center justify-between px-5 sm:px-8">
+        <Logo />
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          {!recommendation && (
+            <Button variant="ghost" size="sm" onClick={skip}>
+              Skip for now
+            </Button>
+          )}
+        </div>
+      </header>
+      <main className="mx-auto flex w-full max-w-[560px] flex-1 flex-col justify-center px-5 pb-20 pt-6">
+        {recommendation && showAdvert ? (
+          <QuizAdvert firstLesson={getRecommendedPath(recommendation).lessons[0]} />
+        ) : recommendation ? (
+          <ResultsScreen recommendation={recommendation} onContinue={() => setShowAdvert(true)} />
         ) : (
           <>
-            <QuestionDots step={step} answers={answers} />
+            <p className="mb-4 text-[0.95rem] font-semibold text-ink-secondary">
+              {ONBOARDING_QUESTIONS.length} quick questions about where you are with money, then we&apos;ll suggest
+              where to start.
+            </p>
+            <Steps step={step} />
             <QuestionScreen
               question={ONBOARDING_QUESTIONS[step]}
               index={step}
@@ -213,7 +234,7 @@ export default function WelcomePage() {
             />
           </>
         )}
-      </div>
+      </main>
     </div>
   );
 }

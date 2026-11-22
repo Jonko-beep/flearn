@@ -1,50 +1,70 @@
 import { Link } from "react-router-dom";
-import { useGamification, levelInfo, displayStreak } from "../lib/gamification.js";
+import { Flame, Trophy, Repeat2 } from "lucide-react";
+import { useGamification, levelInfo, displayStreak, XP_PER_LEVEL } from "../lib/gamification.js";
 import { useReview, countDue } from "../lib/review.js";
+import { Avatar, Card, Progress, cx } from "../ui/kit.jsx";
+import { levelMascot } from "../ui/mascots.jsx";
 
-// Gamification stats row for the /learn page.
-export default function StatsStrip({ masteredCount }) {
+function Mini({ icon: Icon, tone, value, label, to }) {
+  const body = (
+    <>
+      <span className={cx("flex h-8 w-8 shrink-0 items-center justify-center rounded-full", tone)}>
+        <Icon size={16} strokeWidth={2.6} aria-hidden />
+      </span>
+      <span className="num font-display text-[1.15rem] font-semibold text-ink">{value}</span>
+      <span className="text-sm font-semibold text-ink-muted">{label}</span>
+    </>
+  );
+  const classes = "flex min-w-0 items-center gap-2.5 rounded-xl px-1.5 py-1";
+  return to ? (
+    <Link to={to} className={cx(classes, "transition-colors hover:bg-raised")}>
+      {body}
+    </Link>
+  ) : (
+    <div className={classes}>{body}</div>
+  );
+}
+
+// The player card on the Learn hub: your level (and its animal), XP toward the
+// next level, and the habit numbers.
+export default function StatsStrip({ className }) {
   const { xp, streak } = useGamification();
-  const { level, title } = levelInfo(xp.total);
+  const { level, title, intoLevel, toNext, pct } = levelInfo(xp.total);
   const fire = displayStreak(streak);
   const dueCount = countDue(useReview());
 
-  const tiles = [
-    { label: "Total XP", value: `⭐ ${xp.total.toLocaleString()}` },
-    { label: `Level ${level}`, value: title },
-    { label: "Streak", value: `🔥 ${fire} day${fire === 1 ? "" : "s"}` },
-    { label: "Best streak", value: `🏆 ${streak.best}` },
-    { label: "Mastered", value: `✓ ${masteredCount}` },
-    { label: "Due for review", value: `🔁 ${dueCount}`, to: "/review" },
-  ];
-
   return (
-    <div
-      className="mb-8 grid grid-cols-6 gap-2 max-sm:grid-cols-3"
-      style={{ animation: "fadeInDown 0.6s ease-out 0.15s both" }}
-    >
-      {tiles.map((t) => {
-        const inner = (
-          <>
-            <div className="text-sm font-semibold text-ink whitespace-nowrap">{t.value}</div>
-            <div className="mt-0.5 text-[0.68rem] text-ink-muted">{t.label}</div>
-          </>
-        );
-        const classes = "rounded-card border border-edge bg-card px-2 py-3 text-center";
-        return t.to ? (
-          <Link
-            key={t.label}
-            to={t.to}
-            className={`${classes} block transition-colors hover:border-[#3B82F6]`}
-          >
-            {inner}
-          </Link>
-        ) : (
-          <div key={t.label} className={classes}>
-            {inner}
-          </div>
-        );
-      })}
-    </div>
+    <Card className={cx("flex flex-col p-5", className)}>
+      <div className="flex items-center gap-3.5">
+        <Avatar mascot={levelMascot(level)} size={60} />
+        <div className="min-w-0">
+          <div className="text-sm font-bold text-accent-ink">Level {level}</div>
+          <div className="font-display text-[1.3rem] font-semibold leading-tight">{title}</div>
+        </div>
+      </div>
+      <Progress value={pct} size="lg" className="mt-5" label="Progress to next level" />
+      <div className="num mt-2 flex justify-between text-[0.8125rem] font-semibold text-ink-muted">
+        <span>
+          {intoLevel} / {XP_PER_LEVEL} XP
+        </span>
+        <span>{toNext} to level {level + 1}</span>
+      </div>
+      <div className="mt-5 grid gap-0.5 border-t-2 border-edge pt-3 sm:grid-cols-3 lg:mt-auto lg:grid-cols-1">
+        <Mini
+          icon={Flame}
+          tone={fire > 0 ? "bg-warn/15 text-warn" : "bg-raised text-ink-muted"}
+          value={fire}
+          label="day streak"
+        />
+        <Mini icon={Trophy} tone="bg-gold/15 text-gold" value={streak.best} label="best streak" />
+        <Mini
+          icon={Repeat2}
+          tone={dueCount > 0 ? "bg-accent/15 text-accent-ink" : "bg-raised text-ink-muted"}
+          value={dueCount}
+          label="to review"
+          to="/review"
+        />
+      </div>
+    </Card>
   );
 }

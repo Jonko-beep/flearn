@@ -1,17 +1,97 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
-import { categories } from "../data/curriculum.js";
+import { ArrowRight, Compass, PartyPopper } from "lucide-react";
+import { categories, MASTERY_THRESHOLD } from "../data/curriculum.js";
 import { useProgress } from "../hooks/useProgress.js";
 import { checkAchievements } from "../lib/achievements.js";
-import { useReview, countDue } from "../lib/review.js";
 import CategoryCard from "../components/CategoryCard.jsx";
-import ProgressBar from "../components/ProgressBar.jsx";
 import StatsStrip from "../components/StatsStrip.jsx";
 import AchievementsGrid from "../components/AchievementsGrid.jsx";
+import { Avatar, Button, Card, PageHeader, Progress, SectionTitle, SpeechBubble } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
+
+// Where to send someone who just opened the app: the next unmastered lesson
+// in the course they touched most recently, else the first unmastered lesson.
+function findNextLesson(progress) {
+  const open = (category) => category.lessons.find((l) => !l.locked && !progress[l.id]?.completed);
+
+  let recent = null;
+  for (const category of categories) {
+    for (const lesson of category.lessons) {
+      const at = progress[lesson.id]?.lastAttempt;
+      if (at && (!recent || at > recent.at)) recent = { at, category };
+    }
+  }
+  const ordered = recent ? [recent.category, ...categories.filter((c) => c !== recent.category)] : categories;
+  for (const category of ordered) {
+    const lesson = open(category);
+    if (lesson) return { category, lesson, started: Boolean(recent) };
+  }
+  return null;
+}
+
+// The course's mascot introduces your next lesson.
+function ContinueCard({ next, masteredCount, totalLessons, overallPercent }) {
+  return (
+    <Card className="flex flex-col overflow-hidden" style={next ? hue(next.category.id) : hue("estate")}>
+      <div className="flex flex-1 items-center gap-4 bg-cat/10 p-5 sm:gap-5 sm:p-6">
+        <Avatar
+          emoji={next ? next.category.mascot.emoji : "🐿️"}
+          size={100}
+          happy={!next}
+          className="hidden shrink-0 sm:flex"
+        />
+        <SpeechBubble className="flex-1 !px-5 !py-4">
+          {next ? (
+            <>
+              <div className="flex items-center gap-2 text-sm font-bold text-cat">
+                <Avatar emoji={next.category.mascot.emoji} size={28} className="sm:hidden" />
+                {next.category.mascot.name}
+              </div>
+              <p className="mt-1 text-[1rem] text-ink-secondary">
+                {next.started ? "Welcome back! Up next:" : "Let's start with this one:"}
+              </p>
+              <h2 className="mt-0.5 text-[1.6rem] leading-tight">{next.lesson.title}</h2>
+              <p className="mt-1 text-sm font-medium text-ink-muted">
+                {next.lesson.subtitle} · {next.lesson.duration}
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 text-sm font-bold text-cat">
+                Everyone
+                <PartyPopper size={16} strokeWidth={2.5} aria-hidden />
+              </div>
+              <h2 className="mt-1 text-[1.6rem] leading-tight">You've mastered every lesson!</h2>
+              <p className="mt-1 text-sm font-medium text-ink-muted">
+                Keep your edge with review sessions and the final exams.
+              </p>
+            </>
+          )}
+        </SpeechBubble>
+      </div>
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3 border-t-2 border-edge px-5 py-4 sm:px-6">
+        <div className="min-w-[12rem] flex-1">
+          <div className="num mb-1.5 text-[0.8125rem] font-semibold text-ink-muted">
+            {masteredCount} of {totalLessons} lessons mastered · {MASTERY_THRESHOLD}% on a quiz masters one
+          </div>
+          <Progress value={overallPercent} label="Lessons mastered" />
+        </div>
+        {next ? (
+          <Button to={`/learn/${next.category.id}/${next.lesson.id}`} size="lg" iconRight={ArrowRight}>
+            {next.started ? "Continue" : "Start lesson"}
+          </Button>
+        ) : (
+          <Button to="/review" size="lg" variant="secondary" iconRight={ArrowRight}>
+            Open review
+          </Button>
+        )}
+      </div>
+    </Card>
+  );
+}
 
 export default function CategoryPage() {
-  const { getCategoryStats, totalLessons, masteredCount, overallPercent } = useProgress();
-  const dueCount = countDue(useReview());
+  const { progress, getCategoryStats, totalLessons, masteredCount, overallPercent } = useProgress();
 
   // Sweep for unlocks earned before this feature existed (or missed offline)
   useEffect(() => {
@@ -19,100 +99,38 @@ export default function CategoryPage() {
   }, []);
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-[640px]">
-        <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2">
-          <Link
-            to="/"
-            className="text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-          >
-            ← Back
-          </Link>
-          <Link
-            to="/portfolio"
-            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-            style={{ borderColor: "#0D948855", color: "#0D9488", background: "#0D948810" }}
-          >
-            💼 Portfolio
-          </Link>
-          <Link
-            to="/tools"
-            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-            style={{ borderColor: "#D9770655", color: "#D97706", background: "#D9770610" }}
-          >
-            🛠️ Tools
-          </Link>
-          <Link
-            to="/glossary"
-            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-            style={{ borderColor: "#7C3AED55", color: "#7C3AED", background: "#7C3AED10" }}
-          >
-            📖 Glossary
-          </Link>
-          <Link
-            to="/review"
-            className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-            style={{ borderColor: "#3B82F655", color: "#3B82F6", background: "#3B82F610" }}
-          >
-            🔁 Review
-            {dueCount > 0 && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[#3B82F6] px-1.5 text-xs font-bold text-white">
-                {dueCount}
-              </span>
-            )}
-          </Link>
-          <Link
-            to="/align"
-            className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-            style={{ borderColor: "#EC489955", color: "#EC4899", background: "#EC489910" }}
-          >
-            🧭 Who Do I Align With?
-          </Link>
-        </div>
+    <div className="animate-enter">
+      <PageHeader
+        title="Learn"
+        subtitle="Four courses, one short lesson at a time."
+        actions={
+          <Button to="/welcome" variant="ghost" size="sm" icon={Compass}>
+            Not sure where to start? Take the path quiz
+          </Button>
+        }
+      />
 
-        <div className="mb-8 animate-fade-in-down">
-          <h2 className="m-0 mb-1 text-3xl font-bold">Choose Your Path</h2>
-          <p className="m-0 text-[0.95rem] text-ink-muted">
-            What do you want to learn first?
-          </p>
-        </div>
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_290px]">
+        <ContinueCard
+          next={findNextLesson(progress)}
+          masteredCount={masteredCount}
+          totalLessons={totalLessons}
+          overallPercent={overallPercent}
+        />
+        <StatsStrip />
+      </div>
 
-        <div
-          className="mb-8 rounded-xl bg-card px-5 py-4"
-          style={{ animation: "fadeInDown 0.6s ease-out 0.1s both" }}
-        >
-          <div className="mb-2 flex justify-between">
-            <span className="text-sm text-ink-secondary">Lessons Mastered</span>
-            <span className="text-sm font-semibold text-invest">
-              {masteredCount}/{totalLessons} (70%+ to pass)
-            </span>
-          </div>
-          <ProgressBar percent={overallPercent} />
-        </div>
-
-        <StatsStrip masteredCount={masteredCount} />
-
-        <AchievementsGrid />
-
-        <div className="flex flex-col gap-4">
-          {categories.map((category, i) => (
-            <CategoryCard
-              key={category.id}
-              category={category}
-              stats={getCategoryStats(category)}
-              index={i}
-            />
+      <section className="mt-10">
+        <SectionTitle>Courses</SectionTitle>
+        <div className="grid gap-5 md:grid-cols-2">
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} stats={getCategoryStats(category)} />
           ))}
         </div>
+      </section>
 
-        <footer className="mt-10 text-center">
-          <Link
-            to="/welcome"
-            className="text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-          >
-            🧭 Not sure where to start? Retake the path quiz →
-          </Link>
-        </footer>
+      <div className="mt-10">
+        <AchievementsGrid />
       </div>
     </div>
   );

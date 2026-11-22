@@ -1,5 +1,9 @@
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
+import { ArrowRight, BookMarked, TriangleAlert } from "lucide-react";
 import { getPhilosopher, philosophers } from "../data/philosophers.js";
+import { Badge, Button, Callout, Card, Crumbs, IconTile, cx } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
+import { philosopherIcon } from "../ui/icons.js";
 
 const SPECTRUM = philosophers.filter((p) => p.spectrumPosition !== null);
 
@@ -11,141 +15,88 @@ export default function PhilosopherPage() {
   const philosopher = getPhilosopher(slug);
   if (!philosopher) return <Navigate to="/align" replace />;
 
-  const { name, role, color, emoji, spectrumPosition, layer } = philosopher;
+  const { name, role, spectrumPosition, layer } = philosopher;
 
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[640px]">
-        <Link
-          to="/align"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to your results
-        </Link>
+    <div className="animate-enter max-w-[920px]" style={hue("align")}>
+      <Crumbs items={[{ label: "Money style", to: "/align" }, { label: name }]} />
 
-        {/* Header */}
-        <div
-          className="mb-4 animate-fade-in-down rounded-card-lg p-6"
-          style={{
-            background: `linear-gradient(135deg, ${color}18, #1e293b)`,
-            border: `1px solid ${color}55`,
-          }}
-        >
-          <div className="flex items-center gap-4">
-            <span
-              className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full text-5xl"
-              style={{ background: `${color}20` }}
-            >
-              {emoji}
-            </span>
-            <div>
-              <h2 className="m-0 text-3xl font-bold">{name}</h2>
-              <p className="m-0 text-[0.95rem] font-semibold" style={{ color }}>
-                {role}
-              </p>
-              {layer && (
-                <span
-                  className="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                  style={{ background: `${color}20`, color }}
-                >
-                  Layer: {layer}
-                </span>
-              )}
+      <header className="mb-8">
+        <div className="flex flex-wrap items-center gap-5">
+          <IconTile icon={philosopherIcon(slug)} size={64} />
+          <div className="min-w-0 flex-1 basis-64">
+            <div className="eyebrow !text-cat">{role}</div>
+            <h1 className="mt-1.5 text-[2rem] sm:text-[2.5rem]">{name}</h1>
+            {layer && (
+              <Badge tone="cat" className="mt-2">
+                Layer: {layer}
+              </Badge>
+            )}
+          </div>
+        </div>
+        <p className="mt-5 max-w-[60ch] text-[1.15rem] font-medium leading-relaxed text-ink-secondary">
+          {philosopher.summary}
+        </p>
+
+        {spectrumPosition !== null && (
+          <div className="mt-7 max-w-[560px]">
+            <div className="flex items-center gap-1.5">
+              {SPECTRUM.map((p) => (
+                <div
+                  key={p.slug}
+                  title={p.name}
+                  className={cx("h-2 flex-1 rounded-full", p.slug === slug ? "bg-cat" : "bg-edge-strong")}
+                />
+              ))}
+            </div>
+            <div className="mt-2 flex justify-between text-[0.8125rem] text-ink-muted">
+              <span>Most conservative</span>
+              <span className="num font-medium text-ink-secondary">Position {spectrumPosition} of 7 on the risk spectrum</span>
+              <span>Most aggressive</span>
             </div>
           </div>
+        )}
+      </header>
 
-          {spectrumPosition !== null && (
-            <div className="mt-5">
-              <div className="mb-1.5 flex justify-between text-xs text-ink-muted">
-                <span>Most conservative</span>
-                <span>Most aggressive</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                {SPECTRUM.map((p) => (
-                  <div
-                    key={p.slug}
-                    className="h-2 flex-1 rounded-full"
-                    style={{
-                      background: p.slug === slug ? color : "#334155",
-                      outline: p.slug === slug ? `2px solid ${color}66` : "none",
-                    }}
-                    title={p.name}
-                  />
-                ))}
-              </div>
-              <p className="m-0 mt-1.5 text-xs text-ink-muted">
-                Position {spectrumPosition} of 7 on the risk spectrum
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Bio */}
-        <div className="mb-4 animate-fade-in-up rounded-card-lg border border-edge bg-card p-6">
-          <h3 className="m-0 mb-2 text-lg font-semibold">The story</h3>
-          <p className="m-0 text-sm leading-relaxed text-ink-secondary">{philosopher.bio}</p>
-        </div>
-
-        {/* Philosophy */}
-        <div
-          className="mb-4 animate-fade-in-up rounded-card-lg border border-edge bg-card p-6"
-          style={{ animationDelay: "0.1s" }}
-        >
-          <h3 className="m-0 mb-2 text-lg font-semibold">The philosophy</h3>
-          <p className="m-0 text-sm leading-relaxed text-ink-secondary">
-            {philosopher.philosophy}
-          </p>
-        </div>
-
-        {/* Books */}
-        <div
-          className="mb-4 animate-fade-in-up rounded-card-lg border border-edge bg-card p-6"
-          style={{ animationDelay: "0.2s" }}
-        >
-          <h3 className="m-0 mb-3 text-lg font-semibold">📚 Signature books</h3>
-          <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            {philosopher.signatureBooks.map((book) => (
-              <li key={book} className="flex items-start gap-2 text-sm text-ink-secondary">
-                <span style={{ color }}>▸</span>
-                <span>{book}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Blind spot */}
-        <div
-          className="mb-4 animate-fade-in-up rounded-card-lg p-6"
-          style={{
-            animationDelay: "0.3s",
-            background: "#f59e0b10",
-            border: "1px solid #f59e0b44",
-          }}
-        >
-          <h3 className="m-0 mb-2 text-lg font-semibold text-warning">⚠️ The blind spot</h3>
-          <p className="m-0 text-sm leading-relaxed text-ink-secondary">
+      <div className="grid items-start gap-4 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+        <div className="flex flex-col gap-4">
+          <Card className="p-6">
+            <h2 className="text-[1.2rem]">The story</h2>
+            <p className="mt-2 leading-relaxed text-ink-secondary">{philosopher.bio}</p>
+          </Card>
+          <Card className="p-6">
+            <h2 className="text-[1.2rem]">The philosophy</h2>
+            <p className="mt-2 leading-relaxed text-ink-secondary">{philosopher.philosophy}</p>
+          </Card>
+          <Callout tone="warn" icon={TriangleAlert} title="The blind spot">
             {philosopher.blindSpot}
-          </p>
+          </Callout>
         </div>
 
-        {/* Recommended content — placeholder until playlists are mapped */}
-        <div
-          className="mb-4 animate-fade-in-up rounded-card-lg border border-dashed border-edge bg-well p-6"
-          style={{ animationDelay: "0.4s" }}
-        >
-          <h3 className="m-0 mb-2 text-lg font-semibold">🎬 Matched learning path</h3>
-          <p className="m-0 mb-3 text-sm leading-relaxed text-ink-muted">
-            A curated FLearn playlist for this philosophy is coming soon. In the meantime,
-            the full lesson library covers the fundamentals every school of thought agrees
-            on.
-          </p>
-          <Link
-            to="/learn"
-            className="text-sm font-medium transition-transform hover:translate-x-0.5"
-            style={{ color }}
-          >
-            Browse all lessons →
-          </Link>
+        <div className="flex flex-col gap-4">
+          <Card className="p-6">
+            <h2 className="text-[1.2rem]">Signature books</h2>
+            <ul className="mt-3 flex flex-col gap-2.5">
+              {philosopher.signatureBooks.map((book) => (
+                <li key={book} className="flex items-start gap-2.5 text-[0.95rem] text-ink-secondary">
+                  <BookMarked size={16} className="mt-0.5 shrink-0 text-cat" aria-hidden />
+                  <span className="font-semibold text-ink">{book}</span>
+                </li>
+              ))}
+            </ul>
+          </Card>
+
+          {/* Recommended content — placeholder until playlists are mapped */}
+          <Card className="border-dashed p-6">
+            <h2 className="text-[1.2rem]">Matched learning path</h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+              A curated FLearn playlist for this philosophy is coming soon. In the meantime, the full lesson library
+              covers the fundamentals every school of thought agrees on.
+            </p>
+            <Button to="/learn" variant="secondary" iconRight={ArrowRight} className="mt-4">
+              Browse all lessons
+            </Button>
+          </Card>
         </div>
       </div>
     </div>

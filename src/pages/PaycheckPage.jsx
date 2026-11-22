@@ -1,21 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { Timer } from "lucide-react";
 import { markToolUsed } from "../lib/achievements.js";
 import {
   fmt$,
   SliderField,
   StatCard,
   ToolHeader,
+  ToolLayout,
+  ChartCard,
+  ChartTooltip,
+  ChoiceGrid,
+  GroupLabel,
+  Insight,
   MascotCallout,
-  ToggleRow,
+  chart,
 } from "../components/CalcKit.jsx";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { computePaycheck } from "../lib/paycheck.js";
-
-const ACCENT = "#0D9488"; // Warren's teal
-const TAKE_HOME = "#0D9488";
-const FEDERAL = "#6366F1";
-const FICA_COLOR = "#D97706";
+import { Card } from "../ui/kit.jsx";
 
 export const FREQUENCIES = [
   { value: 52, label: "Weekly" },
@@ -32,13 +34,9 @@ function DonutTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   const p = payload[0];
   return (
-    <div className="rounded-card border border-edge bg-well px-4 py-3 text-sm shadow-xl">
-      <div className="flex items-center gap-1.5">
-        <span className="h-2.5 w-2.5 rounded-sm" style={{ background: p.payload.color }} />
-        <span className="font-semibold text-ink">{p.name}</span>
-      </div>
-      <div className="mt-0.5 text-ink-secondary">{fmt$(p.value)} per paycheck</div>
-    </div>
+    <ChartTooltip
+      rows={[{ label: p.name, color: p.payload.color, value: `${fmt$(p.value)} per paycheck`, strong: true }]}
+    />
   );
 }
 
@@ -59,59 +57,48 @@ export default function PaycheckPage() {
   );
 
   const donutData = [
-    { name: "Take-home", value: calc.takeHomePer, color: TAKE_HOME },
-    { name: "Federal tax", value: calc.federalPer, color: FEDERAL },
-    { name: "FICA", value: calc.ficaPer, color: FICA_COLOR },
+    { name: "Take-home", value: calc.takeHomePer, color: chart.accent },
+    { name: "Federal tax", value: calc.federalPer, color: chart.second },
+    { name: "FICA", value: calc.ficaPer, color: chart.warn },
   ];
 
   const freqLabel = FREQUENCIES.find((f) => f.value === periodsPerYear).label.toLowerCase();
+  const keepPct = calc.grossPer > 0 ? `${((calc.takeHomePer / calc.grossPer) * 100).toFixed(0)}%` : "—";
 
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[760px]">
-        <Link
-          to="/tools"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to tools
-        </Link>
+    <div className="animate-enter">
+      <ToolHeader
+        tool="paycheck"
+        hueKey="investing"
+        title="Paycheck calculator"
+        tagline="Why your paycheck is smaller than your salary says — and where the rest goes."
+      />
 
-        <ToolHeader
-          emoji="🧾"
-          accent={ACCENT}
-          title="Paycheck Calculator"
-          tagline="Why your paycheck is smaller than your salary says — and where the rest goes."
-        />
+      <ToolLayout
+        controls={
+          <>
+            <Card className="p-4">
+              <GroupLabel className="!pt-0">How you&apos;re paid</GroupLabel>
+              <div className="mt-3">
+                <ChoiceGrid
+                  label="How you're paid"
+                  value={mode}
+                  onChange={setMode}
+                  options={[
+                    { value: "salary", label: "Annual salary" },
+                    { value: "hourly", label: "Hourly wage" },
+                  ]}
+                />
+              </div>
+              <GroupLabel className="mt-4">Pay frequency</GroupLabel>
+              <div className="mt-3">
+                <ChoiceGrid label="Pay frequency" value={periodsPerYear} onChange={setPeriodsPerYear} options={FREQUENCIES} />
+              </div>
+            </Card>
 
-        {/* Inputs */}
-        <div className="mb-4 flex flex-col gap-3" style={{ animation: "fadeInUp 0.6s ease-out 0.1s both" }}>
-          <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
-            <div className="rounded-card border border-edge bg-well/50 px-4 py-3.5">
-              <label className="mb-2.5 block text-sm font-medium text-ink">💼 How you're paid</label>
-              <ToggleRow
-                accent={ACCENT}
-                value={mode}
-                onChange={setMode}
-                options={[
-                  { value: "salary", label: "Annual salary" },
-                  { value: "hourly", label: "Hourly wage" },
-                ]}
-              />
-            </div>
-            <div className="rounded-card border border-edge bg-well/50 px-4 py-3.5">
-              <label className="mb-2.5 block text-sm font-medium text-ink">📅 Pay frequency</label>
-              <ToggleRow
-                accent={ACCENT}
-                value={periodsPerYear}
-                onChange={setPeriodsPerYear}
-                options={FREQUENCIES}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
             {mode === "salary" ? (
               <SliderField
-                label="💵 Annual salary"
+                label="Annual salary"
                 value={salary}
                 min={0}
                 max={300000}
@@ -123,7 +110,7 @@ export default function PaycheckPage() {
             ) : (
               <>
                 <SliderField
-                  label="💵 Hourly wage"
+                  label="Hourly wage"
                   value={wage}
                   min={7.25}
                   max={100}
@@ -133,7 +120,7 @@ export default function PaycheckPage() {
                   display={(v) => `$${v.toFixed(2)}`}
                 />
                 <SliderField
-                  label="🕐 Hours per week"
+                  label="Hours per week"
                   value={hoursPerWeek}
                   min={1}
                   max={60}
@@ -143,128 +130,97 @@ export default function PaycheckPage() {
                 />
               </>
             )}
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="mb-4 grid grid-cols-3 gap-3 max-md:grid-cols-1">
-          <StatCard
-            label={`Take-home per ${freqLabel} check`}
-            value={fmt$(calc.takeHomePer)}
-            color={TAKE_HOME}
-            delay={0.15}
-          />
+          </>
+        }
+      >
+        <div className="grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+          <StatCard label={`Take-home per ${freqLabel} check`} value={fmt$(calc.takeHomePer)} tone="accent" />
           <StatCard
             label="Gross per check"
             value={fmt$(calc.grossPer)}
-            color="#f1f5f9"
-            delay={0.2}
             sub={`${fmt$(calc.grossAnnual)}/yr before anything comes out`}
           />
           <StatCard
             label="Estimated taxes per check"
             value={fmt$(calc.federalPer + calc.ficaPer)}
-            color={FEDERAL}
-            delay={0.25}
+            tone="chart2"
             sub={`~${(calc.effectiveRate * 100).toFixed(1)}% effective rate`}
           />
         </div>
 
-        {/* Donut */}
-        <div
-          className="mb-4 rounded-card-lg border border-edge bg-card p-5 max-md:p-3"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.3s both" }}
-        >
-          <div className="mb-1 flex flex-wrap items-center justify-between gap-2 px-1">
-            <h3 className="m-0 text-lg font-semibold">Where each paycheck goes</h3>
-            <div className="flex gap-4 text-xs text-ink-secondary">
-              {donutData.map((d) => (
-                <span key={d.name} className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-sm" style={{ background: d.color }} />
-                  {d.name}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className="relative">
-            <ResponsiveContainer width="100%" height={280}>
-              <PieChart>
-                <Pie
-                  data={donutData}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={82}
-                  outerRadius={110}
-                  paddingAngle={2}
-                  strokeWidth={0}
-                  animationDuration={600}
-                >
-                  {donutData.map((d) => (
-                    <Cell key={d.name} fill={d.color} />
-                  ))}
-                </Pie>
-                <Tooltip content={<DonutTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-xs tracking-wide text-ink-muted uppercase">You keep</div>
-              <div className="font-serif text-2xl font-bold tracking-heading" style={{ color: TAKE_HOME }}>
-                {calc.grossPer > 0 ? `${((calc.takeHomePer / calc.grossPer) * 100).toFixed(0)}%` : "—"}
+        <ChartCard title="Where each paycheck goes">
+          <div className="grid items-center gap-x-8 gap-y-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <div className="relative">
+              <ResponsiveContainer width="100%" height={250}>
+                <PieChart>
+                  <Pie
+                    data={donutData}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={78}
+                    outerRadius={108}
+                    paddingAngle={2}
+                    strokeWidth={0}
+                    animationDuration={600}
+                  >
+                    {donutData.map((d) => (
+                      <Cell key={d.name} fill={d.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<DonutTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <div className="eyebrow">You keep</div>
+                <div className="num mt-1 font-display text-[2rem] font-semibold leading-none text-accent-ink">{keepPct}</div>
               </div>
             </div>
+            <dl className="num flex flex-col divide-y divide-edge text-sm">
+              {donutData.map((d) => (
+                <div key={d.name} className="flex items-center justify-between gap-4 py-2.5">
+                  <dt className="flex items-center gap-2 text-ink-secondary">
+                    <span className="h-2.5 w-2.5 rounded-sm" style={{ background: d.color }} />
+                    {d.name}
+                  </dt>
+                  <dd className="font-semibold text-ink">{fmtCents(d.value)}</dd>
+                </div>
+              ))}
+              <div className="flex items-center justify-between gap-4 py-2.5">
+                <dt className="text-ink-muted">Gross pay</dt>
+                <dd className="font-semibold text-ink">{fmtCents(calc.grossPer)}</dd>
+              </div>
+            </dl>
           </div>
-        </div>
+        </ChartCard>
 
-        {/* What your time is worth */}
-        <div
-          className="mb-4 rounded-card border p-4"
-          style={{
-            borderColor: `${ACCENT}33`,
-            background: `${ACCENT}0d`,
-            animation: "fadeInUp 0.6s ease-out 0.35s both",
-          }}
-        >
-          <div className="mb-1 text-xs font-semibold tracking-wide uppercase" style={{ color: ACCENT }}>
-            ⏱️ What your time is worth
-          </div>
-          <p className="m-0 text-sm leading-relaxed text-ink">
-            On paper you earn <span className="font-semibold">{fmtCents(calc.grossHourly)}/hour</span>
-            {mode === "salary" && " (assuming a 40-hour week)"}, but after federal tax and FICA your
-            true take-home rate is about{" "}
-            <span className="font-semibold" style={{ color: ACCENT }}>
-              {fmtCents(calc.trueHourly)}/hour
-            </span>
-            . Next time a $60 impulse buy tempts you, that's roughly{" "}
-            {calc.trueHourly > 0 ? `${(60 / calc.trueHourly).toFixed(1)} hours` : "a lot"} of your
-            life — price things in hours and spending gets honest fast.
-          </p>
-        </div>
+        <Insight title="What your time is worth" icon={Timer}>
+          On paper you earn <span className="num font-semibold">{fmtCents(calc.grossHourly)}/hour</span>
+          {mode === "salary" && " (assuming a 40-hour week)"}, but after federal tax and FICA your true take-home rate
+          is about <span className="num font-semibold text-accent-ink">{fmtCents(calc.trueHourly)}/hour</span>. Next
+          time a $60 impulse buy tempts you, that&apos;s roughly{" "}
+          {calc.trueHourly > 0 ? `${(60 / calc.trueHourly).toFixed(1)} hours` : "a lot"} of your life — price things
+          in hours and spending gets honest fast.
+        </Insight>
 
-        {/* Disclaimer */}
-        <div
-          className="mb-4 rounded-card border border-edge bg-well/50 p-4 text-xs leading-relaxed text-ink-muted"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.4s both" }}
-        >
-          <span className="font-semibold text-ink-secondary">📌 Educational estimate only.</span>{" "}
-          This uses 2026 federal brackets for a single filer taking the standard deduction, plus
-          FICA (6.2% Social Security on the first $184,500 of wages and 1.45% Medicare, with an
-          extra 0.9% Medicare above $200,000). Real paychecks also reflect state and local taxes,
-          401(k) and health-insurance deductions, tax credits, and other adjustments — so yours
-          will differ. This is for understanding your paystub, not tax advice.
-        </div>
-
-        <MascotCallout emoji="🦭" name="Warren the Walrus" accent={ACCENT} delay={0.45}>
-          The first real paycheck is a rite of passage: you do the math on your salary, then the
-          deposit lands and it's... less. Nobody stole from you — you've just met withholding.
-          Federal income tax comes out in brackets, so only the dollars above each threshold pay
-          the higher rate (a raise can never make your take-home shrink, whatever your uncle
-          claims). FICA is your Social Security and Medicare contribution — a flat 7.65% of every
-          dollar for most earners (the Social Security part stops once your wages pass a yearly cap). The
-          number to burn into memory is your take-home, because that's what rent, groceries, and
-          your investing plan actually draw from. Budget from take-home, not from salary, and
-          you'll never write checks your paycheck can't cash.
+        <MascotCallout emoji="🦭" name="Warren the Walrus" hueKey="investing">
+          The first real paycheck is a rite of passage: you do the math on your salary, then the deposit lands and
+          it&apos;s... less. Nobody stole from you — you&apos;ve just met withholding. Federal income tax comes out in
+          brackets, so only the dollars above each threshold pay the higher rate (a raise can never make your
+          take-home shrink, whatever your uncle claims). FICA is your Social Security and Medicare contribution — a
+          flat 7.65% of every dollar for most earners (the Social Security part stops once your wages pass a yearly
+          cap). The number to burn into memory is your take-home, because that&apos;s what rent, groceries, and your
+          investing plan actually draw from. Budget from take-home, not from salary, and you&apos;ll never write
+          checks your paycheck can&apos;t cash.
         </MascotCallout>
-      </div>
+
+        <p className="border-t border-edge pt-4 text-[0.8125rem] leading-relaxed text-ink-muted">
+          <span className="font-semibold text-ink-secondary">Educational estimate only.</span> This uses 2026 federal
+          brackets for a single filer taking the standard deduction, plus FICA (6.2% Social Security on the first
+          $184,500 of wages and 1.45% Medicare, with an extra 0.9% Medicare above $200,000). Real paychecks also
+          reflect state and local taxes, 401(k) and health-insurance deductions, tax credits, and other adjustments
+          — so yours will differ. This is for understanding your paystub, not tax advice.
+        </p>
+      </ToolLayout>
     </div>
   );
 }

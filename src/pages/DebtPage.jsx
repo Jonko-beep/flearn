@@ -1,20 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Plus, Trash2, TriangleAlert } from "lucide-react";
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { markToolUsed } from "../lib/achievements.js";
-import { fmt$, fmtAxis, SliderField, StatCard, ToolHeader, MascotCallout } from "../components/CalcKit.jsx";
 import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+  fmt$,
+  fmtAxis,
+  SliderField,
+  ToolHeader,
+  ToolLayout,
+  ChartCard,
+  ChartTooltip,
+  GroupLabel,
+  Insight,
+  MascotCallout,
+  chart,
+} from "../components/CalcKit.jsx";
+import { Badge, Button, Callout, Card, cx } from "../ui/kit.jsx";
 
-const ACCENT = "#7C3AED"; // Benjamin's purple
-const AVALANCHE = "#0D9488";
-const SNOWBALL = "#8B5CF6";
 const MAX_DEBTS = 5;
 const MAX_MONTHS = 600; // 50 years — past this, the plan isn't working
 const STORAGE_KEY = "flearn_debts";
@@ -84,21 +86,13 @@ function fmtMonths(m) {
   return `${years} yr${years > 1 ? "s" : ""} ${months} mo`;
 }
 
-function ChartTooltip({ active, payload, label }) {
+function PayoffTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-card border border-edge bg-well px-4 py-3 text-sm shadow-xl">
-      <div className="mb-1.5 font-semibold text-ink">Month {label}</div>
-      {payload.map((p) => (
-        <div key={p.dataKey} className="flex items-center justify-between gap-6 py-0.5">
-          <span className="flex items-center gap-1.5 text-ink-secondary">
-            <span className="h-2.5 w-2.5 rounded-sm" style={{ background: p.stroke }} />
-            {p.name}
-          </span>
-          <span className="text-ink-secondary">{fmt$(p.value)}</span>
-        </div>
-      ))}
-    </div>
+    <ChartTooltip
+      title={`Month ${label}`}
+      rows={payload.map((p) => ({ label: p.name, color: p.stroke, value: fmt$(p.value) }))}
+    />
   );
 }
 
@@ -145,88 +139,78 @@ function DebtRow({ debt, onChange, onRemove, canRemove }) {
     const n = parseFloat(raw);
     onChange({ ...debt, [key]: Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : 0 });
   };
-  const inputCls =
-    "rounded-card border border-edge bg-well py-1.5 px-2 text-sm text-ink outline-none transition-colors focus:border-save";
+  const small = "field num h-9 px-2 text-right";
   return (
-    <div className="grid grid-cols-[1.4fr_1fr_0.8fr_1fr_auto] items-end gap-2 max-md:grid-cols-2">
-      <label className="flex flex-col gap-1 text-xs text-ink-muted">
-        Name
+    <div className="py-3.5 first:pt-0 last:pb-0">
+      <div className="flex items-center gap-2">
         <input
           type="text"
           value={debt.name}
           maxLength={24}
           onChange={(e) => onChange({ ...debt, name: e.target.value })}
-          className={inputCls}
+          aria-label="Debt name"
+          className="field h-9 font-semibold"
         />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-ink-muted">
-        Balance ($)
-        <input
-          type="number"
-          min={0}
-          value={debt.balance}
-          onChange={(e) => num("balance", e.target.value, 0, 1e6)}
-          className={`${inputCls} text-right`}
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-ink-muted">
-        APR (%)
-        <input
-          type="number"
-          min={0}
-          step={0.1}
-          value={debt.apr}
-          onChange={(e) => num("apr", e.target.value, 0, 100)}
-          className={`${inputCls} text-right`}
-        />
-      </label>
-      <label className="flex flex-col gap-1 text-xs text-ink-muted">
-        Min. payment ($)
-        <input
-          type="number"
-          min={0}
-          value={debt.minPayment}
-          onChange={(e) => num("minPayment", e.target.value, 0, 1e5)}
-          className={`${inputCls} text-right`}
-        />
-      </label>
-      <button
-        onClick={onRemove}
-        disabled={!canRemove}
-        aria-label={`Remove ${debt.name || "debt"}`}
-        className="mb-0.5 flex h-8 w-8 items-center justify-center rounded-card border border-edge text-ink-muted transition-colors hover:border-error hover:text-error disabled:cursor-not-allowed disabled:opacity-30 max-md:col-span-2 max-md:w-full"
-      >
-        ✕
-      </button>
+        <button
+          type="button"
+          onClick={onRemove}
+          disabled={!canRemove}
+          aria-label={`Remove ${debt.name || "debt"}`}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-ink-muted transition-colors hover:bg-loss/10 hover:text-loss disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <Trash2 size={16} aria-hidden />
+        </button>
+      </div>
+      <div className="mt-2 grid grid-cols-3 gap-2">
+        <label className="flex flex-col gap-1 text-2xs font-medium text-ink-muted">
+          Balance ($)
+          <input type="number" min={0} value={debt.balance} onChange={(e) => num("balance", e.target.value, 0, 1e6)} className={small} />
+        </label>
+        <label className="flex flex-col gap-1 text-2xs font-medium text-ink-muted">
+          APR (%)
+          <input type="number" min={0} step={0.1} value={debt.apr} onChange={(e) => num("apr", e.target.value, 0, 100)} className={small} />
+        </label>
+        <label className="flex flex-col gap-1 text-2xs font-medium text-ink-muted">
+          Min. payment ($)
+          <input
+            type="number"
+            min={0}
+            value={debt.minPayment}
+            onChange={(e) => num("minPayment", e.target.value, 0, 1e5)}
+            className={small}
+          />
+        </label>
+      </div>
     </div>
   );
 }
 
-function StrategyColumn({ title, emoji, color, result, delay }) {
+function StrategyCard({ title, rule, swatch, tone, result, best }) {
   return (
-    <div
-      className="rounded-card-lg border bg-card p-5"
-      style={{ borderColor: `${color}33`, animation: `fadeInUp 0.6s ease-out ${delay}s both` }}
-    >
-      <div className="mb-3 flex items-center gap-2">
-        <span className="h-2.5 w-2.5 rounded-sm" style={{ background: color }} />
-        <h3 className="m-0 text-lg font-semibold" style={{ color }}>
-          {emoji} {title}
-        </h3>
+    <Card className="p-5">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: swatch }} />
+          <h2 className="text-[1.2rem]">{title}</h2>
+        </div>
+        {best && <Badge tone="gain">Cheapest</Badge>}
       </div>
-      <div className="mb-3">
-        <div className="text-xs tracking-wide text-ink-muted uppercase">Debt-free in</div>
-        <div className="font-serif text-[1.65rem] font-bold tracking-heading text-ink">
-          {result.finished ? fmtMonths(result.months) : "50+ yrs"}
+      <p className="mt-1 text-[0.8125rem] text-ink-muted">{rule}</p>
+      <div className="mt-4 grid grid-cols-2 gap-4">
+        <div>
+          <div className="eyebrow">Debt-free in</div>
+          <div className="num mt-1.5 font-display text-[1.5rem] font-semibold leading-none tracking-tight">
+            {result.finished ? fmtMonths(result.months) : "50+ yrs"}
+          </div>
+        </div>
+        <div>
+          <div className="eyebrow">Total interest</div>
+          <div className={cx("num mt-1.5 font-display text-[1.5rem] font-semibold leading-none tracking-tight", tone)}>
+            {fmt$(result.totalInterest)}
+          </div>
         </div>
       </div>
-      <div>
-        <div className="text-xs tracking-wide text-ink-muted uppercase">Total interest paid</div>
-        <div className="font-serif text-[1.65rem] font-bold tracking-heading" style={{ color }}>
-          {fmt$(result.totalInterest)}
-        </div>
-      </div>
-    </div>
+    </Card>
   );
 }
 
@@ -275,223 +259,160 @@ export default function DebtPage() {
 
   const interestDiff = results ? results.snowball.totalInterest - results.avalanche.totalInterest : 0;
   const bothFinish = results && results.avalanche.finished && results.snowball.finished;
+  const avalancheCheaper = bothFinish && Math.round(interestDiff) > 0;
 
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[760px]">
-        <Link
-          to="/tools"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to tools
-        </Link>
+    <div className="animate-enter">
+      <ToolHeader
+        tool="debt"
+        hueKey="saving"
+        title="Debt payoff calculator"
+        tagline="Avalanche vs. snowball — see what each path costs and how fast it gets you free."
+      />
 
-        <ToolHeader
-          emoji="💳"
-          accent={ACCENT}
-          title="Debt Payoff Calculator"
-          tagline="Avalanche vs. snowball — see what each path costs and how fast it gets you free."
-        />
+      <ToolLayout
+        controls={
+          <>
+            <Card className="p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <GroupLabel className="!pt-0">Your debts</GroupLabel>
+                <span className="num text-2xs text-ink-muted">
+                  {debts.length} of {MAX_DEBTS}
+                </span>
+              </div>
+              <div className="divide-y divide-edge">
+                {debts.map((d, i) => (
+                  <DebtRow
+                    key={i}
+                    debt={d}
+                    onChange={(next) => updateDebt(i, next)}
+                    onRemove={() => removeDebt(i)}
+                    canRemove={debts.length > 1}
+                  />
+                ))}
+              </div>
+              {debts.length < MAX_DEBTS && (
+                <Button variant="secondary" size="sm" icon={Plus} onClick={addDebt} className="mt-4 w-full">
+                  Add debt
+                </Button>
+              )}
+            </Card>
 
-        {/* Debts editor */}
-        <div
-          className="mb-4 rounded-card-lg border border-edge bg-card p-5"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.1s both" }}
-        >
-          <h3 className="m-0 mb-4 text-lg font-semibold">Your debts</h3>
-          <div className="flex flex-col gap-4">
-            {debts.map((d, i) => (
-              <DebtRow
-                key={i}
-                debt={d}
-                onChange={(next) => updateDebt(i, next)}
-                onRemove={() => removeDebt(i)}
-                canRemove={debts.length > 1}
-              />
-            ))}
-          </div>
-          {debts.length < MAX_DEBTS && (
-            <button
-              onClick={addDebt}
-              className="mt-4 rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-              style={{ borderColor: `${ACCENT}55`, color: ACCENT, background: `${ACCENT}10` }}
-            >
-              + Add debt
-            </button>
-          )}
-        </div>
-
-        {/* Budget */}
-        <div className="mb-4" style={{ animation: "fadeInUp 0.6s ease-out 0.15s both" }}>
-          <SliderField
-            label="💰 Total monthly payment budget"
-            value={budget}
-            min={0}
-            max={5000}
-            step={25}
-            onChange={setBudget}
-            prefix="$"
-            display={(v) => `${fmt$(v)}`}
-            accent="save"
-          />
-        </div>
-
+            <SliderField
+              label="Monthly payment budget"
+              value={budget}
+              min={0}
+              max={5000}
+              step={25}
+              onChange={setBudget}
+              prefix="$"
+              display={(v) => `${fmt$(v)}`}
+              hint={validDebts.length > 0 ? `minimums: ${fmt$(minTotal)}` : undefined}
+            />
+          </>
+        }
+      >
         {!budgetOk ? (
-          <div
-            className="mb-6 rounded-card border p-4 text-sm leading-relaxed text-ink"
-            style={{ borderColor: "#f59e0b55", background: "#f59e0b10" }}
-          >
+          <Callout tone="warn" icon={TriangleAlert} title={validDebts.length === 0 ? "No debts to compare" : "Budget is below the minimums"}>
             {validDebts.length === 0 ? (
               <>Add at least one debt with a balance to compare payoff strategies.</>
             ) : (
               <>
-                Your minimum payments add up to{" "}
-                <span className="font-semibold">{fmt$(minTotal)}</span>/month, but your budget is{" "}
-                <span className="font-semibold">{fmt$(budget)}</span>. Nudge the budget up to at
-                least the minimums — that's the floor that keeps every account current.
+                Your minimum payments add up to <span className="num font-semibold text-ink">{fmt$(minTotal)}</span>
+                /month, but your budget is <span className="num font-semibold text-ink">{fmt$(budget)}</span>. Nudge
+                the budget up to at least the minimums — that&apos;s the floor that keeps every account current.
               </>
             )}
-          </div>
+          </Callout>
         ) : (
           <>
-            {/* Side-by-side comparison */}
-            <div className="mb-4 grid grid-cols-2 gap-3 max-md:grid-cols-1">
-              <StrategyColumn
+            <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+              <StrategyCard
                 title="Avalanche"
-                emoji="🏔️"
-                color={AVALANCHE}
+                rule="Highest interest rate first"
+                swatch={chart.accent}
+                tone="text-accent-ink"
                 result={results.avalanche}
-                delay={0.2}
+                best={avalancheCheaper}
               />
-              <StrategyColumn
+              <StrategyCard
                 title="Snowball"
-                emoji="⛄"
-                color={SNOWBALL}
+                rule="Smallest balance first"
+                swatch={chart.second}
+                tone="text-chart2"
                 result={results.snowball}
-                delay={0.25}
               />
             </div>
 
             {!bothFinish && (
-              <div
-                className="mb-4 rounded-card border p-4 text-sm leading-relaxed text-ink"
-                style={{ borderColor: "#dc262655", background: "#dc262610" }}
-              >
-                At this budget, the balances outrun the payments — interest is growing faster than
-                you're paying it down. Raise the monthly budget until both plans reach zero.
-              </div>
+              <Callout tone="loss" icon={TriangleAlert} title="This budget never reaches zero">
+                At this budget, the balances outrun the payments — interest is growing faster than you&apos;re paying
+                it down. Raise the monthly budget until both plans reach zero.
+              </Callout>
             )}
 
+            <ChartCard
+              title="Payoff timeline"
+              legend={[
+                { label: "Avalanche", color: chart.accent },
+                { label: "Snowball", color: chart.second },
+              ]}
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                  <CartesianGrid stroke={chart.grid} vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tick={chart.tick}
+                    tickLine={false}
+                    axisLine={{ stroke: chart.axis }}
+                    interval="preserveStartEnd"
+                    tickFormatter={(m) => `${m}mo`}
+                  />
+                  <YAxis tickFormatter={fmtAxis} tick={chart.tick} tickLine={false} axisLine={false} width={54} />
+                  <Tooltip content={<PayoffTooltip />} cursor={chart.cursor} />
+                  <Line type="monotone" dataKey="avalanche" name="Avalanche" stroke={chart.accent} strokeWidth={2} dot={false} animationDuration={600} />
+                  <Line type="monotone" dataKey="snowball" name="Snowball" stroke={chart.second} strokeWidth={2} dot={false} animationDuration={600} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
             {bothFinish && (
-              <div
-                className="mb-6 rounded-card border p-4 text-sm leading-relaxed text-ink"
-                style={{
-                  borderColor: `${ACCENT}33`,
-                  background: `${ACCENT}0d`,
-                  animation: "fadeInUp 0.6s ease-out 0.3s both",
-                }}
-              >
-                <span className="font-semibold" style={{ color: ACCENT }}>
-                  The math:
-                </span>{" "}
-                {Math.round(interestDiff) > 0 ? (
+              <Insight title="The math">
+                {avalancheCheaper ? (
                   <>
-                    avalanche saves you <span className="font-semibold">{fmt$(interestDiff)}</span>{" "}
-                    in interest over snowball
+                    Avalanche saves you <span className="num font-semibold">{fmt$(interestDiff)}</span> in interest
+                    over snowball
                     {results.snowball.months !== results.avalanche.months && (
                       <>
                         {" "}
-                        and gets you debt-free{" "}
-                        {fmtMonths(Math.abs(results.snowball.months - results.avalanche.months))}{" "}
+                        and gets you debt-free {fmtMonths(Math.abs(results.snowball.months - results.avalanche.months))}{" "}
                         {results.avalanche.months < results.snowball.months ? "sooner" : "later"}
                       </>
                     )}
                     .
                   </>
                 ) : (
-                  <>with these debts, both strategies cost about the same — pick whichever keeps you motivated.</>
+                  <>With these debts, both strategies cost about the same — pick whichever keeps you motivated.</>
                 )}{" "}
-                That said: snowball's quick wins — killing off whole accounts early — keep a lot of
-                people from quitting. A plan you stick to beats a perfect plan you abandon, and
-                that psychology is worth real money to some people.
-              </div>
+                That said: snowball&apos;s quick wins — killing off whole accounts early — keep a lot of people from
+                quitting. A plan you stick to beats a perfect plan you abandon, and that psychology is worth real
+                money to some people.
+              </Insight>
             )}
-
-            {/* Chart */}
-            <div
-              className="mb-6 rounded-card-lg border border-edge bg-card p-5 max-md:p-3"
-              style={{ animation: "fadeInUp 0.6s ease-out 0.35s both" }}
-            >
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-                <h3 className="m-0 text-lg font-semibold">Payoff timeline</h3>
-                <div className="flex gap-4 text-xs text-ink-secondary">
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-sm" style={{ background: AVALANCHE }} />
-                    Avalanche
-                  </span>
-                  <span className="flex items-center gap-1.5">
-                    <span className="h-2.5 w-2.5 rounded-sm" style={{ background: SNOWBALL }} />
-                    Snowball
-                  </span>
-                </div>
-              </div>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                  <CartesianGrid stroke="#334155" strokeOpacity={0.4} vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    tick={{ fill: "#64748b", fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={{ stroke: "#334155" }}
-                    interval="preserveStartEnd"
-                    tickFormatter={(m) => `${m}mo`}
-                  />
-                  <YAxis
-                    tickFormatter={fmtAxis}
-                    tick={{ fill: "#64748b", fontSize: 12 }}
-                    tickLine={false}
-                    axisLine={false}
-                    width={54}
-                  />
-                  <Tooltip
-                    content={<ChartTooltip />}
-                    cursor={{ stroke: "#64748b", strokeDasharray: "4 4" }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="avalanche"
-                    name="Avalanche"
-                    stroke={AVALANCHE}
-                    strokeWidth={2}
-                    dot={false}
-                    animationDuration={600}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="snowball"
-                    name="Snowball"
-                    stroke={SNOWBALL}
-                    strokeWidth={2}
-                    dot={false}
-                    animationDuration={600}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
           </>
         )}
 
-        <MascotCallout emoji="🐻" name="Benjamin the Bear" accent={ACCENT} delay={0.4}>
-          Here's how the two plans differ: avalanche points every spare dollar at the debt with the
-          highest interest rate, which is mathematically unbeatable — interest is the price of
-          debt, and you're shutting off the most expensive meter first. Snowball attacks the
-          smallest balance instead, so you feel a win fast: one card gone, then another, each freed-up
-          minimum "snowballing" into the next debt. Both plans pay every minimum every month —
-          that's non-negotiable, it's what keeps your credit intact. My honest advice? Run your
-          real numbers above. If avalanche only saves you fifty bucks, take the snowball wins. If
-          it saves you a thousand, grit your teeth and climb the mountain.
+        <MascotCallout emoji="🐻" name="Benjamin the Bear" hueKey="saving">
+          Here&apos;s how the two plans differ: avalanche points every spare dollar at the debt with the highest
+          interest rate, which is mathematically unbeatable — interest is the price of debt, and you&apos;re shutting
+          off the most expensive meter first. Snowball attacks the smallest balance instead, so you feel a win fast:
+          one card gone, then another, each freed-up minimum &quot;snowballing&quot; into the next debt. Both plans
+          pay every minimum every month — that&apos;s non-negotiable, it&apos;s what keeps your credit intact. My
+          honest advice? Run your real numbers above. If avalanche only saves you fifty bucks, take the snowball
+          wins. If it saves you a thousand, grit your teeth and climb the mountain.
         </MascotCallout>
-      </div>
+      </ToolLayout>
     </div>
   );
 }

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { ArrowRight, Hammer, Landmark, Layers, RotateCcw, TriangleAlert, Waves } from "lucide-react";
 import { getPhilosopher } from "../data/philosophers.js";
 import { DISCLAIMER } from "../lib/alignQuiz.js";
+import { Button, Callout, Card, IconTile, cx } from "../ui/kit.jsx";
+import { philosopherIcon } from "../ui/icons.js";
 
 // TODO(Aaron): map each archetype to a real FLearn playlist route (existing
 // video embeds). While an entry is null the CTA falls back to /learn.
@@ -14,27 +17,17 @@ const LEARNING_PATHS = {
   cardone: null,
 };
 
-function Callout({ emoji, color, title, children, to, linkLabel }) {
+function LinkedCallout({ icon, tone = "neutral", title, children, to, linkLabel }) {
   return (
-    <div
-      className="mb-4 rounded-card-lg p-5"
-      style={{ background: `${color}10`, border: `1px solid ${color}44` }}
-    >
-      <div className="mb-1 flex items-center gap-2 text-[0.95rem] font-semibold" style={{ color }}>
-        <span>{emoji}</span>
-        <span>{title}</span>
-      </div>
-      <p className="m-0 text-sm leading-relaxed text-ink-secondary">{children}</p>
+    <Callout icon={icon} tone={tone} title={title}>
+      {children}
       {to && (
-        <Link
-          to={to}
-          className="mt-2 inline-block text-sm font-medium transition-transform hover:translate-x-0.5"
-          style={{ color }}
-        >
-          {linkLabel} →
+        <Link to={to} className="mt-2 flex items-center gap-1 font-semibold text-ink hover:underline">
+          {linkLabel}
+          <ArrowRight size={14} aria-hidden />
         </Link>
       )}
-    </div>
+    </Callout>
   );
 }
 
@@ -47,151 +40,123 @@ export default function QuizResults({ result, onRetake }) {
   const learningPath = LEARNING_PATHS[result.primary] ?? "/learn";
 
   return (
-    <div className="animate-fade-in-up">
-      {/* 1. Verdict card */}
-      <div
-        className="mb-4 rounded-card-lg p-6 text-center"
-        style={{
-          background: `linear-gradient(135deg, ${primary.color}18, #1e293b)`,
-          border: `1px solid ${primary.color}55`,
-        }}
-      >
-        <span
-          className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full text-5xl"
-          style={{ background: `${primary.color}20` }}
-        >
-          {primary.emoji}
-        </span>
-        <p className="m-0 mb-1 text-sm text-ink-muted">You align with</p>
-        <h2 className="m-0 mb-1 text-3xl font-bold">{primary.name}</h2>
-        <p className="m-0 mb-3 text-sm font-semibold" style={{ color: primary.color }}>
-          {primary.role} · {primaryAffinity.percent}% affinity
-        </p>
-        <p className="m-0 text-[0.95rem] leading-relaxed text-ink-secondary">
-          {primary.summary}
-        </p>
-      </div>
-
-      {/* 2. Affinity bars — all seven, sorted */}
-      <div className="mb-4 rounded-card-lg border border-edge bg-card p-6">
-        <h3 className="m-0 mb-4 text-lg font-semibold">Your full spectrum</h3>
-        <div className="flex flex-col gap-3">
-          {result.affinities.map(({ archetype, percent }) => {
-            const p = getPhilosopher(archetype);
-            return (
-              <div key={archetype}>
-                <div className="mb-1 flex justify-between text-sm">
-                  <span className="text-ink-secondary">
-                    {p.emoji} {p.name}
-                  </span>
-                  <span className="font-semibold" style={{ color: p.color }}>
-                    {percent}%
-                  </span>
-                </div>
-                <div className="h-2 overflow-hidden rounded-full bg-well">
-                  <div
-                    className="h-full rounded-full transition-all duration-700 ease-out"
-                    style={{ width: `${percent}%`, background: p.color }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+    <div className="animate-enter flex flex-col gap-4">
+      {/* 1. Verdict */}
+      <Card className="p-6 sm:p-8">
+        <div className="flex flex-wrap items-start gap-5">
+          <IconTile icon={philosopherIcon(primary.slug)} size={64} />
+          <div className="min-w-0 flex-1 basis-64">
+            <div className="eyebrow !text-cat">You align with</div>
+            <h2 className="mt-1.5 text-[2rem]">{primary.name}</h2>
+            <p className="num mt-1 text-sm font-semibold text-ink-secondary">
+              {primary.role} · {primaryAffinity.percent}% affinity
+            </p>
+            <p className="mt-3 text-[1.05rem] font-medium leading-relaxed text-ink-secondary">
+              {primary.summary}
+            </p>
+          </div>
         </div>
-      </div>
+        {/* 6. CTAs */}
+        <div className="mt-6 flex flex-wrap gap-2.5">
+          <Button to={`/align/${primary.slug}`} size="lg" iconRight={ArrowRight}>
+            Meet {primary.name}
+          </Button>
+          <Button to={learningPath} size="lg" variant="secondary">
+            Start {primary.name}&apos;s learning path
+          </Button>
+        </div>
+      </Card>
 
-      {/* 3. Temperament vs. stage */}
-      <div className="mb-4 rounded-card-lg border border-edge bg-card p-6">
-        <p className="m-0 text-[0.95rem] leading-relaxed text-ink">
-          Your temperament: <strong>{result.temperament}</strong>. Your current stage:{" "}
-          <strong>{result.stage}</strong>.
-        </p>
-        {result.mismatchNote && (
-          <p className="m-0 mt-3 rounded-[10px] border-l-[3px] border-warning bg-well p-4 text-sm leading-relaxed text-ink-secondary">
-            {result.mismatchNote}
-          </p>
-        )}
-      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* 2. Affinity bars — all seven, sorted */}
+        <Card className="p-5 sm:p-6">
+          <h3 className="text-[1.15rem]">Your full spectrum</h3>
+          <div className="mt-4 flex flex-col gap-3.5">
+            {result.affinities.map(({ archetype, percent }) => {
+              const p = getPhilosopher(archetype);
+              const isPrimary = archetype === result.primary;
+              return (
+                <div key={archetype}>
+                  <div className="mb-1.5 flex justify-between text-sm">
+                    <Link
+                      to={`/align/${p.slug}`}
+                      className={cx("hover:underline", isPrimary ? "font-semibold text-ink" : "text-ink-secondary")}
+                    >
+                      {p.name}
+                    </Link>
+                    <span className={cx("num font-semibold", isPrimary ? "text-cat" : "text-ink-muted")}>{percent}%</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-edge">
+                    <div
+                      className={cx("h-full rounded-full transition-[width] duration-700 ease-out", isPrimary ? "bg-cat" : "bg-ink-muted/60")}
+                      style={{ width: `${percent}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
 
-      {/* 4. Blind spot */}
-      <div className="mb-4 rounded-card-lg border border-edge bg-card p-6">
-        <h3 className="m-0 mb-2 text-lg font-semibold">
-          ⚠️ The {primary.role.replace("The ", "")}'s blind spot
-        </h3>
-        <p className="m-0 text-sm leading-relaxed text-ink-secondary">{primary.blindSpot}</p>
+        <div className="flex flex-col gap-4">
+          {/* 3. Temperament vs. stage */}
+          <Card className="p-5 sm:p-6">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="eyebrow">Your temperament</div>
+                <div className="mt-1.5 font-display text-[1.35rem] font-semibold">{result.temperament}</div>
+              </div>
+              <div>
+                <div className="eyebrow">Your current stage</div>
+                <div className="mt-1.5 font-display text-[1.35rem] font-semibold">{result.stage}</div>
+              </div>
+            </div>
+            {result.mismatchNote && (
+              <p className="mt-4 rounded-lg border-l-[3px] border-warn bg-warn/[0.07] px-4 py-3 text-sm leading-relaxed text-ink-secondary">
+                {result.mismatchNote}
+              </p>
+            )}
+          </Card>
+
+          {/* 4. Blind spot */}
+          <Callout tone="warn" icon={TriangleAlert} title={`The ${primary.role.replace("The ", "")}'s blind spot`}>
+            {primary.blindSpot}
+          </Callout>
+        </div>
       </div>
 
       {/* 5. Triggered callouts */}
       {result.entFlag && (
-        <Callout
-          emoji="🏗️"
-          color="#F59E0B"
-          title="Builder tendencies detected"
-          to="/align/hormozi"
-          linkLabel="Meet Alex Hormozi"
-        >
-          Several of your answers point at creating income, not just managing it. That's a
-          different skill tree — offers, operations, and scale — and it has its own guide.
-        </Callout>
+        <LinkedCallout icon={Hammer} title="Builder tendencies detected" to="/align/hormozi" linkLabel="Meet Alex Hormozi">
+          Several of your answers point at creating income, not just managing it. That&apos;s a different skill tree —
+          offers, operations, and scale — and it has its own guide.
+        </LinkedCallout>
       )}
       {result.protectionUnlocked && (
-        <Callout
-          emoji="🏛️"
-          color="#64748B"
-          title="Protect What You're Building"
-          to="/align/sutton"
-          linkLabel="Meet Garrett Sutton"
-        >
-          You operate a business or hold (or plan to hold) investment assets. Before you
-          scale further, it's worth learning how entities and structure protect what you've
-          built.
-        </Callout>
+        <LinkedCallout icon={Landmark} title="Protect what you're building" to="/align/sutton" linkLabel="Meet Garrett Sutton">
+          You operate a business or hold (or plan to hold) investment assets. Before you scale further, it&apos;s
+          worth learning how entities and structure protect what you&apos;ve built.
+        </LinkedCallout>
       )}
       {result.contentFlags.includes("volatility-basics") && (
-        <Callout emoji="🌊" color="#3B82F6" title="Start with market volatility basics">
-          You told us you've never had real money at risk in a downturn. That's not a flaw —
-          it just means the smartest first step is understanding how markets move before you
-          find out live.
-        </Callout>
+        <LinkedCallout icon={Waves} title="Start with market volatility basics">
+          You told us you&apos;ve never had real money at risk in a downturn. That&apos;s not a flaw — it just means
+          the smartest first step is understanding how markets move before you find out live.
+        </LinkedCallout>
       )}
       {result.contentFlags.includes("secure-base") && (
-        <Callout emoji="🧱" color="#0D9488" title="Build your secure base">
-          Your cash cushion covers less than three months. Whatever philosophy you align
-          with, every one of them agrees on this: a bigger buffer buys you options.
-        </Callout>
+        <LinkedCallout icon={Layers} title="Build your secure base">
+          Your cash cushion covers less than three months. Whatever philosophy you align with, every one of them
+          agrees on this: a bigger buffer buys you options.
+        </LinkedCallout>
       )}
 
-      {/* 6. CTAs */}
-      <div className="mb-6 flex flex-wrap gap-3">
-        <Link
-          to={`/align/${primary.slug}`}
-          className="rounded-full border-none px-6 py-3 text-[0.95rem] font-semibold text-white transition-all duration-200 hover:-translate-y-px"
-          style={{ background: primary.color }}
-        >
-          Meet {primary.name} →
-        </Link>
-        <Link
-          to={learningPath}
-          className="rounded-full border px-6 py-3 text-[0.95rem] font-semibold transition-all duration-200 hover:-translate-y-px"
-          style={{ borderColor: `${primary.color}66`, color: primary.color }}
-        >
-          Start {primary.name}'s learning path →
-        </Link>
-      </div>
-
-      {/* 7. Disclaimer */}
-      <div className="mb-6 rounded-card border border-edge bg-well p-4">
-        <p className="m-0 text-[0.8rem] leading-relaxed text-ink-muted">{DISCLAIMER}</p>
-      </div>
-
-      {/* 8. Retake */}
-      <div className="text-center">
-        <button
-          onClick={onRetake}
-          className="cursor-pointer border-none bg-transparent text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ↺ Retake the quiz
-        </button>
+      {/* 7. Disclaimer + 8. Retake */}
+      <div className="flex flex-wrap items-start justify-between gap-4 border-t border-edge pt-5">
+        <p className="max-w-[60ch] flex-1 basis-72 text-[0.8125rem] leading-relaxed text-ink-muted">{DISCLAIMER}</p>
+        <Button variant="ghost" size="sm" icon={RotateCcw} onClick={onRetake}>
+          Retake the quiz
+        </Button>
       </div>
     </div>
   );

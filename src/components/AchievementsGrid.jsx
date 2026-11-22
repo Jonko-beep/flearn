@@ -1,62 +1,71 @@
+import { Lock } from "lucide-react";
 import { achievements } from "../data/achievements.js";
 import { useAchievements } from "../lib/achievements.js";
-
-const GOLD = "#f59e0b";
+import { achievementIcon } from "../ui/icons.js";
+import { mascotKey } from "../ui/mascots.jsx";
+import { Avatar, SectionTitle, cx } from "../ui/kit.jsx";
 
 function earnDate(iso) {
-  return new Date(iso).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-// Badge grid for the /learn page: unlocked badges in full color with their
-// earn date, locked ones grayed out with the description as a hint.
+// A medal for each achievement: gold when earned (course graduations wear
+// that course's mascot), grey with a lock and the how-to-earn hint otherwise.
+function Medal({ achievement, unlock }) {
+  const Icon = achievementIcon(achievement.id);
+  const mascot = mascotKey(achievement.emoji);
+  return (
+    <div className="flex flex-col items-center text-center" title={achievement.description}>
+      <span
+        className={cx(
+          "relative flex h-[68px] w-[68px] items-center justify-center rounded-full",
+          unlock
+            ? "bg-gold text-[#3a2a06] shadow-[inset_0_-5px_0_rgb(0_0_0/0.2),0_0_0_4px_rgb(var(--gold)/0.25)]"
+            : "border-2 border-dashed border-edge-strong bg-well text-ink-muted"
+        )}
+      >
+        {unlock ? (
+          mascot ? (
+            <Avatar mascot={mascot} size={54} happy className="!bg-white/30" />
+          ) : (
+            <Icon size={28} strokeWidth={2.4} aria-hidden />
+          )
+        ) : (
+          <Lock size={20} strokeWidth={2.4} aria-hidden />
+        )}
+      </span>
+      <div className={cx("mt-2.5 text-sm font-bold leading-tight", unlock ? "text-ink" : "text-ink-secondary")}>
+        {achievement.title}
+      </div>
+      <div className="mt-0.5 text-xs leading-snug text-ink-muted">
+        {unlock ? `Earned ${earnDate(unlock.date)}` : achievement.description}
+      </div>
+    </div>
+  );
+}
+
 export default function AchievementsGrid() {
   const unlocks = useAchievements();
   const unlockedCount = achievements.filter((a) => unlocks[a.id]).length;
+  // earned medals first, so the shelf shows off what you have
+  const ordered = [...achievements].sort((a, b) => Boolean(unlocks[b.id]) - Boolean(unlocks[a.id]));
 
   return (
-    <div className="mb-8" style={{ animation: "fadeInDown 0.6s ease-out 0.2s both" }}>
-      <div className="mb-3 flex items-baseline justify-between">
-        <h3 className="m-0 text-lg font-bold">🏅 Achievements</h3>
-        <span className="text-sm font-semibold" style={{ color: GOLD }}>
-          {unlockedCount} of {achievements.length}
-        </span>
+    <section>
+      <SectionTitle
+        action={
+          <span className="num text-sm font-bold text-ink-muted">
+            <span className="text-gold">{unlockedCount}</span> of {achievements.length} earned
+          </span>
+        }
+      >
+        Achievements
+      </SectionTitle>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-7 rounded-2xl border-2 border-edge bg-card p-6 shadow-tile sm:grid-cols-4 xl:grid-cols-5">
+        {ordered.map((a) => (
+          <Medal key={a.id} achievement={a} unlock={unlocks[a.id]} />
+        ))}
       </div>
-      <div className="grid grid-cols-3 gap-2 max-sm:grid-cols-2">
-        {achievements.map((a, i) => {
-          const unlock = unlocks[a.id];
-          return (
-            <div
-              key={a.id}
-              className="rounded-card border bg-card px-3 py-4 text-center"
-              style={{
-                borderColor: unlock ? `${GOLD}55` : "#334155",
-                background: unlock ? `${GOLD}0d` : undefined,
-                animation: `fadeInUp 0.5s ease-out ${0.25 + i * 0.04}s both`,
-              }}
-            >
-              <div
-                className="mb-1.5 text-2xl"
-                style={unlock ? undefined : { filter: "grayscale(1)", opacity: 0.35 }}
-              >
-                {a.emoji}
-              </div>
-              <div
-                className="text-[0.8rem] font-semibold"
-                style={{ color: unlock ? GOLD : "#64748b" }}
-              >
-                {unlock ? a.title : `🔒 ${a.title}`}
-              </div>
-              <div className="mt-1 text-[0.68rem] leading-snug text-ink-muted">
-                {unlock ? `Earned ${earnDate(unlock.date)}` : a.description}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+    </section>
   );
 }

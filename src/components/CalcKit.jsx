@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
+import { Lightbulb } from "lucide-react";
+import { Callout, Card, Crumbs, IconTile, MascotNote, Segmented, Stat, cx } from "../ui/kit.jsx";
+import { color, hue } from "../ui/theme.js";
+import { TOOL_ICONS } from "../ui/icons.js";
 
-// Shared building blocks for the /tools calculators (compound, debt, mortgage, paycheck, options).
+// Shared building blocks for the /tools calculators (compound, debt, mortgage,
+// paycheck, options) and for the portfolio chart.
 
 export function fmt$(n) {
   return `$${Math.round(n).toLocaleString("en-US")}`;
@@ -12,16 +17,8 @@ export function fmtAxis(n) {
   return `$${Math.round(n)}`;
 }
 
-// Tailwind needs full class names in source, so accents map to static strings.
-const ACCENT_CLASSES = {
-  invest: { focus: "focus:border-invest", range: "accent-invest" },
-  save: { focus: "focus:border-save", range: "accent-save" },
-  estate: { focus: "focus:border-estate", range: "accent-estate" },
-  options: { focus: "focus:border-options", range: "accent-options" },
-};
-
-export function SliderField({ label, value, min, max, step, onChange, prefix, suffix, display, accent = "invest" }) {
-  const accentCls = ACCENT_CLASSES[accent] ?? ACCENT_CLASSES.invest;
+/** A number you can type or drag: text box on the right, slider underneath. */
+export function SliderField({ label, value, min, max, step, onChange, prefix, suffix, display, hint }) {
   const [text, setText] = useState(String(value));
   const [focused, setFocused] = useState(false);
   useEffect(() => {
@@ -34,14 +31,15 @@ export function SliderField({ label, value, min, max, step, onChange, prefix, su
     const n = parseFloat(raw);
     if (Number.isFinite(n)) onChange(clamp(n));
   };
+  const pct = max > min ? ((clamp(value) - min) / (max - min)) * 100 : 0;
 
   return (
-    <div className="rounded-card border border-edge bg-well/50 px-4 py-3.5">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <label className="text-sm font-medium text-ink">{label}</label>
-        <div className="relative">
+    <div className="rounded-xl border border-edge bg-card px-4 pb-3 pt-3.5">
+      <div className="flex items-center justify-between gap-3">
+        <label className="text-sm font-medium text-ink-secondary">{label}</label>
+        <div className="relative shrink-0">
           {prefix && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
+            <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
               {prefix}
             </span>
           )}
@@ -57,105 +55,187 @@ export function SliderField({ label, value, min, max, step, onChange, prefix, su
               setText(String(value));
             }}
             onChange={(e) => handleText(e.target.value)}
-            className={`w-[110px] rounded-card border border-edge bg-well py-1.5 pr-2 text-right text-sm text-ink outline-none transition-colors ${accentCls.focus} ${prefix ? "pl-7" : "pl-2"} ${suffix ? "pr-8" : ""}`}
+            className={cx(
+              "field num h-9 w-[112px] text-right font-semibold",
+              prefix ? "pl-6" : "pl-2",
+              suffix ? "pr-7" : "pr-2.5"
+            )}
             aria-label={`${label} value`}
           />
           {suffix && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
+            <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
               {suffix}
             </span>
           )}
         </div>
       </div>
-      <div className="flex items-center gap-3">
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={(e) => onChange(clamp(parseFloat(e.target.value)))}
-          className={`h-1.5 w-full cursor-pointer ${accentCls.range}`}
-          aria-label={`${label} slider`}
-        />
-        <span className="w-14 shrink-0 text-right text-xs text-ink-muted">{display(value)}</span>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(clamp(parseFloat(e.target.value)))}
+        className="slider mt-2.5"
+        style={{ "--pct": `${pct}%` }}
+        aria-label={`${label} slider`}
+      />
+      <div className="num flex justify-between text-2xs text-ink-muted">
+        <span>{display(min)}</span>
+        {hint && <span>{hint}</span>}
+        <span>{display(max)}</span>
       </div>
     </div>
   );
 }
 
-export function StatCard({ label, value, color, delay, sub }) {
-  return (
-    <div
-      className="rounded-card-lg border bg-card p-5"
-      style={{ borderColor: `${color}33`, animation: `fadeInUp 0.6s ease-out ${delay}s both` }}
-    >
-      <div className="mb-1 text-xs tracking-wide text-ink-muted uppercase">{label}</div>
-      <div className="font-serif text-[1.65rem] font-bold tracking-heading" style={{ color }}>
-        {value}
-      </div>
-      {sub && <div className="mt-1 text-xs text-ink-muted">{sub}</div>}
-    </div>
-  );
+/** A headline figure in its own card. `tone` colours the number. */
+export function StatCard({ label, value, tone, sub, className }) {
+  return <Stat boxed label={label} value={value} tone={tone} sub={sub} className={cx("p-5", className)} />;
 }
 
-export function ToolHeader({ emoji, accent, title, tagline }) {
+/** Breadcrumb, icon, title and one-line description for a tool page. */
+export function ToolHeader({ tool, title, tagline, hueKey }) {
   return (
-    <div className="mb-6 animate-fade-in-down">
-      <div className="flex items-center gap-3">
-        <span
-          className="flex h-[52px] w-[52px] items-center justify-center rounded-card text-3xl"
-          style={{ background: `${accent}15` }}
-        >
-          {emoji}
-        </span>
-        <div>
-          <h2 className="m-0 text-3xl font-bold">{title}</h2>
-          <span className="text-sm text-ink-muted">{tagline}</span>
+    <div style={hue(hueKey)}>
+      <Crumbs items={[{ label: "Tools", to: "/tools" }, { label: title }]} />
+      <header className="mb-8 flex flex-wrap items-start gap-4">
+        <IconTile icon={TOOL_ICONS[tool]} size={52} />
+        <div className="min-w-0 flex-1 basis-72">
+          <h1 className="text-[1.9rem] sm:text-[2.2rem]">{title}</h1>
+          <p className="mt-1.5 max-w-2xl leading-relaxed text-ink-secondary">{tagline}</p>
         </div>
-      </div>
+      </header>
     </div>
   );
 }
 
-export function MascotCallout({ emoji, name, accent, delay = 0.45, children }) {
+export function MascotCallout({ emoji, name, hueKey, children, className }) {
+  return (
+    <MascotNote emoji={emoji} name={name} hueKey={hueKey} className={className}>
+      {children}
+    </MascotNote>
+  );
+}
+
+export function ToggleRow({ options, value, onChange, label }) {
+  return <Segmented options={options} value={value} onChange={onChange} label={label} />;
+}
+
+/** The standard tool layout: inputs in a narrow left column, results beside them. */
+export function ToolLayout({ controls, children }) {
+  return (
+    <div className="grid items-start gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+      <div className="flex min-w-0 flex-col gap-3">{controls}</div>
+      <div className="flex min-w-0 flex-col gap-5">{children}</div>
+    </div>
+  );
+}
+
+/** A titled card for a chart, with an optional legend on the right and a note below. */
+export function ChartCard({ title, legend, note, children, className }) {
+  return (
+    <Card className={cx("p-4 sm:p-5", className)}>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <h2 className="text-[1.15rem]">{title}</h2>
+        {legend && <ChartLegend items={legend} />}
+      </div>
+      {children}
+      {note && <p className="mt-3 text-[0.8125rem] leading-relaxed text-ink-muted">{note}</p>}
+    </Card>
+  );
+}
+
+/** The one-sentence takeaway under a chart. */
+export function Insight({ children, title = "Insight", icon = Lightbulb, className }) {
+  return (
+    <Callout tone="accent" icon={icon} title={title} className={className}>
+      <span className="text-ink">{children}</span>
+    </Callout>
+  );
+}
+
+/** A few mutually exclusive choices laid out as equal buttons in a grid. */
+export function ChoiceGrid({ options, value, onChange, columns = 2, label }) {
   return (
     <div
-      className="mb-8 flex items-start gap-4 rounded-card px-5 py-4"
-      style={{
-        background: `linear-gradient(135deg, ${accent}12, ${accent}08)`,
-        border: `1px solid ${accent}20`,
-        animation: `fadeInUp 0.6s ease-out ${delay}s both`,
-      }}
+      className="grid gap-1.5"
+      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
+      role="radiogroup"
+      aria-label={label}
     >
-      <span className="text-4xl">{emoji}</span>
-      <div>
-        <span className="font-serif text-[0.95rem] font-semibold" style={{ color: accent }}>
-          {name}
-        </span>
-        <p className="m-0 mt-1 text-sm leading-relaxed text-ink-secondary">{children}</p>
-      </div>
+      {options.map((opt) => {
+        const active = opt.value === value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(opt.value)}
+            className={cx(
+              "h-9 rounded-lg border px-2 text-[0.8125rem] font-semibold transition-colors",
+              active
+                ? "border-accent bg-accent text-accent-fg"
+                : "border-edge-strong text-ink-secondary hover:bg-raised hover:text-ink"
+            )}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-export function ToggleRow({ options, value, onChange, accent }) {
+/** Small label above a group of inputs. */
+export function GroupLabel({ children, className }) {
+  return <div className={cx("eyebrow px-0.5 pt-1", className)}>{children}</div>;
+}
+
+// ------------------------------------------------------------------ charts
+// One look for every recharts chart, so they all follow the theme.
+export const chart = {
+  accent: color("accent"),
+  second: color("chart-2"),
+  gain: color("gain"),
+  loss: color("loss"),
+  warn: color("warn"),
+  muted: color("ink-3"),
+  grid: color("edge"),
+  axis: color("edge-strong"),
+  tick: { fill: color("ink-3"), fontSize: 12 },
+  cursor: { stroke: color("ink-3"), strokeDasharray: "4 4" },
+};
+
+export function ChartLegend({ items, className }) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((opt) => (
-        <button
-          key={opt.value}
-          onClick={() => onChange(opt.value)}
-          className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-          style={
-            value === opt.value
-              ? { borderColor: accent, color: "#fff", background: accent }
-              : { borderColor: `${accent}55`, color: accent, background: `${accent}10` }
-          }
-        >
-          {opt.label}
-        </button>
+    <div className={cx("flex flex-wrap gap-x-4 gap-y-1 text-[0.8125rem] text-ink-secondary", className)}>
+      {items.map((item) => (
+        <span key={item.label} className="flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: item.color }} />
+          {item.label}
+        </span>
       ))}
+    </div>
+  );
+}
+
+/** Tooltip body: a title, then one row per series. Pass `rows` to override. */
+export function ChartTooltip({ title, rows, footer }) {
+  return (
+    <div className="num rounded-lg border border-edge-strong bg-raised px-3.5 py-2.5 text-[0.8125rem] shadow-pop">
+      {title && <div className="mb-1.5 font-semibold text-ink">{title}</div>}
+      {rows.map((row) => (
+        <div key={row.label} className="flex items-center justify-between gap-6 py-0.5">
+          <span className="flex items-center gap-1.5 text-ink-secondary">
+            {row.color && <span className="h-2.5 w-2.5 rounded-sm" style={{ background: row.color }} />}
+            {row.label}
+          </span>
+          <span className={cx("font-medium", row.strong ? "text-ink" : "text-ink-secondary")}>{row.value}</span>
+        </div>
+      ))}
+      {footer && <div className="mt-1.5 border-t border-edge pt-1.5 text-ink-muted">{footer}</div>}
     </div>
   );
 }

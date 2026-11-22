@@ -1,54 +1,48 @@
 import { useState } from "react";
+import { ChevronDown, FileText } from "lucide-react";
+import { Card, cx } from "../ui/kit.jsx";
 
 function timeToSeconds(time) {
   const [m, s] = time.split(":").map(Number);
   return m * 60 + s;
 }
 
-export default function Transcript({ transcript, color, onSeek, canSeek }) {
+export default function Transcript({ transcript, onSeek, canSeek }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="mt-4">
+    <Card className="mt-4 overflow-hidden">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
-        className={`flex w-full items-center justify-between border border-edge bg-card px-5 py-3.5 text-left text-sm font-medium text-ink transition-all ${
-          open ? "rounded-t-xl" : "rounded-xl"
-        }`}
+        aria-expanded={open}
+        className="flex w-full items-center gap-2.5 px-5 py-3.5 text-left text-sm font-semibold text-ink transition-colors hover:bg-raised"
       >
-        <span>📄 Lesson Transcript</span>
-        <span
-          className="text-xs transition-transform duration-300"
-          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
-        >
-          ▼
-        </span>
+        <FileText size={16} strokeWidth={1.9} className="text-ink-muted" aria-hidden />
+        <span className="flex-1">Lesson transcript</span>
+        <ChevronDown size={16} className={cx("text-ink-muted transition-transform duration-200", open && "rotate-180")} aria-hidden />
       </button>
 
       {open && (
-        <div className="max-h-80 overflow-y-auto rounded-b-xl border border-t-0 border-edge bg-card px-5 py-4">
+        <div className="max-h-80 divide-y divide-edge overflow-y-auto border-t border-edge px-5">
           {transcript.map((entry, i) => (
-            <div
-              key={i}
-              className={`flex gap-3 py-2.5 transition-colors hover:bg-well/40 ${
-                i < transcript.length - 1 ? "border-b border-well" : ""
-              }`}
-            >
+            <div key={i} className="flex gap-4 py-3">
               <button
+                type="button"
                 onClick={() => canSeek && onSeek?.(timeToSeconds(entry.time))}
-                className={`min-w-[36px] pt-0.5 text-left font-mono text-xs font-semibold ${
+                className={cx(
+                  "num min-w-[40px] pt-0.5 text-left font-mono text-xs font-medium text-cat",
                   canSeek ? "cursor-pointer hover:underline" : "cursor-default"
-                }`}
-                style={{ color }}
+                )}
                 title={canSeek ? "Jump to this point in the video" : undefined}
               >
                 {entry.time}
               </button>
-              <p className="m-0 text-sm leading-relaxed text-slate-300">{entry.text}</p>
+              <p className="text-sm leading-relaxed text-ink-secondary">{entry.text}</p>
             </div>
           ))}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

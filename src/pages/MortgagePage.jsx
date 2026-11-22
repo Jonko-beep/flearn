@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { TriangleAlert } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { markToolUsed } from "../lib/achievements.js";
 import {
   fmt$,
@@ -7,22 +9,17 @@ import {
   SliderField,
   StatCard,
   ToolHeader,
+  ToolLayout,
+  ChartCard,
+  ChartTooltip,
+  ChoiceGrid,
+  GroupLabel,
+  Insight,
   MascotCallout,
-  ToggleRow,
+  chart,
 } from "../components/CalcKit.jsx";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Callout, Card } from "../ui/kit.jsx";
 
-const ACCENT = "#D97706"; // Charlie's amber
-const PRINCIPAL = "#D97706";
-const INTEREST = "#6366F1";
 const PMI_ANNUAL_RATE = 0.0075; // ~0.75%/yr of the loan, a typical middle-of-the-road PMI estimate
 
 /**
@@ -76,39 +73,17 @@ export function computeMortgage({ price, downPct, rate, termYears, taxRate, insu
   };
 }
 
-function ChartTooltip({ active, payload, label }) {
+function AmortTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const byKey = Object.fromEntries(payload.map((p) => [p.dataKey, p.value]));
-  const rows = [
-    { name: "Principal", value: byKey.principal ?? 0, color: PRINCIPAL },
-    { name: "Interest", value: byKey.interest ?? 0, color: INTEREST },
-  ];
   return (
-    <div className="rounded-card border border-edge bg-well px-4 py-3 text-sm shadow-xl">
-      <div className="mb-1.5 font-semibold text-ink">Year {label} payments</div>
-      {rows.map((r) => (
-        <div key={r.name} className="flex items-center justify-between gap-6 py-0.5">
-          <span className="flex items-center gap-1.5 text-ink-secondary">
-            <span className="h-2.5 w-2.5 rounded-sm" style={{ background: r.color }} />
-            {r.name}
-          </span>
-          <span className="text-ink-secondary">{fmt$(r.value)}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function BreakdownRow({ label, value, color, note }) {
-  return (
-    <div className="flex items-center justify-between gap-4 border-b border-edge/50 py-2 last:border-b-0">
-      <span className="flex items-center gap-2 text-sm text-ink-secondary">
-        {color && <span className="h-2.5 w-2.5 rounded-sm" style={{ background: color }} />}
-        {label}
-        {note && <span className="text-xs text-ink-muted">{note}</span>}
-      </span>
-      <span className="text-sm font-semibold text-ink">{fmt$(value)}/mo</span>
-    </div>
+    <ChartTooltip
+      title={`Year ${label} payments`}
+      rows={[
+        { label: "Principal", value: fmt$(byKey.principal ?? 0), color: chart.accent },
+        { label: "Interest", value: fmt$(byKey.interest ?? 0), color: chart.second },
+      ]}
+    />
   );
 }
 
@@ -145,238 +120,214 @@ export default function MortgagePage() {
     }
   };
 
+  const parts = [
+    { label: "Principal & interest", value: calc.monthlyPI, color: chart.accent },
+    { label: "Property tax", value: calc.taxMonthly, color: chart.second },
+    { label: "Home insurance", value: calc.insMonthly, color: chart.warn },
+    { label: "PMI (est.)", value: calc.pmiMonthly, color: chart.loss, note: "~0.75%/yr of the loan" },
+  ].filter((p) => p.value > 0);
+
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[760px]">
-        <Link
-          to="/tools"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to tools
-        </Link>
+    <div className="animate-enter">
+      <ToolHeader
+        tool="mortgage"
+        hueKey="estate"
+        title="Mortgage calculator"
+        tagline="What a home really costs per month — and where each payment actually goes."
+      />
 
-        <ToolHeader
-          emoji="🏠"
-          accent={ACCENT}
-          title="Mortgage Calculator"
-          tagline="What a home really costs per month — and where each payment actually goes."
-        />
+      <ToolLayout
+        controls={
+          <>
+            <SliderField
+              label="Home price"
+              value={price}
+              min={50000}
+              max={1500000}
+              step={5000}
+              onChange={setPrice}
+              prefix="$"
+              display={fmtAxis}
+            />
 
-        {/* Inputs */}
-        <div
-          className="mb-4 grid grid-cols-2 gap-3 max-md:grid-cols-1"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.1s both" }}
-        >
-          <SliderField
-            label="🏠 Home price"
-            value={price}
-            min={50000}
-            max={1500000}
-            step={5000}
-            onChange={setPrice}
-            prefix="$"
-            display={fmtAxis}
-            accent="estate"
-          />
-          <div className="rounded-card border border-edge bg-well/50 px-4 py-3.5">
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <label className="text-sm font-medium text-ink">💵 Down payment</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-ink-muted">
-                  $
-                </span>
-                <input
-                  type="number"
-                  min={0}
-                  max={price}
-                  step={1000}
-                  value={downText}
-                  onFocus={() => setDownFocused(true)}
-                  onBlur={() => {
-                    setDownFocused(false);
-                    setDownText(String(downDollars));
-                  }}
-                  onChange={(e) => handleDownDollars(e.target.value)}
-                  className="w-[110px] rounded-card border border-edge bg-well py-1.5 pl-7 pr-2 text-right text-sm text-ink outline-none transition-colors focus:border-estate"
-                  aria-label="Down payment dollars"
-                />
+            {/* Down payment: type dollars or drag the percentage */}
+            <div className="rounded-xl border border-edge bg-card px-4 pb-3 pt-3.5">
+              <div className="flex items-center justify-between gap-3">
+                <label htmlFor="down-dollars" className="text-sm font-medium text-ink-secondary">
+                  Down payment
+                </label>
+                <div className="relative shrink-0">
+                  <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-ink-muted">$</span>
+                  <input
+                    id="down-dollars"
+                    type="number"
+                    min={0}
+                    max={price}
+                    step={1000}
+                    value={downText}
+                    onFocus={() => setDownFocused(true)}
+                    onBlur={() => {
+                      setDownFocused(false);
+                      setDownText(String(downDollars));
+                    }}
+                    onChange={(e) => handleDownDollars(e.target.value)}
+                    className="field num h-9 w-[112px] pl-6 pr-2.5 text-right font-semibold"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
               <input
                 type="range"
                 min={0}
                 max={50}
                 step={0.5}
-                value={downPct}
+                value={Math.min(50, downPct)}
                 onChange={(e) => setDownPct(parseFloat(e.target.value))}
-                className="h-1.5 w-full cursor-pointer accent-estate"
+                className="slider mt-2.5"
+                style={{ "--pct": `${(Math.min(50, downPct) / 50) * 100}%` }}
                 aria-label="Down payment percent slider"
               />
-              <span className="w-14 shrink-0 text-right text-xs text-ink-muted">
-                {downPct.toFixed(1)}%
-              </span>
+              <div className="num flex justify-between text-2xs text-ink-muted">
+                <span>0%</span>
+                <span className={downPct < 20 ? "font-semibold text-warn" : "font-semibold text-ink-secondary"}>
+                  {downPct.toFixed(1)}% down
+                </span>
+                <span>50%</span>
+              </div>
             </div>
-          </div>
-          <SliderField
-            label="📊 Interest rate"
-            value={rate}
-            min={1}
-            max={12}
-            step={0.125}
-            onChange={setRate}
-            suffix="%"
-            display={(v) => `${v.toFixed(3).replace(/\.?0+$/, "")}%`}
-            accent="estate"
-          />
-          <div className="rounded-card border border-edge bg-well/50 px-4 py-3.5">
-            <label className="mb-2.5 block text-sm font-medium text-ink">⏳ Loan term</label>
-            <ToggleRow
-              accent={ACCENT}
-              value={termYears}
-              onChange={setTermYears}
-              options={[
-                { value: 15, label: "15 years" },
-                { value: 30, label: "30 years" },
-              ]}
-            />
-          </div>
-          <SliderField
-            label="🏛️ Property tax rate (optional)"
-            value={taxRate}
-            min={0}
-            max={3}
-            step={0.05}
-            onChange={setTaxRate}
-            suffix="%"
-            display={(v) => `${v.toFixed(2)}%/yr`}
-            accent="estate"
-          />
-          <SliderField
-            label="🛡️ Home insurance (optional)"
-            value={insurance}
-            min={0}
-            max={6000}
-            step={100}
-            onChange={setInsurance}
-            prefix="$"
-            display={(v) => `${fmt$(v)}/yr`}
-            accent="estate"
-          />
-        </div>
 
-        {/* Stats */}
-        <div className="mb-4 grid grid-cols-3 gap-3 max-md:grid-cols-1">
-          <StatCard
-            label="Principal & interest"
-            value={`${fmt$(calc.monthlyPI)}/mo`}
-            color={ACCENT}
-            delay={0.15}
-          />
+            <SliderField
+              label="Interest rate"
+              value={rate}
+              min={1}
+              max={12}
+              step={0.125}
+              onChange={setRate}
+              suffix="%"
+              display={(v) => `${v.toFixed(3).replace(/\.?0+$/, "")}%`}
+            />
+
+            <Card className="p-4">
+              <GroupLabel className="!pt-0">Loan term</GroupLabel>
+              <div className="mt-3">
+                <ChoiceGrid
+                  label="Loan term"
+                  value={termYears}
+                  onChange={setTermYears}
+                  options={[
+                    { value: 15, label: "15 years" },
+                    { value: 30, label: "30 years" },
+                  ]}
+                />
+              </div>
+            </Card>
+
+            <GroupLabel className="mt-2">Optional costs</GroupLabel>
+            <SliderField
+              label="Property tax rate"
+              value={taxRate}
+              min={0}
+              max={3}
+              step={0.05}
+              onChange={setTaxRate}
+              suffix="%"
+              display={(v) => `${v}%`}
+              hint="per year"
+            />
+            <SliderField
+              label="Home insurance"
+              value={insurance}
+              min={0}
+              max={6000}
+              step={100}
+              onChange={setInsurance}
+              prefix="$"
+              display={(v) => fmt$(v)}
+              hint="per year"
+            />
+          </>
+        }
+      >
+        <div className="grid grid-cols-3 gap-3 max-sm:grid-cols-1">
           <StatCard
             label="Full monthly payment"
             value={`${fmt$(calc.monthlyTotal)}/mo`}
-            color="#f1f5f9"
-            delay={0.2}
             sub="PITI: principal, interest, taxes, insurance"
           />
-          <StatCard
-            label={`Total interest (${termYears} yrs)`}
-            value={fmt$(calc.totalInterest)}
-            color={INTEREST}
-            delay={0.25}
-          />
+          <StatCard label="Principal & interest" value={`${fmt$(calc.monthlyPI)}/mo`} tone="accent" />
+          <StatCard label={`Total interest (${termYears} yrs)`} value={fmt$(calc.totalInterest)} tone="chart2" />
         </div>
 
         {/* Payment breakdown */}
-        <div
-          className="mb-4 rounded-card-lg border border-edge bg-card p-5"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.3s both" }}
-        >
-          <h3 className="m-0 mb-2 text-lg font-semibold">Monthly payment breakdown</h3>
-          <BreakdownRow label="Principal & interest" value={calc.monthlyPI} color={ACCENT} />
-          {calc.taxMonthly > 0 && <BreakdownRow label="Property tax" value={calc.taxMonthly} />}
-          {calc.insMonthly > 0 && <BreakdownRow label="Home insurance" value={calc.insMonthly} />}
-          {calc.pmiMonthly > 0 && (
-            <BreakdownRow label="PMI (est.)" value={calc.pmiMonthly} note="~0.75%/yr of the loan" />
-          )}
-          <div className="mt-2 flex items-center justify-between gap-4 pt-1">
-            <span className="text-sm font-semibold text-ink">Total</span>
-            <span className="font-serif text-lg font-bold text-ink">{fmt$(calc.monthlyTotal)}/mo</span>
+        <Card className="p-4 sm:p-5">
+          <h2 className="text-[1.15rem]">Monthly payment breakdown</h2>
+          <div className="mt-4 flex h-2.5 overflow-hidden rounded-full bg-edge" aria-hidden>
+            {parts.map((p) => (
+              <div
+                key={p.label}
+                className="h-full border-r-2 border-card last:border-r-0"
+                style={{ width: `${(p.value / calc.monthlyTotal) * 100}%`, background: p.color }}
+              />
+            ))}
           </div>
-        </div>
+          <dl className="num mt-3 divide-y divide-edge text-sm">
+            {parts.map((p) => (
+              <div key={p.label} className="flex items-center justify-between gap-4 py-2.5">
+                <dt className="flex flex-wrap items-center gap-x-2 text-ink-secondary">
+                  <span className="h-2.5 w-2.5 rounded-sm" style={{ background: p.color }} />
+                  {p.label}
+                  {p.note && <span className="text-[0.8125rem] text-ink-muted">{p.note}</span>}
+                </dt>
+                <dd className="font-semibold text-ink">{fmt$(p.value)}/mo</dd>
+              </div>
+            ))}
+            <div className="flex items-center justify-between gap-4 pt-3">
+              <dt className="font-semibold text-ink">Total</dt>
+              <dd className="font-display text-[1.25rem] font-semibold text-ink">{fmt$(calc.monthlyTotal)}/mo</dd>
+            </div>
+          </dl>
+        </Card>
 
         {calc.pmiMonthly > 0 && (
-          <div
-            className="mb-4 rounded-card border p-4 text-sm leading-relaxed text-ink"
-            style={{
-              borderColor: "#f59e0b55",
-              background: "#f59e0b10",
-              animation: "fadeInUp 0.6s ease-out 0.35s both",
-            }}
-          >
-            <span className="font-semibold text-warning">Under 20% down:</span> with{" "}
-            {downPct.toFixed(1)}% down you'd pay an estimated{" "}
-            <span className="font-semibold">{fmt$(calc.pmiMonthly)}/month</span> in private
-            mortgage insurance — a fee that protects the lender, not you, until you reach ~22%
-            equity.{" "}
-            <Link
-              to="/learn/real-estate-loans/conventional-loans"
-              className="font-semibold underline"
-              style={{ color: ACCENT }}
-            >
+          <Callout tone="warn" icon={TriangleAlert} title="Under 20% down">
+            With {downPct.toFixed(1)}% down you&apos;d pay an estimated{" "}
+            <span className="num font-semibold text-ink">{fmt$(calc.pmiMonthly)}/month</span> in private mortgage
+            insurance — a fee that protects the lender, not you, until you reach ~22% equity.{" "}
+            <Link to="/learn/real-estate-loans/conventional-loans" className="font-semibold text-ink underline">
               The Conventional Loans lesson
             </Link>{" "}
             explains how PMI works and when it drops off.
-          </div>
+          </Callout>
         )}
 
-        {/* Amortization chart */}
-        <div
-          className="mb-4 rounded-card-lg border border-edge bg-card p-5 max-md:p-3"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.4s both" }}
+        <ChartCard
+          title="Where each year's payments go"
+          legend={[
+            { label: "Principal", color: chart.accent },
+            { label: "Interest", color: chart.second },
+          ]}
         >
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-            <h3 className="m-0 text-lg font-semibold">Where each year's payments go</h3>
-            <div className="flex gap-4 text-xs text-ink-secondary">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: PRINCIPAL }} />
-                Principal
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: INTEREST }} />
-                Interest
-              </span>
-            </div>
-          </div>
           <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={calc.schedule} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke="#334155" strokeOpacity={0.4} vertical={false} />
+              <CartesianGrid stroke={chart.grid} vertical={false} />
               <XAxis
                 dataKey="year"
-                tick={{ fill: "#64748b", fontSize: 12 }}
+                tick={chart.tick}
                 tickLine={false}
-                axisLine={{ stroke: "#334155" }}
+                axisLine={{ stroke: chart.axis }}
                 interval="preserveStartEnd"
                 tickFormatter={(y) => `${y}y`}
               />
-              <YAxis
-                tickFormatter={fmtAxis}
-                tick={{ fill: "#64748b", fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={54}
-              />
-              <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#64748b", strokeDasharray: "4 4" }} />
+              <YAxis tickFormatter={fmtAxis} tick={chart.tick} tickLine={false} axisLine={false} width={54} />
+              <Tooltip content={<AmortTooltip />} cursor={chart.cursor} />
               <Area
                 type="monotone"
                 dataKey="interest"
                 name="Interest"
                 stackId="1"
-                stroke={INTEREST}
+                stroke={chart.second}
                 strokeWidth={2}
-                fill={INTEREST}
-                fillOpacity={0.3}
+                fill={chart.second}
+                fillOpacity={0.28}
                 animationDuration={600}
               />
               <Area
@@ -384,65 +335,50 @@ export default function MortgagePage() {
                 dataKey="principal"
                 name="Principal"
                 stackId="1"
-                stroke={PRINCIPAL}
+                stroke={chart.accent}
                 strokeWidth={2}
-                fill={PRINCIPAL}
-                fillOpacity={0.35}
+                fill={chart.accent}
+                fillOpacity={0.3}
                 animationDuration={600}
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </ChartCard>
 
-        {/* Insight */}
-        <div
-          className="mb-6 rounded-card border p-4"
-          style={{
-            borderColor: `${ACCENT}33`,
-            background: `${ACCENT}0d`,
-            animation: "fadeInUp 0.6s ease-out 0.45s both",
-          }}
-        >
-          <div className="mb-1 text-xs font-semibold tracking-wide uppercase" style={{ color: ACCENT }}>
-            💡 Insight
-          </div>
-          <p className="m-0 text-sm leading-relaxed text-ink">
-            {calc.crossoverYear === 1 ? (
-              <>
-                On this loan, principal outweighs interest from the very first year — every
-                payment mostly builds YOUR equity instead of renting the bank's money. You'd pay{" "}
-                {fmt$(calc.totalInterest)} of interest on {fmt$(calc.loan)} borrowed.
-              </>
-            ) : calc.crossoverYear ? (
-              <>
-                For the first {calc.crossoverYear - 1} year
-                {calc.crossoverYear - 1 === 1 ? "" : "s"}, most of each payment is interest — rent
-                you pay the bank for the loan. Year {calc.crossoverYear} is the crossover: from
-                there, the majority of every payment finally builds YOUR equity. On this loan
-                you'd pay {fmt$(calc.totalInterest)} of interest on {fmt$(calc.loan)} borrowed.
-              </>
-            ) : (
-              <>
-                At this rate and term, interest outweighs principal in every single year's payments
-                — you'd pay {fmt$(calc.totalInterest)} of interest on {fmt$(calc.loan)} borrowed.
-                Try the 15-year term or a bigger down payment to shift the balance.
-              </>
-            )}
-          </p>
-        </div>
+        <Insight>
+          {calc.crossoverYear === 1 ? (
+            <>
+              On this loan, principal outweighs interest from the very first year — every payment mostly builds YOUR
+              equity instead of renting the bank&apos;s money. You&apos;d pay {fmt$(calc.totalInterest)} of interest
+              on {fmt$(calc.loan)} borrowed.
+            </>
+          ) : calc.crossoverYear ? (
+            <>
+              For the first {calc.crossoverYear - 1} year{calc.crossoverYear - 1 === 1 ? "" : "s"}, most of each
+              payment is interest — rent you pay the bank for the loan. Year {calc.crossoverYear} is the crossover:
+              from there, the majority of every payment finally builds YOUR equity. On this loan you&apos;d pay{" "}
+              {fmt$(calc.totalInterest)} of interest on {fmt$(calc.loan)} borrowed.
+            </>
+          ) : (
+            <>
+              At this rate and term, interest outweighs principal in every single year&apos;s payments — you&apos;d
+              pay {fmt$(calc.totalInterest)} of interest on {fmt$(calc.loan)} borrowed. Try the 15-year term or a
+              bigger down payment to shift the balance.
+            </>
+          )}
+        </Insight>
 
-        <MascotCallout emoji="🐿️" name="Charlie the Chipmunk" accent={ACCENT} delay={0.5}>
-          The sticker price of a house is only the opening bid — the loan's the thing. Two numbers
-          on this page matter more than any listing photo: the full PITI payment (can your monthly
-          budget really carry it, with room to spare?) and total interest (what the bank earns for
-          fronting you the money). Watch what happens when you toggle 30 years down to 15: the
-          payment jumps, but the interest bill collapses, because you're renting the money for half
-          as long. And that 20% down payment threshold isn't a style choice — it's the line where
-          PMI disappears and a fee that often runs $100-200 a month stops leaking out of your acorn stash.
-          Stretch for it if you reasonably can; walk away from any payment that leaves you
-          house-poor if you can't.
+        <MascotCallout emoji="🐿️" name="Charlie the Chipmunk" hueKey="estate">
+          The sticker price of a house is only the opening bid — the loan&apos;s the thing. Two numbers on this page
+          matter more than any listing photo: the full PITI payment (can your monthly budget really carry it, with
+          room to spare?) and total interest (what the bank earns for fronting you the money). Watch what happens
+          when you toggle 30 years down to 15: the payment jumps, but the interest bill collapses, because
+          you&apos;re renting the money for half as long. And that 20% down payment threshold isn&apos;t a style
+          choice — it&apos;s the line where PMI disappears and a fee that often runs $100-200 a month stops leaking
+          out of your acorn stash. Stretch for it if you reasonably can; walk away from any payment that leaves you
+          house-poor if you can&apos;t.
         </MascotCallout>
-      </div>
+      </ToolLayout>
     </div>
   );
 }

@@ -155,3 +155,25 @@ export function writeOnboarding(answers, recommendation) {
 export function hasOnboarded() {
   return readOnboarding() !== null;
 }
+
+// "Skip for now" on the first-visit questions: remembered so the questions
+// don't greet the visitor again every time they open the site.
+const SKIP_KEY = "flearn_onboarding_skipped";
+
+export function markOnboardingSkipped() {
+  try {
+    localStorage.setItem(SKIP_KEY, new Date().toISOString());
+  } catch {
+    // storage unavailable — nothing to remember
+  }
+}
+
+/** True once the visitor has finished the first-visit questions or skipped them. */
+export function hasSeenIntro() {
+  if (hasOnboarded()) return true;
+  try {
+    return localStorage.getItem(SKIP_KEY) !== null;
+  } catch {
+    return false;
+  }
+}

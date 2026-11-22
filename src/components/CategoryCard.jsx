@@ -1,54 +1,48 @@
 import { Link } from "react-router-dom";
+import { ArrowRight, Award } from "lucide-react";
 import { useFinals } from "../lib/finals.js";
+import { Avatar, Badge, Progress } from "../ui/kit.jsx";
+import { hue } from "../ui/theme.js";
 
-export default function CategoryCard({ category, stats, index }) {
+// One course on the Learn hub: who teaches it, what it covers, how far along you are.
+export default function CategoryCard({ category, stats }) {
   const passedFinal = useFinals()[category.id]?.passed;
+  const pct = stats.total > 0 ? (stats.mastered / stats.total) * 100 : 0;
+  const done = stats.total > 0 && stats.mastered === stats.total;
 
   return (
     <Link
       to={`/learn/${category.id}`}
-      className="group relative block overflow-hidden rounded-card-lg bg-card p-6 transition-all duration-300 hover:-translate-y-0.5"
-      style={{
-        border: `1px solid ${category.color}22`,
-        animation: `fadeInUp 0.6s ease-out ${0.2 + index * 0.1}s both`,
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.borderColor = `${category.color}55`)}
-      onMouseLeave={(e) => (e.currentTarget.style.borderColor = `${category.color}22`)}
+      style={hue(category.id)}
+      className="group flex flex-col rounded-2xl border-2 border-edge bg-card p-5 shadow-tile transition-[border-color,transform] hover:-translate-y-0.5 hover:border-cat/60"
     >
-      <div className="pointer-events-none absolute -top-8 -right-5 text-[6rem] opacity-[0.06]">
-        {category.emoji}
-      </div>
-      <div className="relative">
-        <div className="mb-2 flex items-center gap-3">
-          <span
-            className="flex h-[52px] w-[52px] items-center justify-center rounded-card text-3xl"
-            style={{ background: `${category.color}15` }}
-          >
-            {category.emoji}
-          </span>
-          <div>
-            <h3 className="text-xl font-semibold text-ink">
-              {category.title}
-              {passedFinal && (
-                <span className="ml-2 text-base" title="Final exam passed — certificate earned">
-                  🎓
-                </span>
-              )}
-            </h3>
-            <span className="text-sm text-ink-muted">
-              {stats.mastered}/{stats.total} mastered
-            </span>
+      <div className="flex items-start gap-4">
+        <Avatar emoji={category.mascot.emoji} size={68} happy={done} />
+        <div className="min-w-0 flex-1">
+          <div className="text-[0.8125rem] font-bold text-cat">with {category.mascot.name}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-[1.4rem]">{category.title}</h3>
+            {passedFinal && (
+              <Badge tone="gold" icon={Award} title="Final exam passed — certificate earned">
+                Certified
+              </Badge>
+            )}
           </div>
-          <span
-            className="ml-auto text-xl transition-transform duration-300 group-hover:translate-x-1"
-            style={{ color: category.color }}
-          >
-            →
-          </span>
+          <p className="mt-1 text-sm leading-relaxed text-ink-secondary">{category.description}</p>
         </div>
-        <p className="m-0 text-sm leading-relaxed text-ink-secondary">
-          {category.description}
-        </p>
+      </div>
+
+      <div className="mt-auto flex items-center gap-3 pt-5">
+        <Progress value={pct} tone="cat" className="flex-1" label={`${category.title} progress`} />
+        <span className="num shrink-0 text-sm font-bold text-ink-secondary">
+          {stats.mastered}/{stats.total}
+        </span>
+        <ArrowRight
+          size={18}
+          strokeWidth={2.6}
+          className="shrink-0 text-cat transition-transform group-hover:translate-x-1"
+          aria-hidden
+        />
       </div>
     </Link>
   );

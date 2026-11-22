@@ -1,19 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { markToolUsed } from "../lib/achievements.js";
-import { fmt$, fmtAxis, SliderField, StatCard } from "../components/CalcKit.jsx";
 import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-
-const ACCENT = "#0D9488"; // growth (earnings)
-const CONTRIB = "#6366F1"; // contributions
+  fmt$,
+  fmtAxis,
+  SliderField,
+  StatCard,
+  ToolHeader,
+  ToolLayout,
+  ChartCard,
+  ChartTooltip,
+  Insight,
+  GroupLabel,
+  MascotCallout,
+  chart,
+} from "../components/CalcKit.jsx";
+import { Card, cx } from "../ui/kit.jsx";
+import { color } from "../ui/theme.js";
 
 const RETIRE_AGE = 65;
 const PRESETS = [
@@ -65,30 +68,19 @@ function buildInsight(sim, monthly, rate, years) {
   return `Your money isn't out-earning you yet: in year ${years} it makes ${fmt$(sim.lastYearEarnings)} vs. your ${fmt$(yearly)} of contributions. Stretch the timeline (or the rate) to find the crossover.`;
 }
 
-function ChartTooltip({ active, payload, label }) {
+function GrowthTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const byKey = Object.fromEntries(payload.map((p) => [p.dataKey, p.value]));
   const total = (byKey.contributions ?? 0) + (byKey.growth ?? 0);
-  const rows = [
-    { name: "Total balance", value: total, color: "#f1f5f9", bold: true },
-    { name: "Growth", value: byKey.growth ?? 0, color: ACCENT },
-    { name: "Contributions", value: byKey.contributions ?? 0, color: CONTRIB },
-  ];
   return (
-    <div className="rounded-card border border-edge bg-well px-4 py-3 text-sm shadow-xl">
-      <div className="mb-1.5 font-semibold text-ink">Year {label}</div>
-      {rows.map((r) => (
-        <div key={r.name} className="flex items-center justify-between gap-6 py-0.5">
-          <span className="flex items-center gap-1.5 text-ink-secondary">
-            <span className="h-2.5 w-2.5 rounded-sm" style={{ background: r.color }} />
-            {r.name}
-          </span>
-          <span className={r.bold ? "font-semibold text-ink" : "text-ink-secondary"}>
-            {fmt$(r.value)}
-          </span>
-        </div>
-      ))}
-    </div>
+    <ChartTooltip
+      title={`Year ${label}`}
+      rows={[
+        { label: "Total balance", value: fmt$(total), color: color("ink"), strong: true },
+        { label: "Growth", value: fmt$(byKey.growth ?? 0), color: chart.accent },
+        { label: "Contributions", value: fmt$(byKey.contributions ?? 0), color: chart.second },
+      ]}
+    />
   );
 }
 
@@ -123,9 +115,7 @@ export default function CompoundPage() {
 
   const presetNote = useMemo(() => {
     if (activePreset === null) return null;
-    const others = PRESETS.map((p, i) => ({ ...p, final: presetFinals[i] })).filter(
-      (_, i) => i !== activePreset
-    );
+    const others = PRESETS.map((p, i) => ({ ...p, final: presetFinals[i] })).filter((_, i) => i !== activePreset);
     const mine = presetFinals[activePreset];
     const parts = others.map((o) => {
       const diff = mine - o.final;
@@ -135,159 +125,123 @@ export default function CompoundPage() {
   }, [activePreset, presetFinals, monthly]);
 
   return (
-    <div className="min-h-screen p-8 max-md:p-5">
-      <div className="mx-auto max-w-[760px]">
-        <Link
-          to="/tools"
-          className="mb-8 inline-block text-sm text-ink-muted transition-colors hover:text-ink-secondary"
-        >
-          ← Back to tools
-        </Link>
+    <div className="animate-enter">
+      <ToolHeader
+        tool="compound"
+        hueKey="investing"
+        title="Compound interest visualizer"
+        tagline="See the moment your money starts working harder than you do."
+      />
 
-        <div className="mb-6 animate-fade-in-down">
-          <div className="flex items-center gap-3">
-            <span
-              className="flex h-[52px] w-[52px] items-center justify-center rounded-card text-3xl"
-              style={{ background: `${ACCENT}15` }}
-            >
-              📈
-            </span>
-            <div>
-              <h2 className="m-0 text-3xl font-bold">Compound Interest Visualizer</h2>
-              <span className="text-sm text-ink-muted">
-                See the moment your money starts working harder than you do.
-              </span>
-            </div>
-          </div>
+      <ToolLayout
+        controls={
+          <>
+            <SliderField
+              label="Starting amount"
+              value={start}
+              min={0}
+              max={100000}
+              step={500}
+              onChange={setStart}
+              prefix="$"
+              display={(v) => fmtAxis(v)}
+            />
+            <SliderField
+              label="Monthly contribution"
+              value={monthly}
+              min={0}
+              max={5000}
+              step={25}
+              onChange={setMonthly}
+              prefix="$"
+              display={(v) => `${fmt$(v)}`}
+            />
+            <SliderField
+              label="Annual return"
+              value={rate}
+              min={0}
+              max={15}
+              step={0.1}
+              onChange={setRate}
+              suffix="%"
+              display={(v) => `${v}%`}
+            />
+            <SliderField
+              label="Years"
+              value={years}
+              min={1}
+              max={50}
+              step={1}
+              onChange={setYears}
+              display={(v) => `${v} yr${v === 1 ? "" : "s"}`}
+            />
+
+            <Card className="p-4">
+              <GroupLabel className="!pt-0">The cost of waiting · invest until {RETIRE_AGE}</GroupLabel>
+              <div className="mt-3 grid grid-cols-3 gap-1.5">
+                {PRESETS.map((p, i) => (
+                  <button
+                    key={p.age}
+                    type="button"
+                    onClick={() => applyPreset(i)}
+                    aria-pressed={activePreset === i}
+                    className={cx(
+                      "h-9 rounded-lg border text-[0.8125rem] font-semibold transition-colors",
+                      activePreset === i
+                        ? "border-accent bg-accent text-accent-fg"
+                        : "border-edge-strong text-ink-secondary hover:bg-raised hover:text-ink"
+                    )}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              {presetNote && (
+                <p className="mt-3 text-[0.8125rem] leading-relaxed text-ink-secondary">
+                  <span className="font-semibold text-accent-ink">{PRESETS[activePreset].label}:</span> you&apos;d
+                  retire with <span className="num font-semibold text-ink">{fmt$(presetFinals[activePreset])}</span>.{" "}
+                  {presetNote}
+                </p>
+              )}
+            </Card>
+          </>
+        }
+      >
+        <div className="grid grid-cols-3 gap-3 max-sm:grid-cols-1">
+          <StatCard label="Final balance" value={fmt$(sim.finalBalance)} />
+          <StatCard label="Total contributed" value={fmt$(sim.totalContributed)} tone="chart2" />
+          <StatCard label="Total growth" value={fmt$(sim.totalGrowth)} tone="accent" />
         </div>
 
-        {/* Inputs */}
-        <div
-          className="mb-6 grid grid-cols-2 gap-3 max-md:grid-cols-1"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.1s both" }}
+        <ChartCard
+          title={`Your money over ${years} year${years === 1 ? "" : "s"}`}
+          legend={[
+            { label: "Growth", color: chart.accent },
+            { label: "Contributions", color: chart.second },
+          ]}
         >
-          <SliderField
-            label="💵 Starting amount"
-            value={start}
-            min={0}
-            max={100000}
-            step={500}
-            onChange={setStart}
-            prefix="$"
-            display={(v) => fmtAxis(v)}
-          />
-          <SliderField
-            label="📆 Monthly contribution"
-            value={monthly}
-            min={0}
-            max={5000}
-            step={25}
-            onChange={setMonthly}
-            prefix="$"
-            display={(v) => `${fmt$(v)}`}
-          />
-          <SliderField
-            label="📊 Annual return"
-            value={rate}
-            min={0}
-            max={15}
-            step={0.1}
-            onChange={setRate}
-            suffix="%"
-            display={(v) => `${v.toFixed(1)}%`}
-          />
-          <SliderField
-            label="⏳ Years"
-            value={years}
-            min={1}
-            max={50}
-            step={1}
-            onChange={setYears}
-            display={(v) => `${v} yrs`}
-          />
-        </div>
-
-        {/* Presets */}
-        <div className="mb-6" style={{ animation: "fadeInUp 0.6s ease-out 0.15s both" }}>
-          <div className="mb-2 text-sm font-medium text-ink-secondary">
-            The cost of waiting (invest until {RETIRE_AGE}):
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {PRESETS.map((p, i) => (
-              <button
-                key={p.age}
-                onClick={() => applyPreset(i)}
-                className="rounded-full border px-4 py-1.5 text-sm font-medium transition-all hover:-translate-y-px"
-                style={
-                  activePreset === i
-                    ? { borderColor: ACCENT, color: "#fff", background: ACCENT }
-                    : { borderColor: `${ACCENT}55`, color: ACCENT, background: `${ACCENT}10` }
-                }
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-          {presetNote && (
-            <div
-              className="mt-3 rounded-card border p-4 text-sm leading-relaxed text-ink"
-              style={{ borderColor: `${ACCENT}33`, background: `${ACCENT}0d` }}
-            >
-              <span className="font-semibold" style={{ color: ACCENT }}>
-                {PRESETS[activePreset].label}:
-              </span>{" "}
-              you'd retire with <span className="font-semibold">{fmt$(presetFinals[activePreset])}</span>.{" "}
-              {presetNote}
-            </div>
-          )}
-        </div>
-
-        {/* Chart */}
-        <div
-          className="mb-6 rounded-card-lg border border-edge bg-card p-5 max-md:p-3"
-          style={{ animation: "fadeInUp 0.6s ease-out 0.2s both" }}
-        >
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-            <h3 className="m-0 text-lg font-semibold">Your money over {years} years</h3>
-            <div className="flex gap-4 text-xs text-ink-secondary">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: ACCENT }} />
-                Growth
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: CONTRIB }} />
-                Contributions
-              </span>
-            </div>
-          </div>
           <ResponsiveContainer width="100%" height={320}>
             <AreaChart data={sim.data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid stroke="#334155" strokeOpacity={0.4} vertical={false} />
+              <CartesianGrid stroke={chart.grid} vertical={false} />
               <XAxis
                 dataKey="year"
-                tick={{ fill: "#64748b", fontSize: 12 }}
+                tick={chart.tick}
                 tickLine={false}
-                axisLine={{ stroke: "#334155" }}
+                axisLine={{ stroke: chart.axis }}
                 interval="preserveStartEnd"
                 tickFormatter={(y) => `${y}y`}
               />
-              <YAxis
-                tickFormatter={fmtAxis}
-                tick={{ fill: "#64748b", fontSize: 12 }}
-                tickLine={false}
-                axisLine={false}
-                width={54}
-              />
-              <Tooltip content={<ChartTooltip />} cursor={{ stroke: "#64748b", strokeDasharray: "4 4" }} />
+              <YAxis tickFormatter={fmtAxis} tick={chart.tick} tickLine={false} axisLine={false} width={54} />
+              <Tooltip content={<GrowthTooltip />} cursor={chart.cursor} />
               <Area
                 type="monotone"
                 dataKey="contributions"
                 name="Contributions"
                 stackId="1"
-                stroke={CONTRIB}
+                stroke={chart.second}
                 strokeWidth={2}
-                fill={CONTRIB}
-                fillOpacity={0.3}
+                fill={chart.second}
+                fillOpacity={0.28}
                 animationDuration={600}
               />
               <Area
@@ -295,67 +249,30 @@ export default function CompoundPage() {
                 dataKey="growth"
                 name="Growth"
                 stackId="1"
-                stroke={ACCENT}
+                stroke={chart.accent}
                 strokeWidth={2}
-                fill={ACCENT}
-                fillOpacity={0.35}
+                fill={chart.accent}
+                fillOpacity={0.3}
                 animationDuration={600}
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </ChartCard>
 
-        {/* Stats */}
-        <div className="mb-4 grid grid-cols-3 gap-3 max-md:grid-cols-1">
-          <StatCard label="Final balance" value={fmt$(sim.finalBalance)} color="#f1f5f9" delay={0.25} />
-          <StatCard label="Total contributed" value={fmt$(sim.totalContributed)} color={CONTRIB} delay={0.3} />
-          <StatCard label="Total growth" value={fmt$(sim.totalGrowth)} color={ACCENT} delay={0.35} />
-        </div>
+        <Insight>{insight}</Insight>
 
-        {/* Insight */}
-        <div
-          className="mb-6 rounded-card border p-4"
-          style={{
-            borderColor: `${ACCENT}33`,
-            background: `${ACCENT}0d`,
-            animation: "fadeInUp 0.6s ease-out 0.4s both",
-          }}
-        >
-          <div className="mb-1 text-xs font-semibold tracking-wide uppercase" style={{ color: ACCENT }}>
-            💡 Insight
-          </div>
-          <p className="m-0 text-sm leading-relaxed text-ink">{insight}</p>
-        </div>
-
-        {/* Warren explainer */}
-        <div
-          className="mb-8 flex items-start gap-4 rounded-card px-5 py-4"
-          style={{
-            background: `linear-gradient(135deg, ${ACCENT}12, ${ACCENT}08)`,
-            border: `1px solid ${ACCENT}20`,
-            animation: "fadeInUp 0.6s ease-out 0.45s both",
-          }}
-        >
-          <span className="text-4xl">🦭</span>
-          <div>
-            <span className="font-serif text-[0.95rem] font-semibold" style={{ color: ACCENT }}>
-              Warren the Walrus
-            </span>
-            <p className="m-0 mt-1 text-sm leading-relaxed text-ink-secondary">
-              Here's the secret this chart gives away: time in the market beats timing the market.
-              In the early years the indigo band — your own deposits — does almost all the work,
-              and it's tempting to think investing "isn't doing anything." Then the teal wedge
-              creeps up, crosses over, and eventually dwarfs everything you put in. Nobody can
-              reliably guess which days the market will jump, and missing just a handful of its
-              best days can cost you a huge slice of that wedge. So don't wait for the "perfect"
-              moment — the 8% default here is roughly the stock market's long-run average, not a
-              promise, but the pattern holds at any rate: the earlier a dollar goes in, the more
-              years it spends compounding. Play with the "Start at 20 / 30 / 40" buttons above
-              and you'll see waiting is the most expensive thing most investors ever do.
-            </p>
-          </div>
-        </div>
-      </div>
+        <MascotCallout emoji="🦭" name="Warren the Walrus" hueKey="investing">
+          Here&apos;s the secret this chart gives away: time in the market beats timing the market. In the early years
+          the indigo band — your own deposits — does almost all the work, and it&apos;s tempting to think investing
+          &quot;isn&apos;t doing anything.&quot; Then the teal wedge creeps up, crosses over, and eventually dwarfs
+          everything you put in. Nobody can reliably guess which days the market will jump, and missing just a
+          handful of its best days can cost you a huge slice of that wedge. So don&apos;t wait for the
+          &quot;perfect&quot; moment — the 8% default here is roughly the stock market&apos;s long-run average, not a
+          promise, but the pattern holds at any rate: the earlier a dollar goes in, the more years it spends
+          compounding. Play with the &quot;Start at 20 / 30 / 40&quot; buttons and you&apos;ll see waiting is the
+          most expensive thing most investors ever do.
+        </MascotCallout>
+      </ToolLayout>
     </div>
   );
 }

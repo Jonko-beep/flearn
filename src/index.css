@@ -1,24 +1,210 @@
+@import "@fontsource-variable/fredoka/wght.css";
+@import "@fontsource-variable/figtree/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ------------------------------------------------------------------ tokens
+   Colours are "R G B" triplets so Tailwind can apply opacity to them.
+   Dark is the default; [data-theme="light"] on <html> swaps the set. */
+:root {
+  color-scheme: dark;
+  --canvas: 11 17 30;
+  --card: 18 26 43;
+  --raised: 25 35 56;
+  --well: 8 13 24;
+  --edge: 34 46 70;
+  --edge-strong: 55 70 100;
+  --ink: 233 238 246;
+  --ink-2: 165 177 198;
+  --ink-3: 113 127 152;
+  --accent: 30 176 158;
+  --accent-fg: 3 24 22;
+  --accent-ink: 88 212 195;
+  --gain: 64 196 142;
+  --loss: 241 108 118;
+  --warn: 240 176 82;
+  --gold: 233 180 80;
+  --chart-2: 129 140 248;
+  --shadow: 0 0 0;
+  --cat-investing: 46 190 172;
+  --cat-saving: 152 136 250;
+  --cat-estate: 233 164 74;
+  --cat-options: 86 172 240;
+  --cat-align: 236 120 170;
+  --cat: var(--accent-ink);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --canvas: 246 244 238;
+  --card: 255 255 255;
+  --raised: 249 247 242;
+  --well: 240 237 229;
+  --edge: 227 222 211;
+  --edge-strong: 200 193 179;
+  --ink: 22 30 42;
+  --ink-2: 72 84 101;
+  --ink-3: 116 126 141;
+  --accent: 13 124 112;
+  --accent-fg: 255 255 255;
+  --accent-ink: 10 105 95;
+  --gain: 12 132 88;
+  --loss: 196 48 62;
+  --warn: 168 104 10;
+  --gold: 160 112 16;
+  --chart-2: 88 96 214;
+  --shadow: 60 50 30;
+  --cat-investing: 13 124 112;
+  --cat-saving: 104 78 212;
+  --cat-estate: 180 104 12;
+  --cat-options: 18 116 192;
+  --cat-align: 196 60 120;
+}
+
 @layer base {
   html {
     @apply antialiased;
+    font-feature-settings: "ss01";
   }
   body {
-    @apply min-h-screen font-sans text-ink;
-    background: linear-gradient(165deg, #0a0f1e 0%, #111827 40%, #1a1a2e 100%);
-    background-attachment: fixed;
+    @apply min-h-screen bg-canvas font-sans text-ink;
+    font-size: 15px;
+    line-height: 1.55;
   }
   h1,
   h2,
   h3 {
-    @apply font-serif tracking-heading;
+    @apply font-display font-semibold text-ink;
+    letter-spacing: -0.005em;
+    line-height: 1.15;
+  }
+  h4 {
+    @apply font-sans font-semibold text-ink;
+  }
+  ::selection {
+    background: rgb(var(--accent) / 0.3);
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent-ink));
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  /* number fields: no browser spinner arrows */
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
 
-/* Certificate printing: light page, keep the paper card's colors, one page. */
+@layer components {
+  /* figures line up in columns */
+  .num {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum", "lnum";
+  }
+
+  /* small label above a section or a figure */
+  .eyebrow {
+    @apply text-[0.8125rem] font-bold text-ink-muted;
+  }
+
+  .field {
+    @apply h-11 w-full rounded-xl border-2 border-edge-strong bg-well px-3.5 text-sm font-medium text-ink outline-none transition-colors placeholder:font-normal placeholder:text-ink-muted;
+  }
+  .field:focus {
+    @apply border-accent-ink;
+  }
+
+  /* range slider — the filled part follows the --pct custom property */
+  .slider {
+    @apply h-7 w-full cursor-pointer appearance-none bg-transparent;
+  }
+  .slider::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(
+      to right,
+      rgb(var(--accent)) var(--pct, 0%),
+      rgb(var(--edge)) var(--pct, 0%)
+    );
+  }
+  .slider::-moz-range-track {
+    height: 10px;
+    border-radius: 999px;
+    background: rgb(var(--edge));
+  }
+  .slider::-moz-range-progress {
+    height: 10px;
+    border-radius: 999px;
+    background: rgb(var(--accent));
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    margin-top: -7px;
+    border-radius: 999px;
+    background: #fff;
+    border: 3px solid rgb(var(--accent));
+    box-shadow: 0 2px 0 rgb(var(--shadow) / 0.35);
+  }
+  .slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: #fff;
+    border: 3px solid rgb(var(--accent));
+    box-shadow: 0 2px 0 rgb(var(--shadow) / 0.35);
+  }
+
+  /* long-form lesson text */
+  .prose-lesson p {
+    @apply mb-4 text-[1.02rem] leading-[1.75] text-ink-secondary;
+  }
+  .prose-lesson p:last-child {
+    @apply mb-0;
+  }
+
+  /* data tables */
+  .table-plain {
+    @apply w-full border-collapse text-sm;
+  }
+  .table-plain th {
+    @apply border-b-2 border-edge px-3 py-2.5 text-left text-[0.8125rem] font-bold text-ink-muted;
+  }
+  .table-plain td {
+    @apply border-b border-edge px-3 py-3 align-middle;
+  }
+  .table-plain tr:last-child td {
+    @apply border-b-0;
+  }
+}
+
+/* recharts draws its own focus rectangle on click; the keyboard ring above is enough */
+.recharts-wrapper :focus,
+.recharts-surface:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Certificate printing: light page, keep the paper card's colours, one page. */
 @media print {
   body {
     background: white !important;
