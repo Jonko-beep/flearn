@@ -82,6 +82,7 @@ function sharesComparison(strategy, { stockPrice, capital, shares }, price) {
         profit: stockPrice > 0 ? capital * (price / stockPrice - 1) : 0,
       };
     case "covered-call":
+    case "protective-put":
       return {
         label: `Just holding the ${shares} shares`,
         profit: (price - stockPrice) * shares,
@@ -115,6 +116,8 @@ function buildInsight(strategy, { stockPrice, strike, premium }, payoff) {
       return maxProfit <= 0
         ? `At this strike and premium the position can't make money — you'd be agreeing to sell your shares for less than you paid, net of the premium. Raise the strike or the premium.`
         : `You pocket ${fmt$(premium * payoff.shares)} today. In exchange your profit stops at ${fmt$(maxProfit)} once the stock passes ${fmtPrice(strike)} — every dollar above that belongs to the call's buyer. The premium only cushions the first ${fmtPrice(premium)} of a drop; below ${fmtPrice(Math.max(0, stockPrice - premium))} you're losing like any shareholder.`;
+    case "protective-put":
+      return `You pay ${fmt$(premium * payoff.shares)} for insurance. However far the stock falls, you can sell at ${fmtPrice(strike)}, so the most you can lose from today's price is ${fmt$(maxLoss)}. Your upside stays open, but the stock ${moveText} just to cover the premium — and if it goes nowhere, the premium is simply the cost of the protection.`;
     default:
       return `You pocket ${fmt$(maxProfit)} today, and that's the most this trade can ever make. If the stock finishes below ${fmtPrice(strike)} you must buy ${payoff.shares} shares at that price — an effective cost of ${fmtPrice(Math.max(0, strike - premium))} each — and every dollar the stock falls below that is your loss.`;
   }
@@ -151,7 +154,7 @@ export default function OptionsPage() {
     setStrategy(id);
     setStrike(Math.max(1, Math.round(defaults.strike * scale)));
     setPremium(Math.max(0.05, Math.round(defaults.premium * scale * 20) / 20));
-    setExpiryPrice(Math.round(stockPrice * (id === "long-put" ? 0.8 : 1.2)));
+    setExpiryPrice(Math.round(stockPrice * (id === "long-put" || id === "protective-put" ? 0.8 : 1.2)));
   };
 
   const inputs = { strategy, stockPrice, strike, premium, contracts };
@@ -193,7 +196,7 @@ export default function OptionsPage() {
             <Card className="p-4">
               <GroupLabel className="!pt-0">Strategy</GroupLabel>
               <div className="mt-3 grid grid-cols-2 gap-1.5" role="tablist" aria-label="Strategy">
-                {STRATEGIES.map((s) => (
+                {STRATEGIES.map((s, i) => (
                   <button
                     key={s.id}
                     type="button"
@@ -202,6 +205,8 @@ export default function OptionsPage() {
                     onClick={() => chooseStrategy(s.id)}
                     className={cx(
                       "h-9 rounded-lg border text-[0.8125rem] font-semibold transition-colors",
+                      // an odd one out on the last row spans both columns
+                      i === STRATEGIES.length - 1 && STRATEGIES.length % 2 === 1 && "col-span-2",
                       strategy === s.id
                         ? "border-accent bg-accent text-accent-fg"
                         : "border-edge-strong text-ink-secondary hover:bg-raised hover:text-ink"
@@ -275,14 +280,20 @@ export default function OptionsPage() {
             label="Max loss"
             value={fmt$(payoff.maxLoss)}
             tone="loss"
-            sub={strategy === "long-call" || strategy === "long-put" ? "the premium — all of it" : "if the stock goes to $0"}
+            sub={
+              strategy === "long-call" || strategy === "long-put"
+                ? "the premium — all of it"
+                : strategy === "protective-put"
+                  ? "at or below the strike"
+                  : "if the stock goes to $0"
+            }
           />
           <StatCard
             label="Max profit"
             value={payoff.maxProfit === Infinity ? "Unlimited" : fmt$(Math.max(0, payoff.maxProfit))}
             tone="gain"
             sub={
-              strategy === "long-call"
+              strategy === "long-call" || strategy === "protective-put"
                 ? "grows as the stock rises"
                 : strategy === "long-put"
                   ? "if the stock goes to $0"

@@ -65,6 +65,46 @@ test("cash-secured put: keep the premium above the strike, own the downside belo
   near(p.capital, 4380);
 });
 
+test("protective put: a floor under the shares, upside open minus the premium", () => {
+  // The Protective Puts lesson: shares at $100, a $95 put for $3.
+  const p = computeOptionPayoff({ strategy: "protective-put", stockPrice: 100, strike: 95, premium: 3 });
+  assert.equal(p.maxLoss, 800);
+  assert.equal(p.breakeven, 103);
+  assert.equal(p.maxProfit, Infinity);
+  assert.equal(p.capital, 10300);
+  assert.equal(p.profitAt(70), -800);
+  assert.equal(p.profitAt(95), -800); // the floor
+  assert.equal(p.profitAt(0), -800); // however far it falls
+  assert.equal(p.profitAt(100), -300); // nothing happened: the cost of insurance
+  assert.equal(p.profitAt(120), 1700); // vs $2,000 without the put
+  // Bought at $80: worst case sells at $95 after a $3 put — at least $12/share kept.
+  assert.equal(95 - 3 - 80, 12);
+  // The strike-as-deductible comparison.
+  near(computeOptionPayoff({ strategy: "protective-put", stockPrice: 100, strike: 90, premium: 1.5 }).maxLoss, 1150);
+  near(computeOptionPayoff({ strategy: "protective-put", stockPrice: 100, strike: 100, premium: 5.5 }).maxLoss, 550);
+  assert.equal(intrinsicValue("protective-put", 100, 105), 5);
+});
+
+test("covered call deep dive: the $40 stock, $42 call for $0.80", () => {
+  const p = computeOptionPayoff({ strategy: "covered-call", stockPrice: 40, strike: 42, premium: 0.8 });
+  near(p.maxProfit, 280);
+  near(p.breakeven, 39.2);
+  near(p.profitAt(40), 80); // flat: keep the premium
+  near(p.profitAt(42), 280);
+  near(p.profitAt(50), 280); // capped; holding would have made $1,000
+  near(p.profitAt(35), -420); // vs −$500 just holding
+  near(0.8 / 40, 0.02); // "about 2% in a month"
+});
+
+test("a protective put pays off like a long call at the same strike", () => {
+  // Put-call parity again: shares + a K put has the shape of a K call.
+  const inputs = { stockPrice: 100, strike: 95, premium: 3 };
+  const shift = profitPerShare("protective-put", inputs, 200) - profitPerShare("long-call", inputs, 200);
+  for (const price of [0, 50, 95, 100, 130, 200]) {
+    near(profitPerShare("protective-put", inputs, price) - profitPerShare("long-call", inputs, price), shift);
+  }
+});
+
 test("a covered call and a cash-secured put at the same strike have the same shape", () => {
   // Put-call parity in miniature: buying stock at K and selling the K call
   // pays off like selling the K put, shifted by the premium difference.

@@ -34,6 +34,13 @@ export const STRATEGIES = [
     summary: "Sell a put while holding the cash to buy 100 shares at the strike.",
     defaults: { strike: 90, premium: 2 },
   },
+  {
+    id: "protective-put",
+    label: "Protective put",
+    outlook: "Bullish, with a floor",
+    summary: "Own 100 shares and buy a put as insurance against a drop.",
+    defaults: { strike: 95, premium: 3 },
+  },
 ];
 
 export function getStrategy(id) {
@@ -66,7 +73,7 @@ export function intrinsicValue(strategy, stockPrice, strike) {
 /**
  * Profit or loss PER SHARE at expiration if the stock finishes at `price`.
  * stockPrice is today's share price — the purchase price of the shares in a
- * covered call; it doesn't affect the other three payoffs.
+ * covered call or protective put; it doesn't affect the other payoffs.
  */
 export function profitPerShare(strategy, { stockPrice, strike, premium }, price) {
   switch (strategy) {
@@ -79,6 +86,9 @@ export function profitPerShare(strategy, { stockPrice, strike, premium }, price)
       return price - stockPrice + premium - callValueAtExpiry(strike, price);
     case "cash-secured-put":
       return premium - putValueAtExpiry(strike, price);
+    case "protective-put":
+      // stock gain/loss − premium paid + what the bought put pays out
+      return price - stockPrice - premium + putValueAtExpiry(strike, price);
     default:
       throw new Error(`Unknown options strategy: ${strategy}`);
   }
@@ -132,6 +142,12 @@ export function computeOptionPayoff({ strategy, stockPrice, strike, premium, con
       maxProfit = premium * shares;
       maxLoss = Math.max(0, strike - premium) * shares; // forced to buy a $0 stock at the strike
       capital = Math.max(0, strike - premium) * shares;
+      break;
+    case "protective-put":
+      breakeven = stockPrice + premium;
+      maxProfit = Infinity;
+      maxLoss = Math.max(0, stockPrice - strike + premium) * shares; // stock at or below the strike
+      capital = (stockPrice + premium) * shares;
       break;
     default:
       throw new Error(`Unknown options strategy: ${strategy}`);
