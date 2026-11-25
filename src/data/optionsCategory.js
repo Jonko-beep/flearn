@@ -139,7 +139,7 @@ export const optionsCategory = {
         "Buying a call (you think the stock will rise):\nA stock trades at $50. You buy one $55 call for $2 per share — $200 total. At expiration:\n• Stock at $60 — the call is worth $5. Minus the $2 you paid, that's $3 per share: a $300 profit, or 150% on your $200. The stock itself rose 20%\n• Stock at $56 — the call is worth $1. You paid $2, so you LOSE $100 — even though the stock went up 12%\n• Stock at $55 or lower — the call is worthless. You lose the full $200",
         "The number to memorize is the breakeven. For a call held to expiration:\n• Breakeven = strike price + premium\nHere that's $55 + $2 = $57. Below $57 you lose money; above it you profit.",
         "Buying a put (you think the stock will fall):\nSame $50 stock. You buy one $45 put for $1.50 per share — $150 total. At expiration:\n• Stock at $38 — the put is worth $7. Minus $1.50, that's a $550 profit\n• Stock at $45 or higher — the put is worthless. You lose the full $150\n• Breakeven = strike price − premium, so $45 − $1.50 = $43.50",
-        "Puts as insurance: the protective put. Say you own 100 shares you bought at $50, and you're nervous about a rough few months. Buy that same $45 put for $1.50 and your worst case is locked in: you can always sell at $45, so the most you can lose is $5 on the shares plus the $1.50 premium — $6.50 per share, $650 total — no matter how far the stock falls. It works exactly like insurance with a deductible, and like insurance, it costs money every time you renew it.",
+        "Puts as insurance: the protective put. Say you own 100 shares you bought at $50, and you're nervous about a rough few months. Buy that same $45 put for $1.50 and your worst case is locked in: you can always sell at $45, so the most you can lose is $5 on the shares plus the $1.50 premium — $6.50 per share, $650 total — no matter how far the stock falls. It works exactly like insurance with a deductible, and like insurance, it costs money every time you renew it. The Protective Puts lesson goes deeper.",
         "Notice what leverage did in the call example. With the same $200 you could have bought 4 shares, and a move to $60 would have made you $40. The call made $300. That's the appeal. But at $56 the 4 shares are up $24 while the call is down $100, and at $54 the shares are up $16 while the call has lost everything. Leverage magnifies the outcome in both directions.",
         "A buyer needs three things to go right:\n1. Direction — the stock moves the way you expected\n2. Size — it moves far enough to clear the breakeven\n3. Timing — it does so before expiration\nMiss any one of the three and the trade loses.",
         "What this means for you as a young adult: before you ever look at a real options chain, be able to answer two questions instantly — what's my breakeven, and what's my maximum loss? If a trade idea can't survive those two questions, it's not a trade. Try the Options Payoff Visualizer in Tools and drag the numbers around until the shapes feel obvious."
@@ -332,6 +332,115 @@ export const optionsCategory = {
       ],
     },
     {
+      id: "protective-puts",
+      title: "Protective Puts",
+      subtitle: "Insurance for shares you already own",
+      duration: "10 min",
+      difficulty: "Intermediate",
+      locked: false,
+      videoUrl: null,
+      content: paragraphs(
+        "A protective put is the original reason options exist: insurance. You own shares, you buy a put on them, and no matter how far the stock falls, you can still sell at the strike price. Your upside stays open. Your downside gets a floor.",
+        "The setup: own 100 shares (one contract covers 100) and buy one put. If you buy the shares and the put at the same time, it's sometimes called a married put. It's the same position.",
+        "An example. You bought 100 shares at $80 and they now trade at $100. You're nervous about the next three months, so you buy a $95 put expiring in three months for $3 per share, or $300. Measured from today's $100 price, at expiration:\n• Stock at $70 — the shares are down $30, but the put is worth $25. Minus the $3 premium, you're down $8 per share: $800\n• Stock at $95 — the shares are down $5 and the put is worthless. With the premium, you're still down $800. That's the floor\n• Stock at $100 — nothing happened. You're down the $300 premium, the cost of the insurance\n• Stock at $120 — the shares are up $20, minus the $3 premium: a $1,700 gain, versus $2,000 without the put",
+        "The three numbers to know:\n• Maximum loss = (today's price − strike) + premium. Here, $5 + $3 = $8 per share, however far the stock falls\n• Breakeven = today's price + premium. Here, $103. The stock has to rise enough to pay for the insurance\n• Maximum gain — unlimited, minus the premium",
+        "Notice what the floor did to your existing gain. You bought at $80, and the worst case is now selling at $95 after paying $3 for the put, an effective $92. At least $12 of your $20-per-share gain is locked in, even if the company collapses.",
+        "Choosing the strike is choosing your deductible. With the stock at $100, prices might look like this:\n• $90 put for $1.50 — cheap, but you absorb the first $10 of a drop. Maximum loss: $11.50 per share\n• $95 put for $3.00 — the middle ground. Maximum loss: $8 per share\n• $100 put for $5.50 — full protection from today's price, but expensive. Maximum loss: $5.50 per share, all of it premium",
+        "A higher strike gives a higher floor and costs more, exactly like a lower deductible on car insurance. A longer expiration costs more in total, but usually less per month of protection.",
+        "The catch is cost over time. $3 every three months is $12 a year, or 12% of a $100 stock. Insurance that expensive, renewed forever, can eat most of what a stock earns over the long run. That's why protective puts are usually a temporary tool, not a permanent one.",
+        "When a protective put makes sense:\n• A concentrated position — a large chunk of one stock, such as employer stock, that you can't or don't want to sell yet\n• A known event — an earnings report, a court ruling, or a stretch when you'll need the money soon\n• A big gain you want to protect without selling",
+        "Why not just use a stop-loss order? A stop-loss tells your broker to sell if the stock drops to a set price. It's free, but it isn't a guarantee. Once triggered it becomes a regular sell order, so if the stock closes at $100 and opens the next morning at $70 after bad news, you sell near $70, not at your $95 stop. A put guarantees the strike, gap or no gap. That certainty is what the premium pays for.",
+        "Looking ahead: you can pay for some or all of a put by also selling a covered call on the same shares. That combination is called a collar, and it's covered in the Covered Calls lesson.",
+        "What this means for you as a young adult: if you own a diversified index fund and won't need the money for decades, time and diversification are your protection, and they're free. Protective puts are for specific, temporary risks: one big stock, one big event, one big gain. Try \"Protective put\" in the Options Payoff Visualizer and watch the floor move as you change the strike."
+      ),
+      transcript: null,
+      quiz: [
+        {
+          id: 1,
+          question: "What is a protective put?",
+          options: [
+            "Selling a put on a stock you'd like to buy",
+            "Buying a put on shares you already own, so you can always sell at the strike",
+            "Selling a call to collect income",
+            "A put that can't lose money",
+          ],
+          correct: 1,
+          explanation:
+            "A protective put is insurance: you own the shares and buy a put, which puts a floor under your losses while leaving your upside open.",
+        },
+        {
+          id: 2,
+          question:
+            "A stock trades at $100. You own 100 shares and buy a $95 put for $3. What's your maximum loss per share from today's price?",
+          options: ["$3", "$5", "$8", "$95"],
+          correct: 2,
+          explanation:
+            "You can always sell at $95, so the shares can lose at most $5, plus the $3 premium. That's $8 per share, or $800, however far the stock falls.",
+        },
+        {
+          id: 3,
+          question: "Same position: shares at $100, a $95 put bought for $3. What's your breakeven at expiration?",
+          options: ["$97", "$95", "$100", "$103"],
+          correct: 3,
+          explanation:
+            "The shares have to rise enough to pay for the insurance: $100 + $3 = $103.",
+        },
+        {
+          id: 4,
+          question: "The stock rises from $100 to $120 by expiration. What happened to your protected position?",
+          options: [
+            "You kept the gain, minus the $3 premium — $1,700 instead of $2,000",
+            "Your gain was capped at the strike",
+            "You lost the full premium plus $5 per share",
+            "The put was exercised and your shares were sold",
+          ],
+          correct: 0,
+          explanation:
+            "A protective put doesn't cap your upside. The put expires worthless and you keep the $20 gain per share, less the $3 you paid for protection.",
+        },
+        {
+          id: 5,
+          question: "What happens when you choose a higher strike for your protective put?",
+          options: [
+            "It gets cheaper and the floor gets higher",
+            "Nothing — all strikes cost the same",
+            "It costs more, but your floor is higher",
+            "Your upside becomes capped",
+          ],
+          correct: 2,
+          explanation:
+            "Like a lower deductible, a higher strike protects more and costs more. With the stock at $100, a $100 put costs far more than a $90 put.",
+        },
+        {
+          id: 6,
+          question:
+            "Your stock closes at $100 and opens at $70 after bad news. What's the advantage of a $95 put over a $95 stop-loss order?",
+          options: [
+            "The stop-loss would have sold at exactly $95",
+            "The put still lets you sell at $95; the stop-loss would likely sell near $70",
+            "There's no difference",
+            "The put is free and the stop-loss isn't",
+          ],
+          correct: 1,
+          explanation:
+            "A triggered stop-loss becomes a regular sell order at whatever the market price is. A put guarantees the strike, even when the stock jumps straight past it.",
+        },
+        {
+          id: 7,
+          question: "Why do most investors use protective puts only temporarily?",
+          options: [
+            "They're only allowed during earnings season",
+            "Puts can't be bought on index funds",
+            "They cap your upside",
+            "Renewing the insurance over and over can eat most of a stock's long-run return",
+          ],
+          correct: 3,
+          explanation:
+            "Paying $3 every three months on a $100 stock is 12% a year. That's worth it for a specific, temporary risk, but not as a permanent habit.",
+        },
+      ],
+    },
+    {
       id: "selling-options",
       title: "Selling Options for Income",
       subtitle: "Covered calls and cash-secured puts",
@@ -343,7 +452,7 @@ export const optionsCategory = {
         "So far you've been the buyer: pay a premium, get a right. Flip to the other side and you're the seller: you collect the premium up front and accept an obligation. Sellers win when nothing dramatic happens, which is most of the time — and lose, sometimes badly, when something does.",
         "Two selling strategies are considered conservative, because the obligation is backed by something you already hold.",
         "The covered call — you own 100 shares and sell a call against them.\nYou own 100 shares bought at $50 and sell one $55 call for $1.50, collecting $150. At expiration:\n• Stock below $55 — the call expires worthless. You keep your shares and the $150\n• Stock above $55 — your shares are \"called away\": you sell them at $55. Your gain is $5 on the shares plus the $1.50 premium — $6.50 per share, $650 — and that's your ceiling, whether the stock finishes at $56 or $90\n• Stock falls — you still own it. The premium cushions the first $1.50, so your breakeven is $48.50, but below that you lose like any shareholder",
-        "The trade-off is the whole strategy: you sell your upside above the strike in exchange for cash today.",
+        "The trade-off is the whole strategy: you sell your upside above the strike in exchange for cash today. The Covered Calls lesson goes deeper.",
         "The cash-secured put — you sell a put and keep enough cash to buy the shares.\nA stock trades at $50. You sell one $45 put for $1.20, collecting $120, and set aside the $4,500 you'd need to buy 100 shares at $45. At expiration:\n• Stock above $45 — the put expires worthless. You keep the $120\n• Stock below $45 — you're assigned: you must buy 100 shares at $45. With the premium, your effective cost is $43.80 per share\n• If the stock is at $35 by then, you paid $43.80 for something worth $35 — an $880 loss",
         "People call this \"getting paid to wait\" for a stock they'd like to own at a lower price. That's fair, as long as you remember what you've signed up for: all of the stock's downside below the strike, in exchange for a small, capped premium.",
         "Assignment. When a buyer exercises, a seller is assigned and has to make good — deliver shares (calls) or buy them (puts). With the stock options traded in the U.S., that can happen on any day before expiration, not just the last one. It's most likely when the option is in the money near expiration, or just before a dividend for calls.",
@@ -435,6 +544,115 @@ export const optionsCategory = {
           correct: 3,
           explanation:
             "Sellers are paid to take on someone else's risk. Most contracts cost them nothing; the rare bad one can cost far more than any single premium earned.",
+        },
+      ],
+    },
+    {
+      id: "covered-calls",
+      title: "Covered Calls",
+      subtitle: "Renting out your shares for income",
+      duration: "11 min",
+      difficulty: "Advanced",
+      locked: false,
+      videoUrl: null,
+      content: paragraphs(
+        "The covered call is the most popular way investors sell options, and the previous lesson introduced it. This lesson goes deeper: how to choose the strike and expiration, what really happens when your shares get called away, and why a high \"yield\" doesn't tell the whole story.",
+        "The setup: you own 100 shares and sell one call against them. You collect the premium today. In exchange, you agree to sell your shares at the strike price if the buyer wants them. Think of it as renting out the upside of your shares: you get paid rent, and the renter keeps any gains above the strike.",
+        "An example. You own 100 shares bought at $40, and the stock is at $40. You sell a $42 call expiring in about a month for $0.80, collecting $80. At expiration:\n• Stock at or below $42 — the call expires worthless. You keep your shares and the $80, about 2% in a month on $4,000\n• Stock above $42 — your shares are called away at $42. Your profit is $2 on the shares plus the $0.80 premium: $280, and that's the ceiling\n• Stock at $50 — still $280. Just holding the shares would have made $1,000. The extra $720 went to the call's buyer\n• Stock at $35 — you still own the shares. You're down $5 per share, cushioned by the $0.80 premium: a $420 loss instead of $500",
+        "The three numbers to know:\n• Maximum profit = (strike − your cost) + premium. Here, $2 + $0.80 = $2.80 per share, or $280\n• Breakeven = your cost − premium. Here, $39.20\n• Maximum loss — the stock going to zero, minus the premium. The covered call barely changes your downside",
+        "Choosing the strike is a trade-off between income and keeping your shares. With the stock at $40:\n• A $40 call might pay $1.80 — big income, but you'll very likely be called away, and any gain above $40 goes to the buyer\n• A $42 call might pay $0.80 — the middle ground\n• A $45 call might pay $0.25 — little income, but plenty of room for the stock to rise before you have to sell",
+        "Choosing the expiration: many covered-call sellers use contracts about 30 to 45 days out. Time decay speeds up in an option's final weeks, and as the seller, decay works for you. Longer contracts pay more in total but lock you in for longer.",
+        "The \"2% a month\" trap. 2% a month sounds like 24% a year, but it doesn't work that way. In months when the stock falls, you keep the whole loss, minus a small premium. In months when it soars, you've sold away the gain. You keep all of the bad months and give away the best ones. Over long periods, covered-call strategies have tended to trail simply owning the stock in strong markets.",
+        "Being called away. If the stock is above your strike at expiration, expect to sell. It can also happen earlier: a call buyer may exercise early, most often just before the stock's ex-dividend date to collect the dividend. Then you lose both the shares and the dividend. Don't sell a covered call on shares you'd hate to part with at the strike.",
+        "Rolling. If the stock climbs toward your strike and you want to keep the shares, you can buy back the call and sell a new one with a later expiration, often at a higher strike. That's called rolling up and out. It isn't a free fix. Buying back a call on a rising stock costs money, so a roll is really a brand-new trade, and it should make sense on its own.",
+        "Taxes. In a regular brokerage account, premiums are generally taxed as short-term capital gains. If your shares are called away, that's a sale, which can trigger capital gains tax on shares you'd planned to hold for years. Many brokers allow covered calls inside an IRA, where none of that applies.",
+        "Covered-call funds. Some ETFs sell calls on an entire index and advertise yields of 10% or more. That \"yield\" is mostly option premium, not company profits, and it comes from giving up upside. In strong markets these funds usually lag the plain index fund. Compare total return, not yield.",
+        "Pairing with a protective put. Sell a covered call and use the premium to help pay for a protective put on the same shares, and you have a collar: a floor below and a ceiling above. It's a common way to protect a big position cheaply, in exchange for capping its upside.",
+        "What this means for you as a young adult: covered calls fit a stock you're happy to own, happy to sell at the strike, and don't expect to move much soon. They're a poor fit for a stock you think could take off. Before you sell one, say your maximum profit and your breakeven out loud. Try different strikes in the Options Payoff Visualizer and compare each one with just holding the shares."
+      ),
+      transcript: null,
+      quiz: [
+        {
+          id: 1,
+          question: "When do you keep both your shares and the premium from a covered call?",
+          options: [
+            "When the stock finishes at or below the strike at expiration",
+            "Only when the stock rises above the strike",
+            "Always — covered calls can't be assigned",
+            "Only if you exercise the call yourself",
+          ],
+          correct: 0,
+          explanation:
+            "If the stock finishes at or below the strike, the call expires worthless. You keep the shares and the full premium.",
+        },
+        {
+          id: 2,
+          question:
+            "You own 100 shares bought at $40 and sell a $42 call for $0.80. What's your maximum profit?",
+          options: ["$80", "$200", "$280", "$4,200"],
+          correct: 2,
+          explanation:
+            "$2 per share from selling at the $42 strike plus the $0.80 premium is $2.80 per share, or $280. That's the ceiling, however high the stock goes.",
+        },
+        {
+          id: 3,
+          question: "Same position: shares bought at $40, a $42 call sold for $0.80. What's your breakeven?",
+          options: ["$40.80", "$39.20", "$42.00", "$38.00"],
+          correct: 1,
+          explanation:
+            "The premium cushions the first $0.80 of a drop: $40 − $0.80 = $39.20. Below that, you lose like any shareholder.",
+        },
+        {
+          id: 4,
+          question: "The stock jumps to $50 by expiration. What happens to your covered call position?",
+          options: [
+            "You make $1,000 plus the $80 premium",
+            "The call is canceled because the move was too large",
+            "You lose money because the call is in the money",
+            "Your shares are called away at $42, so you make $280 instead of the $1,000 from just holding",
+          ],
+          correct: 3,
+          explanation:
+            "You agreed to sell at $42. Your profit stops at $280, and the $720 of gains above the strike goes to the call buyer.",
+        },
+        {
+          id: 5,
+          question: "What happens when you sell a covered call with a strike closer to today's stock price?",
+          options: [
+            "Less premium, and less chance of being called away",
+            "No change in premium or risk",
+            "More premium, but a higher chance your shares are called away",
+            "Your downside risk disappears",
+          ],
+          correct: 2,
+          explanation:
+            "A closer strike pays more because the call is more likely to finish in the money. That also means you're more likely to sell your shares.",
+        },
+        {
+          id: 6,
+          question: "When is early assignment on a covered call most likely?",
+          options: [
+            "On the day you sell it",
+            "Just before the stock's ex-dividend date, when the call is in the money",
+            "When the stock is far below the strike",
+            "Never — early assignment isn't allowed",
+          ],
+          correct: 1,
+          explanation:
+            "A call buyer may exercise early to own the shares in time for the dividend. You lose the shares and the dividend.",
+        },
+        {
+          id: 7,
+          question: "A covered-call ETF advertises a 12% yield. What's the catch?",
+          options: [
+            "The yield is guaranteed by the government",
+            "ETFs can't hold options",
+            "There is none — it's free extra income",
+            "The yield comes mostly from selling away upside, so it often trails the index in strong markets",
+          ],
+          correct: 3,
+          explanation:
+            "The premium is payment for giving up gains above the strike. Judge these funds on total return, not yield.",
         },
       ],
     },

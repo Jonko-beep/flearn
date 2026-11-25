@@ -159,6 +159,84 @@ export const glossary = [
     lessonId: "portfolio-building",
   },
 
+  {
+    term: "IRA (Individual Retirement Account)",
+    definition:
+      "A retirement account you open yourself, not through a job, that gets special tax treatment. It's a container: you still have to choose investments inside it, or the money just sits in cash.",
+    categoryId: "investing",
+    lessonId: "iras",
+  },
+  {
+    term: "Traditional IRA",
+    definition:
+      "An IRA where contributions may be tax-deductible now, the money grows tax-deferred, and withdrawals in retirement are taxed as income. The tax break comes up front.",
+    categoryId: "investing",
+    lessonId: "iras",
+  },
+  {
+    term: "Roth IRA",
+    definition:
+      "An IRA funded with money you've already paid tax on. It grows tax-free, qualified withdrawals in retirement are tax-free, and you can take out your contributions anytime. The tax break comes later.",
+    categoryId: "investing",
+    lessonId: "iras",
+  },
+  {
+    term: "Required minimum distribution (RMD)",
+    definition:
+      "The amount the IRS makes you withdraw each year from Traditional retirement accounts once you reach your 70s, so the government finally collects its tax. Roth IRAs don't have them.",
+    categoryId: "investing",
+    lessonId: "iras",
+  },
+  {
+    term: "Rollover",
+    definition:
+      "Moving retirement money from one account to another, such as an old 401(k) into an IRA, without owing tax. A direct rollover, where the money goes straight between the accounts, is the safest way.",
+    categoryId: "investing",
+    lessonId: "iras",
+  },
+  {
+    term: "401(k)",
+    definition:
+      "A retirement plan offered by private employers. Money comes straight out of your paycheck and is invested in funds from the plan's menu, often with a matching contribution from your employer.",
+    categoryId: "investing",
+    lessonId: "employer-retirement-plans",
+  },
+  {
+    term: "403(b)",
+    definition:
+      "The 401(k)'s cousin for public schools, colleges, hospitals, and nonprofits. It works almost the same way. Watch for high-fee annuity products on the menu.",
+    categoryId: "investing",
+    lessonId: "employer-retirement-plans",
+  },
+  {
+    term: "457(b)",
+    definition:
+      "A workplace retirement plan for state and local government employees. A government 457(b) has no 10% early-withdrawal penalty once you leave the job, and its limit is separate from a 403(b)'s.",
+    categoryId: "investing",
+    lessonId: "employer-retirement-plans",
+  },
+  {
+    term: "Employer match",
+    definition:
+      "Money your employer adds to your retirement plan when you contribute, such as 50 cents per dollar up to 6% of your salary. It's an instant return, so always contribute at least enough to get all of it.",
+    categoryId: "investing",
+    lessonId: "employer-retirement-plans",
+  },
+  {
+    term: "Vesting",
+    definition:
+      "Earning full ownership of your employer's contributions by staying long enough. Your own contributions are always yours; leave before the match vests and the unvested part goes back to the employer.",
+    categoryId: "investing",
+    lessonId: "employer-retirement-plans",
+  },
+  {
+    term: "Target-date fund",
+    definition:
+      "A single fund that holds a mix of stocks and bonds and gets more conservative as its target year approaches. It's a sensible one-fund choice for a retirement account.",
+    categoryId: "investing",
+    lessonId: "employer-retirement-plans",
+  },
+
   // ── Saving & Budgeting ─────────────────────────────────────────────────
   {
     term: "Budget",
@@ -443,6 +521,162 @@ export const glossary = [
     lessonId: "home-buying-process",
   },
 
+  // ── Bonds & Fixed Income ───────────────────────────────────────────────
+  {
+    term: "Fixed income",
+    definition:
+      "Investments that pay a set schedule of interest and return your money on a set date — bonds, Treasury bills, and CDs. The payments are fixed; the market price along the way isn't.",
+    categoryId: "fixed-income",
+    lessonId: "bonds-basics",
+  },
+  {
+    term: "Face value (par)",
+    definition:
+      "The amount a bond pays back when it matures, usually $1,000. A bond trading above it is at a premium; below it, at a discount.",
+    categoryId: "fixed-income",
+    lessonId: "bonds-basics",
+  },
+  {
+    term: "Coupon",
+    definition:
+      "The fixed interest rate a bond pays on its face value. A 4% coupon on a $1,000 bond is $40 a year, usually paid in two halves.",
+    categoryId: "fixed-income",
+    lessonId: "bonds-basics",
+  },
+  {
+    term: "Maturity",
+    definition:
+      "The date a bond's loan ends and the issuer pays back the face value. It can be weeks away or 30 years away.",
+    categoryId: "fixed-income",
+    lessonId: "bonds-basics",
+  },
+  {
+    term: "Treasury bill (T-bill)",
+    definition:
+      "A loan to the U.S. government that matures in a year or less. It's sold below face value and pays the full amount at maturity; the difference is your interest.",
+    categoryId: "fixed-income",
+    lessonId: "bond-types",
+  },
+  {
+    term: "TIPS",
+    definition:
+      "Treasury Inflation-Protected Securities: Treasury bonds whose face value rises with inflation, so both the interest and the final payment keep up with prices.",
+    categoryId: "fixed-income",
+    lessonId: "bond-types",
+  },
+  {
+    term: "I bond",
+    definition:
+      "A U.S. savings bond whose rate combines a fixed rate with an inflation rate that resets every six months. Up to $10,000 per person per year; you can't cash it in for 12 months.",
+    categoryId: "fixed-income",
+    lessonId: "bond-types",
+  },
+  {
+    term: "Municipal bond (muni)",
+    definition:
+      "A loan to a state, city, or public project. Its interest is generally free from federal income tax, which makes it most valuable to people in high tax brackets.",
+    categoryId: "fixed-income",
+    lessonId: "bond-types",
+  },
+  {
+    term: "Taxable-equivalent yield",
+    definition:
+      "What a taxable bond would have to pay to match a tax-free one: tax-free yield ÷ (1 − your tax rate). A 3% muni is worth about 4.41% in the 32% bracket.",
+    categoryId: "fixed-income",
+    lessonId: "bond-types",
+  },
+  {
+    term: "Yield to maturity (YTM)",
+    definition:
+      "Your total yearly return if you buy a bond at today's price and hold it to the end, counting the interest plus the price moving back to face value.",
+    categoryId: "fixed-income",
+    lessonId: "bond-prices",
+  },
+  {
+    term: "Current yield",
+    definition:
+      "A bond's yearly interest divided by its price today. A $30-a-year bond bought for $844 has a current yield of about 3.55%.",
+    categoryId: "fixed-income",
+    lessonId: "bond-prices",
+  },
+  {
+    term: "Interest-rate risk",
+    definition:
+      "The risk that rising rates push down the price of bonds you already own. Even the safest government bonds carry it, which is why bonds lost about 13% in 2022.",
+    categoryId: "fixed-income",
+    lessonId: "bond-prices",
+  },
+  {
+    term: "Duration",
+    definition:
+      "How sensitive a bond's price is to interest rates. Roughly, a duration of 6 means a 6% price drop if rates rise 1 percentage point, and a 6% gain if they fall 1 point.",
+    categoryId: "fixed-income",
+    lessonId: "duration-yield-curve",
+  },
+  {
+    term: "Yield curve",
+    definition:
+      "A chart of Treasury yields from short to long maturities. Normally longer bonds pay more; when short ones pay more, the curve is inverted, which has often come before recessions.",
+    categoryId: "fixed-income",
+    lessonId: "duration-yield-curve",
+  },
+  {
+    term: "Reinvestment risk",
+    definition:
+      "The risk that when a bond matures, you can only reinvest the money at a lower rate. It's the trade-off for the price stability of short-term bonds.",
+    categoryId: "fixed-income",
+    lessonId: "duration-yield-curve",
+  },
+  {
+    term: "Credit rating",
+    definition:
+      "A grade from an agency like S&P, Moody's, or Fitch on a borrower's ability to repay. BBB− and above is investment grade; BB+ and below is high-yield, or junk.",
+    categoryId: "fixed-income",
+    lessonId: "credit-risk",
+  },
+  {
+    term: "Junk bond",
+    definition:
+      "A bond rated below investment grade (BB+ or lower). It pays more because default is a real possibility, and in a crash it tends to fall alongside stocks.",
+    categoryId: "fixed-income",
+    lessonId: "credit-risk",
+  },
+  {
+    term: "Credit spread",
+    definition:
+      "The extra yield a bond pays over a Treasury with the same maturity — the lender's pay for taking credit risk. Spreads widen when investors fear defaults.",
+    categoryId: "fixed-income",
+    lessonId: "credit-risk",
+  },
+  {
+    term: "Bond fund",
+    definition:
+      "A fund holding hundreds or thousands of bonds. It spreads out credit risk and is easy to buy and sell, but it never matures, so its price always moves with rates.",
+    categoryId: "fixed-income",
+    lessonId: "bond-funds-ladders",
+  },
+  {
+    term: "Certificate of deposit (CD)",
+    definition:
+      "A bank deposit that pays a fixed rate for a fixed term. It's FDIC insured, but cashing out early usually costs a penalty of several months' interest.",
+    categoryId: "fixed-income",
+    lessonId: "bond-funds-ladders",
+  },
+  {
+    term: "Bond ladder",
+    definition:
+      "Money split across bonds or CDs maturing in different years, so something comes due every year. You get a mix of rates and never have to sell early to get cash.",
+    categoryId: "fixed-income",
+    lessonId: "bond-funds-ladders",
+  },
+  {
+    term: "Money market fund",
+    definition:
+      "A fund holding very short-term debt like T-bills that aims to keep a steady $1.00 share price. Very low risk, but not FDIC insured.",
+    categoryId: "fixed-income",
+    lessonId: "bond-funds-ladders",
+  },
+
   // ── Options ────────────────────────────────────────────────────────────
   {
     term: "Option",
@@ -505,7 +739,21 @@ export const glossary = [
     definition:
       "A put bought on shares you already own, so you can sell at the strike no matter how far the stock falls. It's insurance with a deductible, and the premium is the cost.",
     categoryId: "options",
-    lessonId: "buying-calls-puts",
+    lessonId: "protective-puts",
+  },
+  {
+    term: "Hedge",
+    definition:
+      "A position taken to offset the risk of another one, such as buying a put on shares you own. A hedge gives up some return, usually its cost, in exchange for limiting how much you can lose.",
+    categoryId: "options",
+    lessonId: "protective-puts",
+  },
+  {
+    term: "Stop-loss order",
+    definition:
+      "An instruction to sell a stock automatically if it falls to a set price. It's free, but not a guarantee: if the stock gaps down overnight, you sell at whatever the market price is, which can be far below your stop.",
+    categoryId: "options",
+    lessonId: "protective-puts",
   },
   {
     term: "Leverage",
@@ -554,7 +802,28 @@ export const glossary = [
     definition:
       "Selling a call on 100 shares you already own. You collect the premium now, and in exchange you give up any gains above the strike price.",
     categoryId: "options",
-    lessonId: "selling-options",
+    lessonId: "covered-calls",
+  },
+  {
+    term: "Called away",
+    definition:
+      "What happens to your shares when a call you sold is exercised: you have to sell them at the strike price, even if the stock is trading far higher.",
+    categoryId: "options",
+    lessonId: "covered-calls",
+  },
+  {
+    term: "Rolling an option",
+    definition:
+      "Closing an option you sold and opening a new one with a later expiration, often at a different strike. It isn't a free fix: buying back the old option can cost money, so a roll is really a new trade.",
+    categoryId: "options",
+    lessonId: "covered-calls",
+  },
+  {
+    term: "Collar",
+    definition:
+      "Owning shares, buying a protective put, and selling a covered call to help pay for it. You get a floor below and a ceiling above, giving up upside in exchange for cheap protection.",
+    categoryId: "options",
+    lessonId: "covered-calls",
   },
   {
     term: "Cash-secured put",

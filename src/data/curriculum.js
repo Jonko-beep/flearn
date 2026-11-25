@@ -3,9 +3,14 @@
 // videoUrl stays null until a real video is recorded; the lesson page shows a
 // mascot placeholder instead.
 
+import { bondsCategory } from "./bondsCategory.js";
 import { optionsCategory } from "./optionsCategory.js";
 
 export const MASTERY_THRESHOLD = 70;
+
+// Joins lesson paragraphs with blank lines, so long lessons can be written one
+// paragraph per line.
+const paragraphs = (...blocks) => blocks.join("\n\n");
 
 export const categories = [
   {
@@ -14,7 +19,7 @@ export const categories = [
     emoji: "📈",
     color: "#0D9488",
     description:
-      "Learn how to grow your wealth through stocks, tangible assets, and smart strategies.",
+      "Learn how to grow your wealth through stocks, tangible assets, retirement accounts, and smart strategies.",
     mascot: {
       name: "Warren the Walrus",
       emoji: "🦭",
@@ -622,6 +627,231 @@ export const categories = [
             correct: 3,
             explanation:
               "The cash comes out of the company's value, so the price adjusts down by about the dividend when it's paid. Judge investments on total return: price growth plus dividends together.",
+          },
+        ],
+      },
+      {
+        // Contribution limits and income ranges are the IRS figures for 2026
+        // (IR-2025-111) and 2027 (IR-2026-136). Update them each November.
+        // tests/retirement.test.js checks the worked dollar figures.
+        id: "iras",
+        title: "IRAs: Traditional and Roth",
+        subtitle: "A retirement account you open yourself",
+        duration: "12 min",
+        difficulty: "Beginner",
+        locked: false,
+        videoUrl: null,
+        content: paragraphs(
+          "An IRA — Individual Retirement Account — is an investment account you open yourself, at almost any brokerage, that gets special tax treatment in exchange for leaving the money alone until retirement. It isn't tied to a job, so it stays with you for life no matter where you work.",
+          "First, the most common mistake: an IRA is a container, not an investment. Depositing money into an IRA doesn't invest it. You still have to choose what the money buys inside the account, such as an index fund or a target-date fund. Money that's deposited and never invested just sits in cash, and people regularly discover years later that their \"retirement savings\" never grew.",
+          "Who can contribute, and how much:\n• Earned income required — you need income from work: a job, a side business, even a summer job. Allowances, gifts, and investment income don't count. There's no minimum age, so a teenager with a job can have one (a parent opens it as a custodial IRA)\n• Yearly limit — $7,500 for both 2026 and 2027 ($8,600 if you're 50 or older), or your earned income for the year if that's less\n• One shared limit — the limit covers ALL your IRAs combined. You can split it between Traditional and Roth, but you can't put $7,500 in each\n• Deadline — you have until the tax-filing deadline, usually April 15, to contribute for the previous year",
+          "There are two types, and they differ in one thing: when you pay income tax.",
+          "Traditional IRA — the tax break comes now:\n• Contributions may be tax-deductible, lowering this year's taxable income. The deduction shrinks at higher incomes if you also have a retirement plan at work\n• The money grows tax-deferred — no tax on dividends or gains while it stays in the account\n• Withdrawals in retirement are taxed as ordinary income\n• Required minimum distributions (RMDs) force you to start withdrawing in your 70s: at 73 today, and at 75 for anyone born in 1960 or later",
+          "Roth IRA — the tax break comes later:\n• Contributions are made with money you've already paid tax on, so there's no deduction today\n• The money grows tax-free, and withdrawals in retirement are completely tax-free once you're 59½ and the account is at least 5 years old\n• You can take out your contributions (not the earnings) at any time, for any reason, with no tax or penalty\n• No RMDs — you never have to withdraw during your lifetime\n• Income limit — the ability to contribute phases out between $153,000 and $168,000 of income for single filers in 2026 ($158,000 to $173,000 in 2027). The range is higher for married couples",
+          "Here's the part that surprises people: if your tax rate is the same now and in retirement, the two come out exactly even. Say you have $1,000 of income to save, your tax rate is 22%, and your investments grow tenfold by retirement:\n• Roth — pay $220 in tax now, invest $780, withdraw $7,800 tax-free\n• Traditional — invest the full $1,000, withdraw $10,000, pay $2,200 in tax, keep $7,800",
+          "So the choice comes down to one question: is your tax rate higher now, or will it be higher in retirement? Early in your career you're probably in one of the lowest tax brackets you'll ever be in. Paying 10% or 12% now so that decades of growth come out tax-free is usually a great trade, which is why young investors often lean Roth. A Traditional IRA tends to make more sense once you're earning a lot and expect a lower rate later.",
+          "Taking money out early. Withdraw before 59½ and you'll generally owe income tax plus a 10% penalty on the taxable part. There are exceptions, including up to $10,000 over your lifetime toward a first home, qualified college costs, and disability, but each has specific rules, so check them before counting on one. The Roth's contributions-anytime rule makes it a decent last-resort backup, but money you take out can't be put back beyond the normal yearly limit.",
+          "What it can grow into: $100 a month in a Roth IRA from age 20 to 65 is $54,000 of contributions. At an 8% average annual return it grows to about $527,000, and every dollar can come out tax-free.",
+          "Two terms you'll hear later. A rollover moves money from an old employer's retirement plan into an IRA without triggering taxes, as long as it's done correctly. Asking for a direct rollover, where the money goes straight from one account to the other, is the safest way. A backdoor Roth is a legal workaround that high earners use to get money into a Roth when their income is over the limit.",
+          "What this means for you as a young adult: once you have earned income, open a Roth IRA, invest it in a low-cost index fund or target-date fund, and set up an automatic monthly contribution. Even $50 a month counts. If your job offers a retirement plan with a match, grab the match first. That's the next lesson."
+        ),
+        transcript: null,
+        quiz: [
+          {
+            id: 1,
+            question: "What is the main difference between a Traditional IRA and a Roth IRA?",
+            options: [
+              "Only Roth IRAs can hold index funds",
+              "Traditional IRAs have no contribution limit",
+              "When you pay income tax — Traditional gives the break now, Roth gives it in retirement",
+              "Roth IRAs are only for people over 50",
+            ],
+            correct: 2,
+            explanation:
+              "Traditional contributions may be deductible today, and withdrawals are taxed later. Roth contributions are made after tax, and qualified withdrawals are tax-free.",
+          },
+          {
+            id: 2,
+            question: "What do you need in order to contribute to an IRA?",
+            options: [
+              "Earned income from work, such as a job or self-employment",
+              "A minimum balance of $1,000",
+              "An employer that sponsors the account",
+              "To be at least 21 years old",
+            ],
+            correct: 0,
+            explanation:
+              "IRA contributions must come from earned income. There's no minimum age, so a teenager with a summer job qualifies, but gifts and allowances don't count.",
+          },
+          {
+            id: 3,
+            question:
+              "You're under 50 and put $5,000 into a Roth IRA for 2026. How much more can you put into a Traditional IRA for 2026?",
+            options: ["$7,500", "$2,500", "$0 — you can only have one type", "$5,000"],
+            correct: 1,
+            explanation:
+              "The $7,500 limit is shared across all your IRAs. $7,500 − $5,000 = $2,500 left for the Traditional IRA.",
+          },
+          {
+            id: 4,
+            question: "What can you withdraw from a Roth IRA at any time, with no tax or penalty?",
+            options: [
+              "Everything, once the account is a year old",
+              "Only the earnings",
+              "Nothing until age 59½",
+              "Your contributions",
+            ],
+            correct: 3,
+            explanation:
+              "You already paid tax on your contributions, so they can come back out anytime. Earnings taken out early can be taxed and penalized.",
+          },
+          {
+            id: 5,
+            question:
+              "Your tax rate is 22% now and will be 22% in retirement. Which IRA leaves you with more money?",
+            options: [
+              "Roth, always",
+              "Traditional, always",
+              "They come out the same",
+              "Neither — both are taxed twice",
+            ],
+            correct: 2,
+            explanation:
+              "With equal tax rates the math is identical: $1,000 grown tenfold leaves you $7,800 either way. The choice only matters when your rate now and your rate later differ.",
+          },
+          {
+            id: 6,
+            question: "Why do young investors often lean toward a Roth IRA?",
+            options: [
+              "Roth IRAs earn a higher interest rate",
+              "They're likely in a low tax bracket now, so paying tax today to get tax-free growth is a good trade",
+              "Traditional IRAs aren't allowed until age 30",
+              "Roth IRAs are guaranteed by the government",
+            ],
+            correct: 1,
+            explanation:
+              "Early in a career, income and tax rates are usually low. Paying 10–12% now so decades of growth come out tax-free is hard to beat.",
+          },
+          {
+            id: 7,
+            question: "You deposit $3,000 into a brand-new IRA. What still needs to happen?",
+            options: [
+              "Nothing — the IRA invests it automatically",
+              "You need to wait a year before it can grow",
+              "Your employer has to approve the deposit",
+              "You need to choose investments inside the account, or the money just sits in cash",
+            ],
+            correct: 3,
+            explanation:
+              "An IRA is a container, not an investment. Until you buy something inside it, such as an index fund, the money sits in cash.",
+          },
+        ],
+      },
+      {
+        id: "employer-retirement-plans",
+        title: "401(k), 403(b), and 457 Plans",
+        subtitle: "Retirement saving through your job",
+        duration: "12 min",
+        difficulty: "Beginner",
+        locked: false,
+        videoUrl: null,
+        content: paragraphs(
+          "An employer-sponsored retirement plan lets you invest straight from your paycheck, before the money ever reaches your bank account. The names come from sections of the tax code, and which one you get depends on where you work:\n• 401(k) — private companies, from startups to the largest corporations\n• 403(b) — public schools, colleges, hospitals, and other nonprofits\n• 457(b) — state and local governments: teachers, police, firefighters, city and county workers\n• TSP (Thrift Savings Plan) — federal employees and the military",
+          "They work almost the same way. This lesson says \"401(k)\" to mean all of them, and points out where they differ.",
+          "How it works: you choose a percentage of each paycheck, say 6%, and it moves into the plan automatically. Then it's invested in funds you pick from the plan's menu. Many employers now sign new hires up automatically at a starting rate like 3%. You can raise it, lower it, or opt out.",
+          "The employer match is the best deal in personal finance. A common formula: your employer adds 50 cents for every dollar you contribute, up to 6% of your salary. On a $50,000 salary:\n• You contribute 6% ($3,000) — your employer adds $1,500\n• You contribute 3% ($1,500) — your employer adds $750, and you've left another $750 of free money on the table",
+          "That's an instant 50% return before your investments do anything. Rule #1: always contribute at least enough to get the full match.",
+          "Most plans offer two versions, just like IRAs:\n• Traditional (pre-tax) — the money comes out of your paycheck before income tax, lowering your tax bill today. Withdrawals are taxed in retirement\n• Roth — the money comes out after tax, and qualified withdrawals in retirement are tax-free. Unlike a Roth IRA, a Roth 401(k) has no income limit",
+          "A pre-tax contribution costs less than it looks. In the 12% federal tax bracket, putting $3,000 into a Traditional 401(k) cuts your federal income tax by $360, so your take-home pay drops by only $2,640. (Social Security and Medicare taxes still apply.)",
+          "The limits are much higher than an IRA's:\n• Your contributions — up to $24,500 for 2026, rising to $25,500 for 2027\n• Catch-up at 50+ — an extra $8,000 in 2026 ($8,500 in 2027), and more at ages 60 to 63\n• Employer money — the match doesn't count toward your limit\n• Separate from IRAs — you can max out a 401(k) and an IRA in the same year",
+          "Vesting. The money you contribute is always 100% yours. The employer's match may vest over time, meaning you only keep it after staying a certain number of years. By law, the match has to be fully yours within 3 years if it vests all at once (cliff vesting), or within 6 years if it vests a little each year (graded vesting). Leave before you're vested and the unvested part goes back to the employer, so check your vesting schedule before you change jobs.",
+          "You can only invest in what's on the plan's menu. Two things to look for:\n• A target-date fund — one fund that holds a mix of stocks and bonds and slowly gets more conservative as its target year approaches (a 2070 fund for someone retiring around 2070). It's a sensible one-fund choice\n• Low fees — compare expense ratios. An index fund charging 0.05% beats a 1% fund by tens of thousands of dollars over a career. 403(b) plans in particular sometimes push high-fee annuity products, so look for the index funds",
+          "Getting money out follows the same basic rules as an IRA. Withdrawals before 59½ generally mean income tax plus a 10% penalty, and RMDs on Traditional money start in your 70s. Two exceptions are worth knowing:\n• Rule of 55 — leave your job in or after the year you turn 55, and you can withdraw from THAT employer's 401(k) or 403(b) with no penalty\n• 457(b) — a government 457(b) has no 10% penalty at all once you leave the employer, at any age (income tax still applies). Its limit is also separate from a 403(b)'s, so a teacher or public employee offered both can contribute the full amount to each",
+          "401(k) loans. Many plans let you borrow from your own account, generally up to half your vested balance and no more than $50,000, then pay yourself back with interest. It's tempting but risky. The borrowed money misses out on market growth, and if you leave the job, any unpaid balance not repaid by your next tax-filing deadline is treated as a withdrawal, taxes and penalty included.",
+          "When you leave a job, your old 401(k) has four possible destinations:\n1. Leave it in the old plan, if the balance is large enough to stay\n2. Roll it into your new employer's plan\n3. Roll it into an IRA, which usually has the most investment choices\n4. Cash it out, which is almost always a mistake",
+          "Here's why. Cash out $10,000 at 25 in the 22% bracket and you lose about $2,200 to federal income tax plus a $1,000 penalty, keeping $6,800. Left invested at 8% for 40 years, that same $10,000 would have grown to about $217,000.",
+          "A common priority order for retirement savings, once you have an emergency fund and no high-interest debt:\n1. Your 401(k), up to the full employer match\n2. A Roth IRA, up to its yearly limit\n3. Back to the 401(k), toward its limit",
+          "What this means for you as a young adult: on your first day at a job with a plan, sign up, set your contribution to at least the full match, choose a low-cost target-date or index fund, and turn on automatic increases of 1% a year if the plan offers them. You'll barely notice it in your paycheck, and you'll notice it a lot at retirement."
+        ),
+        transcript: null,
+        quiz: [
+          {
+            id: 1,
+            question: "A nurse at a nonprofit hospital is most likely offered which type of plan?",
+            options: ["401(k)", "TSP", "403(b)", "457(b)"],
+            correct: 2,
+            explanation:
+              "403(b) plans cover public schools, colleges, hospitals, and other nonprofits. 401(k)s are for private companies, 457(b)s for state and local governments, and the TSP for federal workers.",
+          },
+          {
+            id: 2,
+            question:
+              "Your employer matches 50% of what you contribute, up to 6% of your salary. You earn $50,000 and contribute 6%. How much does your employer add?",
+            options: ["$3,000", "$1,500", "$750", "$6,000"],
+            correct: 1,
+            explanation:
+              "6% of $50,000 is $3,000. The employer adds 50% of that: $1,500 a year in free money.",
+          },
+          {
+            id: 3,
+            question: "What's the minimum you should usually contribute to a 401(k) with a match?",
+            options: [
+              "Enough to get the full employer match",
+              "Nothing until your student loans are paid off",
+              "The full yearly limit, or nothing at all",
+              "Exactly 1% of your salary",
+            ],
+            correct: 0,
+            explanation:
+              "The match is an instant return on your money, often 50% or 100%. Contributing less than the match leaves free money on the table.",
+          },
+          {
+            id: 4,
+            question: "What does it mean for your employer match to \"vest\"?",
+            options: [
+              "The match is invested in your company's stock",
+              "The match is taxed twice",
+              "Your own contributions are locked for 5 years",
+              "You gain full ownership of the employer's contributions after working there long enough",
+            ],
+            correct: 3,
+            explanation:
+              "Your own money is always yours. Employer contributions can vest over time, and by law the match must fully vest within 3 years (cliff) or 6 years (graded).",
+          },
+          {
+            id: 5,
+            question:
+              "Which plan lets you withdraw without the 10% early-withdrawal penalty once you leave the employer, at any age?",
+            options: ["A 401(k)", "A government 457(b)", "A 403(b)", "A Roth IRA"],
+            correct: 1,
+            explanation:
+              "A government 457(b) has no 10% early-withdrawal penalty after you leave the job, whatever your age. Income tax still applies to Traditional money.",
+          },
+          {
+            id: 6,
+            question: "Why is cashing out an old 401(k) when you change jobs usually a mistake?",
+            options: [
+              "Your new employer is told and may fire you",
+              "The money is frozen for five years",
+              "You lose a big slice to taxes and a 10% penalty, plus decades of compounding",
+              "It's illegal before age 30",
+            ],
+            correct: 2,
+            explanation:
+              "Cashing out $10,000 at 25 can leave about $6,800 after tax and the penalty. Left invested, that $10,000 could grow to about $217,000 by retirement.",
+          },
+          {
+            id: 7,
+            question: "Can you contribute to both a 401(k) and an IRA in the same year?",
+            options: [
+              "No — you have to choose one",
+              "Only if your employer doesn't offer a match",
+              "Only after age 50",
+              "Yes — they have separate contribution limits",
+            ],
+            correct: 3,
+            explanation:
+              "Workplace plans and IRAs have separate limits. A common order is: 401(k) up to the match, then a Roth IRA, then more 401(k).",
           },
         ],
       },
@@ -2018,6 +2248,7 @@ export const categories = [
       },
     ],
   },
+  bondsCategory,
   optionsCategory,
 ];
 

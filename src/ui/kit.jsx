@@ -249,7 +249,7 @@ export function Ring({ value, size = 44, stroke = 5, tone = "cat", children, cla
 
 // ------------------------------------------------------------------ Avatar
 // Which course colour each mascot wears.
-const MASCOT_HUE = { walrus: "investing", bear: "saving", chipmunk: "estate", fox: "options" };
+const MASCOT_HUE = { walrus: "investing", bear: "saving", chipmunk: "estate", fox: "options", badger: "bonds" };
 
 /**
  * A course mascot in a coloured circle. Takes a mascot id (`mascot`) or one of

@@ -37,6 +37,7 @@ export const CATEGORY_ICONS = {
   investing: TrendingUp,
   "saving-budgeting": PiggyBank,
   "real-estate-loans": House,
+  "fixed-income": Landmark,
   options: Target,
 };
 
@@ -51,6 +52,7 @@ export const ACHIEVEMENT_ICONS = {
   "investing-graduate": TrendingUp,
   "savings-graduate": PiggyBank,
   "real-estate-graduate": House,
+  "bonds-graduate": Landmark,
   "options-graduate": Target,
   "tool-time": Wrench,
   scholar: GraduationCap,

@@ -1,15 +1,16 @@
-// The four course guides, drawn as simple flat characters so they look the
+// The course guides, drawn as simple flat characters so they look the
 // same on every device (emoji faces differ between Windows, Mac and Android).
 // Every drawing uses the same 120×120 grid: head centred low, eyes on y≈57.
 
 const INK = "#2a1f1a";
 const SHINE = "rgba(255,255,255,0.14)";
 
-const BY_EMOJI = { "🦭": "walrus", "🐻": "bear", "🐿️": "chipmunk", "🐿": "chipmunk", "🦊": "fox" };
+const BY_EMOJI = { "🦭": "walrus", "🐻": "bear", "🐿️": "chipmunk", "🐿": "chipmunk", "🦊": "fox", "🦡": "badger" };
 const BY_COURSE = {
   investing: "walrus",
   "saving-budgeting": "bear",
   "real-estate-loans": "chipmunk",
+  "fixed-income": "badger",
   options: "fox",
 };
 // Level titles in lib/gamification.js, in order.
@@ -20,6 +21,7 @@ export const MASCOT_NAMES = {
   bear: "Benjamin the Bear",
   chipmunk: "Charlie the Chipmunk",
   fox: "Fischer the Fox",
+  badger: "Bill the Badger",
 };
 
 /** Resolve a mascot id from an id, a course id, or one of the old emoji faces. */
@@ -157,7 +159,46 @@ function Fox({ happy }) {
   );
 }
 
-const DRAWINGS = { walrus: Walrus, bear: Bear, chipmunk: Chipmunk, fox: Fox };
+function Badger({ happy }) {
+  const stripe = "#2f2b29";
+  return (
+    <g>
+      <circle cx="30" cy="40" r="11" fill="#3a3633" />
+      <circle cx="30" cy="40" r="5.5" fill="#d8d1c5" />
+      <circle cx="90" cy="40" r="11" fill="#3a3633" />
+      <circle cx="90" cy="40" r="5.5" fill="#d8d1c5" />
+      <ellipse cx="60" cy="65" rx="39" ry="36" fill="#f4efe6" />
+      {/* the badger stripes run from the nose up over each eye */}
+      <path d="M32 40 Q40 30 49 31 L57 80 Q56 87 51.5 84 Q37 66 32 40 Z" fill={stripe} />
+      <path d="M88 40 Q80 30 71 31 L63 80 Q64 87 68.5 84 Q83 66 88 40 Z" fill={stripe} />
+      <ellipse cx="60" cy="40" rx="7" ry="5" fill={SHINE} />
+      {/* light rings keep the eyes readable on the dark stripes */}
+      <circle cx="46" cy="58" r="7.2" fill="#f4efe6" />
+      <circle cx="74" cy="58" r="7.2" fill="#f4efe6" />
+      <Eye x={46} y={58} r={4.2} happy={happy} />
+      <Eye x={74} y={58} r={4.2} happy={happy} />
+      <ellipse cx="60" cy="88" rx="7" ry="5" fill={INK} />
+      <ellipse cx="57.6" cy="86.4" rx="2.2" ry="1.2" fill="#fff" opacity="0.5" />
+      <path d="M54 94.5 q3 3 6 0 q3 3 6 0" fill="none" stroke={INK} strokeWidth="2.2" strokeLinecap="round" />
+      <Blush x={32} y={76} />
+      <Blush x={88} y={76} />
+      {/* Bill's crown — the Bond King */}
+      <path
+        d="M46 32 L43.5 16 L52.5 23.5 L60 12.5 L67.5 23.5 L76.5 16 L74 32 Z"
+        fill="#e9b44c"
+        stroke="#b07d1f"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <rect x="45.5" y="28" width="29" height="4.5" rx="1.5" fill="#d49a2a" />
+      <circle cx="43.5" cy="16" r="2.3" fill="#fff3c4" />
+      <circle cx="60" cy="12.5" r="2.5" fill="#fff3c4" />
+      <circle cx="76.5" cy="16" r="2.3" fill="#fff3c4" />
+    </g>
+  );
+}
+
+const DRAWINGS = { walrus: Walrus, bear: Bear, chipmunk: Chipmunk, fox: Fox, badger: Badger };
 
 /** A mascot face. `who` takes a mascot id, a course id, or a legacy emoji. */
 export function Mascot({ who, size = 64, happy = false, className, title }) {

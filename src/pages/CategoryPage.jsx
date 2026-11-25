@@ -9,6 +9,8 @@ import AchievementsGrid from "../components/AchievementsGrid.jsx";
 import { Avatar, Button, Card, PageHeader, Progress, SectionTitle, SpeechBubble } from "../ui/kit.jsx";
 import { hue } from "../ui/theme.js";
 
+const COURSE_COUNT_WORDS = { 4: "Four", 5: "Five", 6: "Six", 7: "Seven", 8: "Eight" };
+
 // Where to send someone who just opened the app: the next unmastered lesson
 // in the course they touched most recently, else the first unmastered lesson.
 function findNextLesson(progress) {
@@ -102,7 +104,7 @@ export default function CategoryPage() {
     <div className="animate-enter">
       <PageHeader
         title="Learn"
-        subtitle="Four courses, one short lesson at a time."
+        subtitle={`${COURSE_COUNT_WORDS[categories.length] ?? categories.length} courses, one short lesson at a time.`}
         actions={
           <Button to="/welcome" variant="ghost" size="sm" icon={Compass}>
             Not sure where to start? Take the path quiz

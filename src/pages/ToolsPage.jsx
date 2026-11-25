@@ -6,7 +6,7 @@ import { TOOL_ICONS } from "../ui/icons.js";
 import { MASCOT_NAMES } from "../ui/mascots.jsx";
 
 // Which guide runs each tool, by the tool's course colour.
-const MASCOT_OF_HUE = { investing: "walrus", saving: "bear", estate: "chipmunk", options: "fox" };
+const MASCOT_OF_HUE = { investing: "walrus", saving: "bear", estate: "chipmunk", options: "fox", bonds: "badger" };
 
 const TOOLS = [
   {
@@ -61,7 +61,7 @@ const TOOLS = [
     title: "Options payoff visualizer",
     tag: "Simulator",
     description:
-      "Fischer charts what a call, put, covered call, or cash-secured put is worth at expiration — breakeven, max loss, and how it compares with just owning the shares.",
+      "Fischer charts what a call, put, covered call, cash-secured put, or protective put is worth at expiration — breakeven, max loss, and how it compares with just owning the shares.",
   },
 ];
 
